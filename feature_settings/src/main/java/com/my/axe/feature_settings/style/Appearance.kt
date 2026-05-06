@@ -46,8 +46,8 @@ import com.my.axe.feature_settings.style.svg.DynamicSVGImage
 import com.my.axe.feature_settings.style.svg.PALETTE
 import com.my.axe.preference.DEFAULT_SEED_COLOR
 import com.my.axe.preference.AppSettingsStateFlow
-import com.my.axe.preference.CUSTOM_THEME_COLOR
 import com.my.axe.preference.Prefs
+import com.my.axe.preference.Prefs.CUSTOM_THEME_COLOR
 import com.my.axe.preference.modifyButtonShape
 import com.my.axe.preference.modifyThemeSeedColor
 import com.my.axe.preference.palettesMap
