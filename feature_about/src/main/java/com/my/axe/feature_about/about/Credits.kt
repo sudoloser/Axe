@@ -68,16 +68,19 @@ const val materialColor = "https://github.com/material-foundation/material-color
 const val nintendoRepo = "https://github.com/ninstar/Rich-Presence-U"
 const val XboxRpc = "https://github.com/MrCoolAndroid/Xbox-Rich-Presence-Discord"
 const val monet = "https://github.com/Kyant0/Monet"
-const val kizzy = "https://github.com/dead8309/Kizzy"
 
 val creditsList = listOf(
-    Credit("Kizzy", GPL_V3, kizzy),
     Credit("Read You", GPL_V3, readYou),
     Credit("Seal", GPL_V3, seal),
     Credit("material-color-utilities", APACHE_V2, materialColor),
     Credit("Rich-Presence-U", GPL_V3, nintendoRepo),
     Credit("Xbox-Rich-Presence-Discord", MIT, XboxRpc),
     Credit("Monet", APACHE_V2, monet)
+)
+
+val developerCreditsList = listOf(
+    Credit("sudoloser", "Main Developer", "https://github.com/sudoloser"),
+    Credit("dead8309", "Original Kizzy Developer", "https://github.com/dead8309")
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -109,6 +112,17 @@ fun Credits(state: CreditScreenState, onBackPressed: () -> Unit) {
         }
     ) { paddingValues ->
         LazyColumn(modifier = Modifier.padding(paddingValues)) {
+            item {
+                Subtitle(text = stringResource(id = R.string.developer_credits))
+            }
+            items(developerCreditsList) { item: Credit ->
+                CreditItem(
+                    title = item.title,
+                    description = item.license
+                ) {
+                    openUrl(item.url)
+                }
+            }
             item {
                 Subtitle(text = stringResource(id = R.string.design_credits))
             }

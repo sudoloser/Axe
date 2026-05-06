@@ -171,6 +171,7 @@ object Prefs {
     const val HIGH_CONTRAST = "high_contrast"
     const val DYNAMIC_COLOR = "dynamic_color"
     const val THEME_COLOR = "theme_color"
+    const val MAIN_SCREEN_BUTTON_SHAPE = "main_screen_button_shape"
     const val CUSTOM_THEME_COLOR = "custom_theme_color"
     const val IS_FIRST_LAUNCHED = "is_first_launched"
     const val CUSTOM_ACTIVITY_TYPE = "custom_activity_type"

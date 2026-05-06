@@ -29,7 +29,8 @@ data class AppSettings(
     val darkTheme: DarkThemePreference = DarkThemePreference(),
     val isDynamicColorEnabled: Boolean = false,
     val seedColor: Int = DEFAULT_SEED_COLOR,
-    val paletteStyleIndex: Int = 0
+    val paletteStyleIndex: Int = 0,
+    val buttonShape: String = "Default"
 )
 val palettesMap = mapOf(
     0 to PaletteStyle.TonalSpot,
@@ -46,7 +47,8 @@ private val mutableAppSettingsStateFlow = MutableStateFlow(
         ),
         isDynamicColorEnabled = Prefs[Prefs.DYNAMIC_COLOR, false],
         seedColor = Prefs[Prefs.THEME_COLOR, DEFAULT_SEED_COLOR],
-        paletteStyleIndex = Prefs[Prefs.PALETTE_STYLE, 0]
+        paletteStyleIndex = Prefs[Prefs.PALETTE_STYLE, 0],
+        buttonShape = Prefs[Prefs.MAIN_SCREEN_BUTTON_SHAPE, "Default"]
     )
 )
 val AppSettingsStateFlow = mutableAppSettingsStateFlow.asStateFlow()
@@ -76,6 +78,15 @@ fun modifyThemeSeedColor(colorArgb: Int, paletteStyleIndex: Int) {
         }
         Prefs[Prefs.THEME_COLOR] = colorArgb
         Prefs[Prefs.PALETTE_STYLE] = paletteStyleIndex
+    }
+}
+
+fun modifyButtonShape(shape: String) {
+    PreferenceConfig.applicationScope.launch(Dispatchers.IO) {
+        mutableAppSettingsStateFlow.update {
+            it.copy(buttonShape = shape)
+        }
+        Prefs[Prefs.MAIN_SCREEN_BUTTON_SHAPE] = shape
     }
 }
 

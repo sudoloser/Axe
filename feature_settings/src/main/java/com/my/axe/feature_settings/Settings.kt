@@ -127,9 +127,10 @@ fun SettingsDrawer(
                         title = stringResource(id = R.string.drawer_faq),
                         icon = Icons.AutoMirrored.Rounded.HelpOutline
                     ) {
-                        uriHandler.openUri("https://axe.vercel.app/#FAQ")
+                        uriHandler.openUri("https://kizzy.vercel.app/#FAQ")
                     }
                 }
+                /* TODO: Make this visible again when the Axe discord is created
                 item {
                     SettingsItemCard(
                         title = "Discord",
@@ -139,6 +140,7 @@ fun SettingsDrawer(
                         uriHandler.openUri(chips.first().url)
                     }
                 }
+                */
                 item {
                     SettingsItemCard(
                         title = stringResource(id = R.string.about),

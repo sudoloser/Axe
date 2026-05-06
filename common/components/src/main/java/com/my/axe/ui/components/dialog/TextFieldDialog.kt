@@ -34,6 +34,7 @@ fun TextFieldDialog(
     visible: Boolean = false,
     readOnly: Boolean = false,
     title: String = "",
+    description: String? = null,
     icon: ImageVector? = null,
     value: String = "",
     placeholder: String = "",
@@ -62,17 +63,28 @@ fun TextFieldDialog(
                 Text(text = title, maxLines = 1, overflow = TextOverflow.Ellipsis)
             },
             text = {
-                ClipboardTextField(
-                    modifier = modifier,
-                    readOnly = readOnly,
-                    value = value,
-                    onValueChange = onValueChange,
-                    placeholder = placeholder,
-                    errorText = errorText,
-                    imeAction = imeAction,
-                    focusManager = focusManager,
-                    onConfirm = onConfirm,
-                )
+                androidx.compose.foundation.layout.Column(
+                    verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(8.dp)
+                ) {
+                    description?.let {
+                        Text(
+                            text = it,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                    ClipboardTextField(
+                        modifier = modifier,
+                        readOnly = readOnly,
+                        value = value,
+                        onValueChange = onValueChange,
+                        placeholder = placeholder,
+                        errorText = errorText,
+                        imeAction = imeAction,
+                        focusManager = focusManager,
+                        onConfirm = onConfirm,
+                    )
+                }
             },
             confirmButton = {
                 TextButton(

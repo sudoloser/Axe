@@ -53,6 +53,15 @@
     <string name="settings">Settings</string>
     <string name="language">Language</string>
     <string name="design_credits">Design Credits</string>
+    <string name="developer_credits">Developer Credits</string>
+    <string name="button_shape">Button Shape</string>
+    <string name="shape_default">Default</string>
+    <string name="shape_circles">Circles</string>
+    <string name="shape_triangles">Triangles</string>
+    <string name="shape_star">Star</string>
+    <string name="login_with_token">Login with Token</string>
+    <string name="token_login_warning">Warning: Logging in with a token is not recommended for regular users and should be used with extreme caution. Your token gives full access to your Discord account.</string>
+    <string name="enter_token">Enter Discord Token</string>
     <string name="enable_appsRpc">Enable App Detection</string>
     <string name="usage_access">Usage Access Required</string>
     <string name="usage_access_desc">Usage Access is needed for app to get the current running app</string>

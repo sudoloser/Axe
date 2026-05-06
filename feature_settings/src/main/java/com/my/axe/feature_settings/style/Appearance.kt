@@ -158,6 +158,64 @@ fun Appearance(
                 description = LocalDarkTheme.current.getDarkThemeDesc(),
                 icon = Icons.Outlined.DarkMode,
             ) { navigateToDarkTheme() }
+
+            Subtitle(text = stringResource(id = R.string.button_shape))
+            val buttonShapes = listOf("Default", "Circles", "Triangles", "Star")
+            val currentShape = AppSettingsStateFlow.collectAsState().value.buttonShape
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                buttonShapes.forEach { shape ->
+                    ButtonShapeItem(
+                        shapeName = shape,
+                        isSelected = currentShape == shape,
+                        onClick = { modifyButtonShape(shape) }
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun RowScope.ButtonShapeItem(
+    shapeName: String,
+    isSelected: Boolean,
+    onClick: () -> Unit
+) {
+    val shape = getButtonShape(shapeName)
+    val containerColor = if (isSelected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceVariant
+    val contentColor = if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurfaceVariant
+
+    Surface(
+        modifier = Modifier
+            .weight(1f)
+            .aspectRatio(1f),
+        shape = RoundedCornerShape(16.dp),
+        color = containerColor,
+        onClick = onClick
+    ) {
+        Box(contentAlignment = Alignment.Center) {
+            Surface(
+                modifier = Modifier.size(32.dp),
+                shape = shape,
+                color = contentColor
+            ) {}
+            if (isSelected) {
+                Icon(
+                    imageVector = Icons.Outlined.Check,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(8.dp)
+                        .size(16.dp),
+                    tint = contentColor
+                )
+            }
         }
     }
 }
