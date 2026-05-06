@@ -1,16 +1,16 @@
 @file:Suppress("UnstableApiUsage")
 
 plugins {
-    id("kizzy.android.application")
-    id("kizzy.android.application.compose")
-    id("kizzy.android.hilt")
+    id("axe.android.application")
+    id("axe.android.application.compose")
+    id("axe.android.hilt")
 }
 
 android {
-    namespace = "com.my.kizzy"
+    namespace = "com.my.axe"
 
     defaultConfig {
-        applicationId = "com.my.kizzy"
+        applicationId = "com.my.axe"
         versionCode = libs.versions.version.code.get().toInt()
         versionName = libs.versions.version.name.get()
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
