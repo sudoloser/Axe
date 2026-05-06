@@ -120,7 +120,7 @@ fun Features(
                         Column(
                             Modifier
                                 .fillMaxSize()
-                                .padding(15.dp, 15.dp, 2.dp, 15.dp)
+                                .padding(24.dp)
                         ) {
                             Icon(
                                 tint = if (homeItems[i].isChecked) MaterialTheme.colorScheme.primary
@@ -128,15 +128,17 @@ fun Features(
                                 painter = painterResource(id = homeItems[i].icon),
                                 contentDescription = "",
                                 modifier = Modifier
-                                    .weight(1f)
-                                    .padding(5.dp, 0.dp)
+                                    .weight(1.5f)
+                                    .size(32.dp)
                             )
                             Text(
                                 text = homeItems[i].title,
-                                style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.W500),
+                                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.W600),
                                 color = if (homeItems[i].isChecked) MaterialTheme.colorScheme.onPrimaryContainer
                                 else MaterialTheme.colorScheme.onSecondaryContainer,
-                                modifier = Modifier.weight(2f)
+                                modifier = Modifier.weight(1.5f),
+                                maxLines = 2,
+                                overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
                             )
                             Row(
                                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -190,7 +192,7 @@ fun Features(
                     Column(
                         Modifier
                             .fillMaxSize()
-                            .padding(15.dp, 15.dp, 2.dp, 15.dp)
+                            .padding(24.dp)
                     ) {
                         Icon(
                             tint = if (homeItems[i].isChecked) MaterialTheme.colorScheme.primary
@@ -198,15 +200,17 @@ fun Features(
                             painter = painterResource(id = homeItems[i].icon),
                             contentDescription = "",
                             modifier = Modifier
-                                .weight(1f)
-                                .padding(5.dp, 0.dp)
+                                .weight(1.5f)
+                                .size(32.dp)
                         )
                         Text(
                             text = homeItems[i].title,
-                            style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.W500),
+                            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.W600),
                             color = if (homeItems[i].isChecked) MaterialTheme.colorScheme.onPrimaryContainer
                             else MaterialTheme.colorScheme.onSecondaryContainer,
-                            modifier = Modifier.weight(2f)
+                            modifier = Modifier.weight(1.5f),
+                            maxLines = 2,
+                            overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
                         )
                         Row(
                             horizontalArrangement = Arrangement.SpaceBetween,

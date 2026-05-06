@@ -19,10 +19,7 @@ data class Chips(
     val url: String
 )
 
-val chips =  listOf(
-    Chips("Discord", "https://discord.gg/vUPc7zzpV5"),
-    Chips("Youtube", "https://youtube.com/channel/UCh-zsCv66gwHCIbMKLMJmaw")
-)
+val chipsList = listOf<Chips>()
 @Composable
 fun ChipSection() {
     val uriHandler = LocalUriHandler.current

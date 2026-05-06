@@ -32,10 +32,10 @@ import com.my.axe.feature_about.BuildConfig
 
 
 
-const val github_Repository = "https://github.com/dead8309/axe"
+const val github_Repository = "https://github.com/sudoloser/axe"
 const val github_Release = "$github_Repository/releases"
 const val github_Issues = "$github_Repository/issues/new"
-const val github_privacy_policy = "$github_Repository/blob//master/TERMS_OF_SERVICE.md"
+const val github_privacy_policy = "$github_Repository/blob/master/TERMS_OF_SERVICE.md"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

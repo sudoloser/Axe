@@ -70,7 +70,7 @@ class ApiService @Inject constructor(
 
     suspend fun checkForUpdate() = runCatching {
         client.get {
-            url("$githubBaseUrl/repos/dead8309/axe/releases/latest")
+            url("$githubBaseUrl/repos/sudoloser/axe/releases/latest")
         }
     }
 }
