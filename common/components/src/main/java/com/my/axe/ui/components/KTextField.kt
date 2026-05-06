@@ -12,6 +12,7 @@
 
 package com.my.axe.ui.components
 
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -28,7 +29,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalClipboardManager
 import kotlinx.coroutines.delay
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun KTextField(
     readOnly: Boolean,
@@ -43,16 +43,18 @@ fun KTextField(
     val focusRequester = remember { FocusRequester() }
 
     LaunchedEffect(Unit) {
-        delay(100)  // ???
+        delay(100)
         focusRequester.requestFocus()
     }
 
-    TextField(
+    OutlinedTextField(
         modifier = Modifier.focusRequester(focusRequester),
-        colors = TextFieldDefaults.colors(
+        colors = OutlinedTextFieldDefaults.colors(
             focusedContainerColor = Color.Transparent,
             unfocusedContainerColor = Color.Transparent,
             disabledContainerColor = Color.Transparent,
+            focusedBorderWidth = 2.dp,
+            unfocusedBorderWidth = 1.dp,
         ),
         maxLines = 1,
         enabled = !readOnly,
@@ -69,6 +71,7 @@ fun KTextField(
         },
         isError = errorMessage.isNotEmpty(),
         singleLine = true,
+        shape = RoundedCornerShape(16.dp),
         trailingIcon = {
             if (value.isNotEmpty()) {
                 IconButton(onClick = {

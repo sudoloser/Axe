@@ -12,10 +12,13 @@
 
 package com.my.axe.feature_custom_rpc.components.sheet
 
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -23,6 +26,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import com.blankj.utilcode.util.FileIOUtils
 import com.my.axe.domain.model.rpc.RpcConfig
 import com.my.axe.resources.R
@@ -67,9 +71,14 @@ fun SaveConfigDialog(
                 Text(text = stringResource(R.string.save))
             }
         },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(text = stringResource(R.string.cancel))
+            }
+        },
         title = { Text(text = stringResource(id = R.string.save_config)) },
         text = {
-            TextField(
+            OutlinedTextField(
                 onValueChange = {
                     configName = it
                     isError = it.isEmpty()
@@ -77,7 +86,14 @@ fun SaveConfigDialog(
                 label = { Text(text = stringResource(R.string.config_name)) },
                 value = configName,
                 isError = isError,
-                supportingText = { if (isError) Text(stringResource(R.string.config_name_empty)) else Unit }
+                supportingText = { if (isError) Text(stringResource(R.string.config_name_empty)) else null },
+                shape = RoundedCornerShape(16.dp),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderWidth = 2.dp,
+                    unfocusedBorderWidth = 1.dp,
+                ),
+                singleLine = true
             )
-        })
+        }
+    )
 }

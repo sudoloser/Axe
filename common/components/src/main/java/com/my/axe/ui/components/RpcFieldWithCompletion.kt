@@ -31,11 +31,11 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DividerDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -49,7 +49,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
@@ -74,7 +73,6 @@ private const val SINGLE_COMPLETION_ITEM_HEIGHT = 62.5
 
 private typealias ResourceId = Int
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RpcFieldWithCompletions(
     value: String,
@@ -103,7 +101,6 @@ fun RpcFieldWithCompletions(
         }
     }
 
-    // check for template state on recomposition
     val checkTemplateState = {
         val cursor = textFieldValue.selection.start
         val text = textFieldValue.text
@@ -115,7 +112,6 @@ fun RpcFieldWithCompletions(
             if (templateStartIndex != -1 && !textBefore.substring(templateStartIndex)
                     .contains("}}")
             ) {
-                // in a template
                 lastTemplateCursorPosition = cursor
                 lastTemplateText = text
 
@@ -136,11 +132,8 @@ fun RpcFieldWithCompletions(
 
                 showSuggestions = true
             } else if (lastTemplateCursorPosition != -1 && text == lastTemplateText) {
-                // text hasn't changed but cursor might have moved due to keyboard change
-                // keep suggestions visible
                 showSuggestions = showSuggestions && filteredPlaceholders.isNotEmpty()
             } else {
-                // check for regular word
                 val currentWord = getCurrentWord(textBefore)
                 if (currentWord.length >= MIN_CHARS_TO_TRIGGER) {
                     filteredPlaceholders = completionList.filter { (key, _) ->
@@ -148,7 +141,6 @@ fun RpcFieldWithCompletions(
                     }
                     showSuggestions = filteredPlaceholders.isNotEmpty()
                 } else {
-                    // reset template tracking
                     lastTemplateCursorPosition = -1
                     lastTemplateText = ""
                     showSuggestions = false
@@ -183,23 +175,16 @@ fun RpcFieldWithCompletions(
         }
     }
 
-    /**
-     * Call on each composition to ensure suggestions state is maintained
-     *
-     * Why ?
-     * While testing, i noticed when you switch between number to text keyboard,
-     * the suggestions would disappear even if the text was still in a template.
-     **/
     checkTemplateState()
 
     LocalContext.current
     Box(
         modifier = Modifier.fillMaxWidth()
     ) {
-        TextField(
+        OutlinedTextField(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(10.dp)
+                .padding(horizontal = 16.dp, vertical = 8.dp)
                 .onFocusChanged { focusState ->
                     internalIsFocused = focusState.isFocused
                     if (!internalIsFocused) {
@@ -222,19 +207,23 @@ fun RpcFieldWithCompletions(
             trailingIcon = trailingIcon,
             isError = isError,
             singleLine = true,
+            shape = RoundedCornerShape(16.dp),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderWidth = 2.dp,
+                unfocusedBorderWidth = 1.dp,
+            ),
         )
 
         AnimatedVisibility(
-            visible = isError, modifier = Modifier.align(Alignment.BottomEnd)
+            visible = isError, modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(end = 16.dp)
         ) {
             Text(
                 text = errorMessage,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
                 textAlign = TextAlign.End,
                 color = MaterialTheme.colorScheme.error,
-                style = MaterialTheme.typography.bodyMedium
+                style = MaterialTheme.typography.bodySmall
             )
         }
 
@@ -247,7 +236,6 @@ fun RpcFieldWithCompletions(
                             MAX_COMPLETION_LIST_HEIGHT.dp.roundToPx(),
                             (SINGLE_COMPLETION_ITEM_HEIGHT * filteredPlaceholders.size).dp.roundToPx()
                         )
-                        // We are displaying popup above the TextField
                         -offset
                     }),
                 properties = PopupProperties(
@@ -260,7 +248,7 @@ fun RpcFieldWithCompletions(
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 10.dp),
+                        .padding(horizontal = 16.dp),
                     shape = RoundedCornerShape(20.dp),
                     colors = CardDefaults.cardColors(
                         containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.98f)
