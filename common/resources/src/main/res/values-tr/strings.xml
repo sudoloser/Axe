@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Kizzy</string>
+    <string name="app_name">axe</string>
 
     <!-- Activities -->
     <string name="activity_name">Aktivite Adı</string>
@@ -104,15 +104,15 @@
     <string name="hide_on_pause">Duraklatınca RPC\'yi gizle</string>
     <string name="idling_notification">Boşta…</string>
     <string name="main_appDetection">Uygulama Algılama</string>
-    <string name="main_appDetection_details">Kizzy, cihazınızda hangi uygulamayı kullandığınızı algılayarak mevcut aktivitenizi Discord\'da paylaşmanıza olanak sağlar.</string>
+    <string name="main_appDetection_details">axe, cihazınızda hangi uygulamayı kullandığınızı algılayarak mevcut aktivitenizi Discord\'da paylaşmanıza olanak sağlar.</string>
     <string name="main_mediaRpc">Medya RPC</string>
-    <string name="main_mediaRpc_details">Kizzy, mevcut olarak dinlediğiniz şarkı veya videonun mevcut aktivitesini algılayarak Discord\'da paylaşmanıza olanak sağlar.</string>
+    <string name="main_mediaRpc_details">axe, mevcut olarak dinlediğiniz şarkı veya videonun mevcut aktivitesini algılayarak Discord\'da paylaşmanıza olanak sağlar.</string>
     <string name="main_customRpc">Özel RPC</string>
     <string name="main_consoleRpc">Konsol RPC</string>
-    <string name="main_consoleRpc_details">Kizzy, Discord\'da presence\'nizi ayarlamak için bazı ön tanımlanmış ön ayarları ayarlamanıza olanak sağlar.</string>
+    <string name="main_consoleRpc_details">axe, Discord\'da presence\'nizi ayarlamak için bazı ön tanımlanmış ön ayarları ayarlamanıza olanak sağlar.</string>
     <string name="main_experimentalRpc">Deneysel RPC</string>
-    <string name="main_experimentalRpc_details">Deneysel RPC, sık sık Uygulama ve Medya RPC arasında değişen bir Kizzy özelliğidir.</string>
-    <string name="main_customRpc_details">Kizzy, Discord için tamamen özelleştirilebilir kendinize ait özel RPC oluşturmanıza olanak sağlar.</string>
+    <string name="main_experimentalRpc_details">Deneysel RPC, sık sık Uygulama ve Medya RPC arasında değişen bir axe özelliğidir.</string>
+    <string name="main_customRpc_details">axe, Discord için tamamen özelleştirilebilir kendinize ait özel RPC oluşturmanıza olanak sağlar.</string>
     <string name="main_comingSoon">Yakında</string>
     <string name="exit">Çıkış</string>
     <string name="logs">Kayıtlar</string>
@@ -129,7 +129,7 @@
     <string name="yes">Evet</string>
     <string name="user_profile_error">Kullanıcı Profili Güncellenemedi:</string>
     <string name="no_internet_user_profile">Ağ bağlantısı yok. Daha sonra tekrar dene.</string>
-    <string name="user_profile_rpc_name">KIZZY RICH PRESENCE KULLANIYOR</string>
+    <string name="user_profile_rpc_name">axe RICH PRESENCE KULLANIYOR</string>
     <string name="user_profile_bio">HAKKIMDA</string>
     <string name="user_profile_special_button">Özel Buton</string>
     <string name="user_profile">Kullanıcı Profili</string>

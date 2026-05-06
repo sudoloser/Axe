@@ -1,7 +1,7 @@
 plugins {
-    id ("kizzy.android.library")
+    id ("axe.android.library")
 }
 
 android {
-    namespace = "com.my.kizzy.resources"
+    namespace = "com.my.axe.resources"
 }

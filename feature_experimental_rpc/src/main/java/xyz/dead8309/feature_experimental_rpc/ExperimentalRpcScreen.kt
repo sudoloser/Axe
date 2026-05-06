@@ -53,20 +53,20 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.my.kizzy.data.rpc.TemplateKeys
-import com.my.kizzy.feature_rpc_base.AppUtils
-import com.my.kizzy.feature_rpc_base.services.AppDetectionService
-import com.my.kizzy.feature_rpc_base.services.CustomRpcService
-import com.my.kizzy.feature_rpc_base.services.ExperimentalRpc
-import com.my.kizzy.feature_rpc_base.services.MediaRpcService
-import com.my.kizzy.resources.R
-import com.my.kizzy.ui.components.BackButton
-import com.my.kizzy.ui.components.RpcFieldWithCompletions
-import com.my.kizzy.ui.components.SettingItem
-import com.my.kizzy.ui.components.Subtitle
-import com.my.kizzy.ui.components.SwitchBar
-import com.my.kizzy.ui.components.preference.PreferenceSwitch
-import com.my.kizzy.ui.components.preference.PreferencesHint
+import com.my.axe.data.rpc.TemplateKeys
+import com.my.axe.feature_rpc_base.AppUtils
+import com.my.axe.feature_rpc_base.services.AppDetectionService
+import com.my.axe.feature_rpc_base.services.CustomRpcService
+import com.my.axe.feature_rpc_base.services.ExperimentalRpc
+import com.my.axe.feature_rpc_base.services.MediaRpcService
+import com.my.axe.resources.R
+import com.my.axe.ui.components.BackButton
+import com.my.axe.ui.components.RpcFieldWithCompletions
+import com.my.axe.ui.components.SettingItem
+import com.my.axe.ui.components.Subtitle
+import com.my.axe.ui.components.SwitchBar
+import com.my.axe.ui.components.preference.PreferenceSwitch
+import com.my.axe.ui.components.preference.PreferencesHint
 
 private val completions = listOf(
     TemplateKeys.MEDIA_TITLE to R.string.completion_media_title,

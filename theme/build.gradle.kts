@@ -1,10 +1,10 @@
 plugins {
-    id ("kizzy.android.library")
-    id ("kizzy.android.library.compose")
+    id ("axe.android.library")
+    id ("axe.android.library.compose")
 }
 
 android {
-    namespace = "com.my.kizzy.ui.theme"
+    namespace = "com.my.axe.ui.theme"
 }
 
 dependencies {

@@ -9,15 +9,15 @@
 <img src="https://img.shields.io/badge/Minimum%20SDK-27-%23?&style=flat-square&color=5b5ef7">
 
 
-<img src="https://img.shields.io/github/downloads/dead8309/Kizzy/total?&style=flat-square&color=5b5ef7">
+<img src="https://img.shields.io/github/downloads/sudoloser/axe/total?&style=flat-square&color=5b5ef7">
 
 
-<a href="https://github.com/dead8309/Kizzy/releases/latest">
-<img alt="Release" src="https://img.shields.io/github/v/release/dead8309/Kizzy?&style=flat-square&color=5b5ef7&display_name=release">
+<a href="https://github.com/sudoloser/axe/releases/latest">
+<img alt="Release" src="https://img.shields.io/github/v/release/sudoloser/axe?&style=flat-square&color=5b5ef7&display_name=release">
 </a>
 
 
-<img src="https://img.shields.io/github/actions/workflow/status/dead8309/Kizzy/build.yml?branch=master?&style=flat-square&color=5b5ef7">
+<img src="https://img.shields.io/github/actions/workflow/status/sudoloser/axe/build.yml?branch=master?&style=flat-square&color=5b5ef7">
 
 
 <img src="https://img.shields.io/badge/kotlin-5b5ef7.svg?logo=kotlin&logoColor=white&style=flat-square">
@@ -57,7 +57,7 @@ Check out the Kizzy [QuickStart Guide](https://kizzydocs.vercel.app/quickstart/i
 
 ## Download
 > **Warning**
-> If you're thinking about downloading an Axe/Kizzy clone or app from any third-party service (other than the ones listed in our repository), think again! We can't be held responsible for any issues that may arise with your account as a result. Stay safe and stick to our trusted download links for the genuine app.
+> If you're thinking about downloading an Axe/axe clone or app from any third-party service (other than the ones listed in our repository), think again! We can't be held responsible for any issues that may arise with your account as a result. Stay safe and stick to our trusted download links for the genuine app.
 
 > **Warning**
 > This app uses the Discord Gateway connection. Use this at your own risk.
@@ -97,7 +97,7 @@ However people have been using custom rich presence for past 4-5 years and there
 - [x] Save/Load presence configs
 - [x] Material You theme
 - [x] Translations
-- [x] Easy [Setup](https://kizzydocs.vercel.app/quickstart/post_install) 
+- [x] Easy [Setup](https://axedocs.vercel.app/quickstart/post_install) 
 - [x] 300+ Predefined presets
 - [x] Create custom configs with your own images and links
 - [x] Preview RPC in the app itself
@@ -109,7 +109,7 @@ However people have been using custom rich presence for past 4-5 years and there
 
 ## Getting Started
 Read the Setup Guide from
-[![DOCS](https://kizzydocs.vercel.app/api/og?title=Kizzy+Docs)](https://kizzydocs.vercel.app)
+[![DOCS](https://kizzydocs.vercel.app/api/og?title=kizzy+Docs)](https://kizzydocs.vercel.app)
 
 
 
@@ -122,7 +122,7 @@ For building the app locally
 
 > Clone the project
 ```console
-git clone https://github.com/dead8309/Kizzy.git
+git clone https://github.com/sudoloser/Axe.git
 ```
 > Building
 - Open Android Studio

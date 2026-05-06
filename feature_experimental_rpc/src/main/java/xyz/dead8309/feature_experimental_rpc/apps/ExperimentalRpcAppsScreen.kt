@@ -73,11 +73,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmap
-import com.my.kizzy.data.rpc.Constants
-import com.my.kizzy.resources.R
-import com.my.kizzy.ui.components.BackButton
-import com.my.kizzy.ui.components.KSwitch
-import com.my.kizzy.ui.components.SearchBar
+import com.my.axe.data.rpc.Constants
+import com.my.axe.resources.R
+import com.my.axe.ui.components.BackButton
+import com.my.axe.ui.components.KSwitch
+import com.my.axe.ui.components.SearchBar
 import xyz.dead8309.feature_experimental_rpc.ExperimentalRpcViewmodel
 import xyz.dead8309.feature_experimental_rpc.UiEvent
 import xyz.dead8309.feature_experimental_rpc.UiState

@@ -21,8 +21,8 @@ class AndroidFeaturePlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
             pluginManager.apply {
-                apply("kizzy.android.library")
-                apply("kizzy.android.hilt")
+                apply("axe.android.library")
+                apply("axe.android.hilt")
             }
             val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")
 

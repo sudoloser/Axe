@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Kizzy</string>
+    <string name="app_name">axe</string>
 
     <!-- Activities -->
     <string name="activity_name">Tên hoạt động</string>
@@ -104,15 +104,15 @@
     <string name="hide_on_pause">Ẩn hoạt động khi dừng</string>
     <string name="idling_notification">Đang ngưng…</string>
     <string name="main_appDetection">Nhận diện Ứng dụng</string>
-    <string name="main_appDetection_details">Kizzy cho phép bạn chia sẻ ứng dụng bạn đang sử dụng bằng hoạt động Discord.</string>
+    <string name="main_appDetection_details">axe cho phép bạn chia sẻ ứng dụng bạn đang sử dụng bằng hoạt động Discord.</string>
     <string name="main_mediaRpc">RPC Trình Phát</string>
-    <string name="main_mediaRpc_details">Kizzy cho phép bạn chia sẻ hoạt động đa phương tiện của bạn, như bài hát bạn đang nghe hay video đang xem, lên Discord</string>
+    <string name="main_mediaRpc_details">axe cho phép bạn chia sẻ hoạt động đa phương tiện của bạn, như bài hát bạn đang nghe hay video đang xem, lên Discord</string>
     <string name="main_customRpc">RPC Tùy Chỉnh</string>
     <string name="main_consoleRpc">RPC Trò Chơi</string>
-    <string name="main_consoleRpc_details">Kizzy cho phép bạn sử dụng một vài cấu hình đã định sẵn để thêm vào hoạt động Discord.</string>
+    <string name="main_consoleRpc_details">axe cho phép bạn sử dụng một vài cấu hình đã định sẵn để thêm vào hoạt động Discord.</string>
     <string name="main_experimentalRpc">RPC Thử Nghiệm</string>
     <string name="main_experimentalRpc_details">RPC Thử Nghiệm là tính năng tự động chuyền đổi giữa Nhận diện ứng dụng và RPC trình phát.</string>
-    <string name="main_customRpc_details">Kizzy cho phép bạn tạo một hoạt động tùy chỉnh cho Discord.</string>
+    <string name="main_customRpc_details">axe cho phép bạn tạo một hoạt động tùy chỉnh cho Discord.</string>
     <string name="main_comingSoon">Sắp Ra Mắt</string>
     <string name="exit">Thoát</string>
     <string name="logs">Log</string>
@@ -129,7 +129,7 @@
     <string name="yes">Có</string>
     <string name="user_profile_error">Không thể hiện hồ sơ người dùng:</string>
     <string name="no_internet_user_profile">Không thể kết nối Internet. Thử lại sau.</string>
-    <string name="user_profile_rpc_name">ĐANG SỬ DỤNG HOẠT ĐỘNG KIZZY</string>
+    <string name="user_profile_rpc_name">ĐANG SỬ DỤNG HOẠT ĐỘNG axe</string>
     <string name="user_profile_bio">GIỚI THIỆU VỀ TÔI</string>
     <string name="user_profile_special_button">Nút đặc biệt</string>
     <string name="user_profile">Hồ sơ Người dùng</string>

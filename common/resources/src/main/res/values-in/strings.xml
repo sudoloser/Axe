@@ -1,6 +1,6 @@
 <resources>
-    <string name="app_name">Kizzy</string>
-    <string name="qs_tile_label" translatable="false">Kizzy Quickie</string>
+    <string name="app_name">axe</string>
+    <string name="qs_tile_label" translatable="false">axe Quickie</string>
 
     <!-- Activities -->
     <string name="activity_name">Nama Aktivitas</string>
@@ -105,15 +105,15 @@
     <string name="hide_on_pause">Sembunyikan RPC saat Pause</string>
     <string name="idling_notification">Sedang Idle…</string>
     <string name="main_appDetection">Deteksi Aplikasi</string>
-    <string name="main_appDetection_details">Kizzy memungkinkan Anda untuk membagikan aktivitas Anda saat ini di Discord dengan mendeteksi aplikasi apa yang Anda gunakan di perangkat Anda.</string>
+    <string name="main_appDetection_details">axe memungkinkan Anda untuk membagikan aktivitas Anda saat ini di Discord dengan mendeteksi aplikasi apa yang Anda gunakan di perangkat Anda.</string>
     <string name="main_mediaRpc">Media RPC</string>
-    <string name="main_mediaRpc_details">Kizzy memungkinkan Anda untuk membagikan aktivitas media Anda saat ini di Discord, seperti lagu atau video yang sedang Anda dengarkan atau tonton.</string>
+    <string name="main_mediaRpc_details">axe memungkinkan Anda untuk membagikan aktivitas media Anda saat ini di Discord, seperti lagu atau video yang sedang Anda dengarkan atau tonton.</string>
     <string name="main_customRpc">Custom RPC</string>
     <string name="main_consoleRpc">Console RPC</string>
-    <string name="main_consoleRpc_details">Kizzy memungkinkan Anda untuk menggunakan beberapa preset bawaan untuk mengatur presence Anda di Discord.</string>
+    <string name="main_consoleRpc_details">axe memungkinkan Anda untuk menggunakan beberapa preset bawaan untuk mengatur presence Anda di Discord.</string>
     <string name="main_experimentalRpc">Experimental RPC</string>
-    <string name="main_experimentalRpc_details">Experimental RPC adalah fitur di Kizzy yang dapat beralih secara konstan antara Apps RPC dan Media RPC.</string>
-    <string name="main_customRpc_details">Kizzy memungkinkan Anda untuk membuat rich presence sendiri yang dapat dikustomisasi sepenuhnya.</string>
+    <string name="main_experimentalRpc_details">Experimental RPC adalah fitur di axe yang dapat beralih secara konstan antara Apps RPC dan Media RPC.</string>
+    <string name="main_customRpc_details">axe memungkinkan Anda untuk membuat rich presence sendiri yang dapat dikustomisasi sepenuhnya.</string>
     <string name="main_comingSoon">Segera Hadir</string>
     <string name="exit">Keluar</string>
     <string name="logs">Log</string>
@@ -130,7 +130,7 @@
     <string name="yes">Ya</string>
     <string name="user_profile_error">Gagal Update Profil:</string>
     <string name="no_internet_user_profile">Tidak ada koneksi internet. Coba lagi nanti.</string>
-    <string name="user_profile_rpc_name">MENGGUNAKAN KIZZY RICH PRESENCE</string>
+    <string name="user_profile_rpc_name">MENGGUNAKAN axe RICH PRESENCE</string>
     <string name="user_profile_bio">TENTANG SAYA</string>
     <string name="user_profile_special_button">Tombol Spesial</string>
     <string name="user_profile">Profil Pengguna</string>

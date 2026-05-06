@@ -21,27 +21,27 @@ dependencies {
 gradlePlugin {
     plugins {
         register("androidApplicationCompose") {
-            id = "kizzy.android.application.compose"
+            id = "axe.android.application.compose"
             implementationClass = "AndroidApplicationComposePlugin"
         }
         register("androidApplication") {
-            id = "kizzy.android.application"
+            id = "axe.android.application"
             implementationClass = "AndroidApplicationPlugin"
         }
         register("androidLibraryCompose") {
-            id = "kizzy.android.library.compose"
+            id = "axe.android.library.compose"
             implementationClass = "AndroidLibraryComposePlugin"
         }
         register("androidLibrary") {
-            id = "kizzy.android.library"
+            id = "axe.android.library"
             implementationClass = "AndroidLibraryPlugin"
         }
         register("androidFeature") {
-            id = "kizzy.android.feature"
+            id = "axe.android.feature"
             implementationClass = "AndroidFeaturePlugin"
         }
         register("androidHilt") {
-            id = "kizzy.android.hilt"
+            id = "axe.android.hilt"
             implementationClass = "AndroidHiltPlugin"
         }
     }

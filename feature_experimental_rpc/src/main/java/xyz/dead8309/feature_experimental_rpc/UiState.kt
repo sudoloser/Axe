@@ -12,7 +12,7 @@
 
 package xyz.dead8309.feature_experimental_rpc
 
-import com.my.kizzy.data.utils.AppsInfo
+import com.my.axe.data.utils.AppsInfo
 
 data class UiState(
     val isLoading: Boolean = false,
