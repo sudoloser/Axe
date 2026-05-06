@@ -17,7 +17,7 @@ import com.my.axe.domain.model.release.Release
 import com.my.axe.domain.model.user.User
 import java.io.File
 
-interface axeRepository {
+interface AxeRepository {
     suspend fun getImage(url: String): String?
     suspend fun uploadImage(file: File): String?
     suspend fun getGames(): List<Game>

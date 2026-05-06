@@ -14,19 +14,19 @@ package com.my.axe.domain.use_case.get_contributors
 
 import com.my.axe.domain.model.Contributor
 import com.my.axe.domain.model.Resource
-import com.my.axe.domain.repository.axeRepository
+import com.my.axe.domain.repository.AxeRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import java.io.IOException
 import javax.inject.Inject
 
 class GetContributorsUseCase @Inject constructor(
-    private val axeRepository: axeRepository
+    private val AxeRepository: AxeRepository
 ) {
     operator fun invoke(): Flow<Resource<List<Contributor>>> = flow {
         try {
             emit(Resource.Loading())
-            val contributors = axeRepository.getContributors()
+            val contributors = AxeRepository.getContributors()
             emit(Resource.Success(contributors))
         } catch (e: IOException) {
             emit(Resource.Error("Couldn't reach server. Check your internet connection."))

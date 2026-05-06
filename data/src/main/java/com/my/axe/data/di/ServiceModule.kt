@@ -12,9 +12,9 @@
 
 package com.my.axe.data.di
 
-import com.my.axe.data.rpc.axeRPC
+import com.my.axe.data.rpc.AxeRPC
 import com.my.axe.domain.interfaces.Logger
-import com.my.axe.domain.repository.axeRepository
+import com.my.axe.domain.repository.AxeRepository
 import com.my.axe.preference.Prefs
 import dagger.Module
 import dagger.Provides
@@ -36,11 +36,11 @@ object ServiceModule {
         DiscordWebSocketImpl(Prefs[Prefs.TOKEN, ""], logger)
 
     @Provides
-    fun provideaxeRpc(
-        axeRepository: axeRepository,
+    fun provideAxeRpc(
+        axeRepository: AxeRepository,
         discordWebSocket: DiscordWebSocket,
         logger: Logger
-    ) = axeRPC(Prefs[Prefs.TOKEN, ""], axeRepository, discordWebSocket, logger)
+    ) = AxeRPC(Prefs[Prefs.TOKEN, ""], axeRepository, discordWebSocket, logger)
 
     @Provides
     fun providesCoroutineScope(): CoroutineScope {

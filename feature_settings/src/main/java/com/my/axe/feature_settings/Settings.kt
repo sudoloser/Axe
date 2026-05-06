@@ -42,7 +42,7 @@ import com.my.axe.ui.components.chips
 @Composable
 fun SettingsDrawer(
     user: User?,
-    showaxeQuickieRequestItem: Boolean,
+    showAxeQuickieRequestItem: Boolean,
     componentName: ComponentName,
     navigateToProfile: () -> Unit,
     navigateToStyleAndAppearance: () -> Unit,
@@ -55,7 +55,7 @@ fun SettingsDrawer(
     Surface(
         modifier = Modifier
             .fillMaxHeight()
-            .width(300.dp)
+            .width(260.dp)
     ) {
         Column(
             modifier = Modifier.padding(15.dp)
@@ -151,7 +151,7 @@ fun SettingsDrawer(
                 }
                 item {
                     RequestQsTile(
-                        visible = showaxeQuickieRequestItem,
+                        visible = showAxeQuickieRequestItem,
                         componentName = componentName
                     )
                 }

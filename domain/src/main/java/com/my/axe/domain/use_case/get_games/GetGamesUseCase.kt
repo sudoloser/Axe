@@ -14,19 +14,19 @@ package com.my.axe.domain.use_case.get_games
 
 import com.my.axe.domain.model.Resource
 import com.my.axe.domain.model.Game
-import com.my.axe.domain.repository.axeRepository
+import com.my.axe.domain.repository.AxeRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import java.io.IOException
 import javax.inject.Inject
 
 class GetGamesUseCase @Inject constructor(
-    private val axeRepository: axeRepository
+    private val AxeRepository: AxeRepository
 ) {
     operator fun invoke(): Flow<Resource<List<Game>>> = flow {
         try {
             emit(Resource.Loading())
-            val games = axeRepository.getGames()
+            val games = AxeRepository.getGames()
             emit(Resource.Success(games))
         } catch (e: IOException) {
             emit(Resource.Error("Couldn't reach server. Check your internet connection."))

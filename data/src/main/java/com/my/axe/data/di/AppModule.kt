@@ -19,8 +19,8 @@ import com.my.axe.data.remote.Discord
 import com.my.axe.data.remote.Github
 import com.my.axe.data.remote.Imgur
 import com.my.axe.data.remote.ImgurApiService
-import com.my.axe.data.repository.axeRepositoryImpl
-import com.my.axe.domain.repository.axeRepository
+import com.my.axe.data.repository.AxeRepositoryImpl
+import com.my.axe.domain.repository.AxeRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -93,10 +93,10 @@ object AppModule {
     }
 
     @Provides
-    fun providesaxeRepository(
+    fun provideAxeRepository(
         apiService: ApiService,
         imgurApiService: ImgurApiService
-    ): axeRepository {
-        return axeRepositoryImpl(apiService, imgurApiService)
+    ): AxeRepository {
+        return AxeRepositoryImpl(apiService, imgurApiService)
     }
 }

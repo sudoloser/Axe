@@ -29,7 +29,7 @@ import com.my.axe.data.get_current_data.app.GetCurrentlyRunningApp
 import com.my.axe.data.get_current_data.media.GetCurrentPlayingMediaAll
 import com.my.axe.data.get_current_data.media.RichMediaMetadata
 import com.my.axe.data.rpc.CommonRpc
-import com.my.axe.data.rpc.axeRPC
+import com.my.axe.data.rpc.AxeRPC
 import com.my.axe.data.rpc.RpcImage
 import com.my.axe.data.rpc.TemplateKeys
 import com.my.axe.data.rpc.TemplateProcessor
@@ -61,7 +61,7 @@ class ExperimentalRpc : Service() {
     lateinit var scope: CoroutineScope
 
     @Inject
-    lateinit var axeRPC: axeRPC
+    lateinit var AxeRPC: AxeRPC
 
     @Inject
     lateinit var getCurrentPlayingMediaAll: GetCurrentPlayingMediaAll
@@ -232,8 +232,8 @@ class ExperimentalRpc : Service() {
         ) {
             if (useAppsRpc) {
                 startAppDetectionCoroutine()
-            } else if (axeRPC.isRpcRunning()) {
-                axeRPC.closeRPC()
+            } else if (AxeRPC.isRpcRunning()) {
+                AxeRPC.closeRPC()
                 notificationManager.notify(
                     Constants.NOTIFICATION_ID, notificationBuilder
                         .setContentTitle(getString(R.string.service_enabled))
@@ -301,8 +301,8 @@ class ExperimentalRpc : Service() {
                 if (Prefs[Prefs.EXPERIMENTAL_RPC_ENABLE_TIMESTAMPS, true]) appInfo?.time else null
         } else {
             logger.d(TAG, "No active context (App or Media) or both disabled.")
-            if (axeRPC.isRpcRunning()) {
-                axeRPC.closeRPC()
+            if (AxeRPC.isRpcRunning()) {
+                AxeRPC.closeRPC()
             }
             return
         }
@@ -310,10 +310,10 @@ class ExperimentalRpc : Service() {
         val rpcDataIsEmpty =
             finalName.isNullOrEmpty() && finalDetails.isNullOrEmpty() && finalState.isNullOrEmpty()
 
-        if (axeRPC.isRpcRunning()) {
+        if (AxeRPC.isRpcRunning()) {
             if (rpcDataIsEmpty) {
                 logger.d(TAG, "Calculated RPC data is empty, stopping RPC.")
-                axeRPC.closeRPC()
+                AxeRPC.closeRPC()
                 notificationManager.notify(
                     Constants.NOTIFICATION_ID, notificationBuilder
                         .setContentTitle(getString(R.string.service_enabled))
@@ -323,7 +323,7 @@ class ExperimentalRpc : Service() {
                 return
             }
 
-            axeRPC.updateRPC(
+            AxeRPC.updateRPC(
                 commonRpc = CommonRpc(
                     name = finalName ?: "",
                     type = appActivityTypes[effectivePackageName] ?: 0,
@@ -352,7 +352,7 @@ class ExperimentalRpc : Service() {
                 return
             }
 
-            axeRPC.apply {
+            AxeRPC.apply {
                 setName(finalName)
                 setType(appActivityTypes[effectivePackageName] ?: 0)
                 setStatus(Prefs[Prefs.CUSTOM_ACTIVITY_STATUS, "dnd"])
@@ -503,7 +503,7 @@ class ExperimentalRpc : Service() {
         mediaSessionManager.removeOnActiveSessionsChangedListener(::activeSessionsListener)
         currentMediaController?.unregisterCallback(mediaControllerCallback)
         scope.cancel()
-        axeRPC.closeRPC()
+        AxeRPC.closeRPC()
         super.onDestroy()
     }
 

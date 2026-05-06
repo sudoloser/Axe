@@ -12,17 +12,17 @@
 
 package com.my.axe.domain.use_case.upload_galleryImage
 
-import com.my.axe.domain.repository.axeRepository
+import com.my.axe.domain.repository.AxeRepository
 import java.io.File
 import javax.inject.Inject
 
 class UploadGalleryImageUseCase @Inject constructor(
-    private val axeRepository: axeRepository
+    private val AxeRepository: AxeRepository
 ) {
     suspend operator fun invoke(file: File): String? {
         return try {
             file.deleteOnExit()
-            axeRepository.uploadImage(file)
+            AxeRepository.uploadImage(file)
         } catch (ex: Exception) {
             null
         }

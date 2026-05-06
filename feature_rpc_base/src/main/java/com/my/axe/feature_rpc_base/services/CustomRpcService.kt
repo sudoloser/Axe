@@ -38,7 +38,7 @@ class CustomRpcService : Service() {
     private var wakeLock: WakeLock? = null
 
     @Inject
-    lateinit var axeRPC: com.my.axe.data.rpc.axeRPC
+    lateinit var AxeRPC: com.my.axe.data.rpc.AxeRPC
 
     @Inject
     lateinit var scope: CoroutineScope
@@ -92,7 +92,7 @@ class CustomRpcService : Service() {
                         .build()
                 )
 
-                axeRPC.apply {
+                AxeRPC.apply {
                     rpcData?.let {
                         setName(it.name.ifEmpty { "" })
                         setDetails(it.details.ifEmpty { null })
@@ -120,7 +120,7 @@ class CustomRpcService : Service() {
 
     override fun onDestroy() {
         scope.cancel()
-        axeRPC.closeRPC()
+        AxeRPC.closeRPC()
         wakeLock?.let {
             if (it.isHeld) it.release()
         }

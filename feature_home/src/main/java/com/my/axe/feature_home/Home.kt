@@ -134,11 +134,11 @@ fun Home(
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
-            ModalDrawerSheet(modifier = Modifier.width(300.dp)) {
+            ModalDrawerSheet(modifier = Modifier.width(260.dp)) {
                 if (componentName != null) {
                     SettingsDrawer(
                         user = user,
-                        showaxeQuickieRequestItem = !axeTileService.tileAdded.value,
+                        showAxeQuickieRequestItem = !axeTileService.tileAdded.value,
                         componentName = componentName,
                         navigateToProfile = navigateToProfile,
                         navigateToStyleAndAppearance = navigateToStyleAndAppearance,

@@ -28,7 +28,7 @@ import com.my.axe.feature_rpc_base.AppUtils
 import com.my.axe.preference.Prefs
 import com.my.axe.resources.R
 
-class axeTileService : TileService() {
+class AxeTileService : TileService() {
     override fun onClick() {
         super.onClick()
         val ctx = this

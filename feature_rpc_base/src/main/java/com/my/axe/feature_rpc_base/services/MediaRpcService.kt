@@ -26,7 +26,7 @@ import android.os.IBinder
 import android.os.PowerManager
 import android.os.PowerManager.WakeLock
 import com.my.axe.data.get_current_data.media.GetCurrentPlayingMedia
-import com.my.axe.data.rpc.axeRPC
+import com.my.axe.data.rpc.AxeRPC
 import com.my.axe.domain.interfaces.Logger
 import com.my.axe.domain.model.rpc.RpcButtons
 import com.my.axe.feature_rpc_base.Constants
@@ -45,7 +45,7 @@ import javax.inject.Inject
 class MediaRpcService : Service() {
 
     @Inject
-    lateinit var axeRPC: axeRPC
+    lateinit var AxeRPC: AxeRPC
 
     @Inject
     lateinit var scope: CoroutineScope
@@ -127,20 +127,20 @@ class MediaRpcService : Service() {
 
         val rpcButtonsString = Prefs[Prefs.RPC_BUTTONS_DATA, "{}"]
         val rpcButtons = Json.decodeFromString<RpcButtons>(rpcButtonsString)
-        when (axeRPC.isRpcRunning()) {
+        when (AxeRPC.isRpcRunning()) {
             true -> {
                 if (playingMedia.name.isBlank()) {
                     logger.d("MediaRPC", "Updating RPC with empty data, stopping RPC")
-                    axeRPC.closeRPC()
+                    AxeRPC.closeRPC()
                 }
-                axeRPC.updateRPC(playingMedia, enableTimestamps)
+                AxeRPC.updateRPC(playingMedia, enableTimestamps)
             }
             false -> {
                 if (playingMedia.name.isBlank()) {
                     logger.d("MediaRPC", "Skipping RPC update with empty data")
                     return
                 }
-                axeRPC.apply {
+                AxeRPC.apply {
                     setName(playingMedia.name)
                     setType(Prefs[Prefs.CUSTOM_ACTIVITY_TYPE, 0])
                     setDetails(playingMedia.details)
@@ -238,7 +238,7 @@ class MediaRpcService : Service() {
         mediaSessionManager.removeOnActiveSessionsChangedListener(::activeSessionsListener)
         currentMediaController?.unregisterCallback(mediaControllerCallback)
         scope.cancel()
-        axeRPC.closeRPC()
+        AxeRPC.closeRPC()
         wakeLock?.let {
             if (it.isHeld) it.release()
         }

@@ -14,7 +14,7 @@ package com.my.axe.data.rpc
 
 import android.content.Context
 import android.graphics.Bitmap
-import com.my.axe.domain.repository.axeRepository
+import com.my.axe.domain.repository.AxeRepository
 import com.my.axe.preference.Prefs
 import com.my.axe.data.utils.getAppInfo
 import com.my.axe.data.utils.toBitmap
@@ -24,16 +24,16 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 sealed class RpcImage {
-    abstract suspend fun resolveImage(repository: axeRepository): String?
+    abstract suspend fun resolveImage(repository: AxeRepository): String?
 
     class DiscordImage(val image: String) : RpcImage() {
-        override suspend fun resolveImage(repository: axeRepository): String {
+        override suspend fun resolveImage(repository: AxeRepository): String {
             return "mp:${image}"
         }
     }
 
     class ExternalImage(val image: String) : RpcImage() {
-        override suspend fun resolveImage(repository: axeRepository): String? {
+        override suspend fun resolveImage(repository: AxeRepository): String? {
             return repository.getImage(image)
         }
     }
@@ -42,7 +42,7 @@ sealed class RpcImage {
         val data = Prefs[Prefs.SAVED_IMAGES, "{}"]
         private val savedImages: HashMap<String, String> = Json.decodeFromString(data)
 
-        override suspend fun resolveImage(repository: axeRepository): String? {
+        override suspend fun resolveImage(repository: AxeRepository): String? {
             return if (savedImages.containsKey(packageName))
                 savedImages[packageName]
             else
@@ -52,7 +52,7 @@ sealed class RpcImage {
         private suspend fun retrieveImageFromApi(
             packageName: String,
             context: Context,
-            repository: axeRepository,
+            repository: AxeRepository,
         ): String? {
             val applicationInfo = context.getAppInfo(packageName)
             val bitmap = applicationInfo.toBitmap(context)
@@ -71,7 +71,7 @@ sealed class RpcImage {
         private val packageName: String,
         val title: String,
     ) : RpcImage() {
-        override suspend fun resolveImage(repository: axeRepository): String? {
+        override suspend fun resolveImage(repository: AxeRepository): String? {
             val data = Prefs[Prefs.SAVED_ARTWORK, "{}"]
             val schema = "${this.packageName}:${this.title}"
             val savedImages = Json.decodeFromString<HashMap<String, String>>(data)

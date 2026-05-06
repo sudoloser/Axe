@@ -119,7 +119,7 @@
             android:exported="false"/>
 
         <service
-            android:name=".feature_rpc_base.services.axeTileService"
+            android:name=".feature_rpc_base.services.AxeTileService"
             android:icon="@drawable/ic_tile_play"
             android:label="@string/qs_tile_label"
             android:permission="android.permission.BIND_QUICK_SETTINGS_TILE"

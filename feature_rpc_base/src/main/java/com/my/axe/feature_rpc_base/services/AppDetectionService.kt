@@ -25,7 +25,7 @@ import android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK
 import android.os.Build
 import android.os.IBinder
 import com.blankj.utilcode.util.AppUtils
-import com.my.axe.data.rpc.axeRPC
+import com.my.axe.data.rpc.AxeRPC
 import com.my.axe.data.rpc.RpcImage
 import com.my.axe.domain.model.rpc.RpcButtons
 import com.my.axe.feature_rpc_base.Constants
@@ -47,7 +47,7 @@ import javax.inject.Inject
 class AppDetectionService : Service() {
 
     @Inject
-    lateinit var axeRPC: axeRPC
+    lateinit var AxeRPC: AxeRPC
 
     @Inject
     lateinit var scope: CoroutineScope
@@ -78,7 +78,7 @@ class AppDetectionService : Service() {
 
     override fun onDestroy() {
         scope.cancel()
-        axeRPC.closeRPC()
+        AxeRPC.closeRPC()
         super.onDestroy()
     }
 
@@ -167,8 +167,8 @@ class AppDetectionService : Service() {
     }
 
     private suspend fun handleEnabledPackage(packageName: String, rpcButtons: RpcButtons) {
-        if (!axeRPC.isRpcRunning()) {
-            axeRPC.apply {
+        if (!AxeRPC.isRpcRunning()) {
+            AxeRPC.apply {
                 setName(AppUtils.getAppName(packageName))
                 setStartTimestamps(System.currentTimeMillis())
                 setStatus(Prefs[Prefs.CUSTOM_ACTIVITY_STATUS, "dnd"])
@@ -196,8 +196,8 @@ class AppDetectionService : Service() {
     }
 
     private fun handleDisabledPackage() {
-        if (axeRPC.isRpcRunning()) {
-            axeRPC.closeRPC()
+        if (AxeRPC.isRpcRunning()) {
+            AxeRPC.closeRPC()
         }
         notificationManager.notify(Constants.NOTIFICATION_ID, createDefaultNotification())
     }

@@ -181,6 +181,12 @@ fun Appearance(
                     )
                 }
             }
+            Text(
+                text = "Experimental: It is not recommended to change this setting.",
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
         }
     }
 }

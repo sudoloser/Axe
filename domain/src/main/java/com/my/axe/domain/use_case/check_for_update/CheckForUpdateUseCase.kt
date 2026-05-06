@@ -14,13 +14,13 @@ package com.my.axe.domain.use_case.check_for_update
 
 import com.my.axe.domain.model.Resource
 import com.my.axe.domain.model.release.Release
-import com.my.axe.domain.repository.axeRepository
+import com.my.axe.domain.repository.AxeRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class CheckForUpdateUseCase @Inject constructor(
-    private val repository: axeRepository
+    private val repository: AxeRepository
 ) {
     operator fun invoke(): Flow<Resource<Release>> = flow {
         try {

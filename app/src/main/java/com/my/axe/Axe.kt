@@ -49,7 +49,7 @@ import com.my.axe.feature_profile.ui.login.LoginScreen
 import com.my.axe.feature_profile.ui.user.UserScreen
 import com.my.axe.feature_profile.ui.user.UserViewModel
 import com.my.axe.feature_rpc_base.AppUtils
-import com.my.axe.feature_rpc_base.services.axeTileService
+import com.my.axe.feature_rpc_base.services.AxeTileService
 import com.my.axe.feature_settings.language.Language
 import com.my.axe.feature_settings.rpc_settings.RpcSettings
 import com.my.axe.feature_settings.style.Appearance
@@ -122,7 +122,7 @@ internal fun ComponentActivity.axe(
                         userVerified = user?.verified == true
                     ),
                     user = user,
-                    componentName = ComponentName(ctx, axeTileService::class.java),
+                    componentName = ComponentName(ctx, AxeTileService::class.java),
                     navigateToProfile = {
                         navController.navigate(Routes.PROFILE)
                     },

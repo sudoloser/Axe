@@ -13,11 +13,10 @@
 package com.my.axe.data
 
 import com.my.axe.data.remote.ApiService
-import com.my.axe.data.remote.Imgur
 import com.my.axe.data.remote.ImgurApiService
-import com.my.axe.data.repository.axeRepositoryImpl
+import com.my.axe.data.repository.AxeRepositoryImpl
 import com.my.axe.data.rpc.Constants
-import com.my.axe.domain.repository.axeRepository
+import com.my.axe.domain.repository.AxeRepository
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -32,10 +31,10 @@ import org.junit.Before
 import org.junit.Test
 import java.io.File
 
-class axeRepositoryTest {
+class AxeRepositoryTest {
     private lateinit var apiService: ApiService
     private lateinit var imgurService: ImgurApiService
-    private lateinit var axeRepository: axeRepository
+    private lateinit var axeRepository: AxeRepository
     @Before
     fun setup() {
         val client = setupClient()
@@ -49,7 +48,7 @@ class axeRepositoryTest {
             discordBaseUrl = BuildConfig.DISCORD_API_BASE_URL,
             imgurBaseUrl = BuildConfig.IMGUR_API_BASE_URL,
         )
-        axeRepository = axeRepositoryImpl(apiService,imgurService)
+        axeRepository = AxeRepositoryImpl(apiService,imgurService)
     }
 
     private fun setupClient(): HttpClient = HttpClient(CIO) {

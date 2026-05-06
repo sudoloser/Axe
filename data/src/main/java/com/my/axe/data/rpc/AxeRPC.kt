@@ -13,7 +13,7 @@
 package com.my.axe.data.rpc
 
 import com.my.axe.domain.interfaces.Logger
-import com.my.axe.domain.repository.axeRepository
+import com.my.axe.domain.repository.AxeRepository
 import com.my.axe.preference.Prefs
 import com.my.axe.preference.Prefs.CUSTOM_ACTIVITY_TYPE
 import axe.gateway.DiscordWebSocket
@@ -25,9 +25,9 @@ import axe.gateway.entities.presence.Presence
 import axe.gateway.entities.presence.Timestamps
 import kotlinx.coroutines.isActive
 
-class axeRPC(
+class AxeRPC(
     private val token: String,
-    private val axeRepository: axeRepository,
+    private val axeRepository: AxeRepository,
     private val discordWebSocket: DiscordWebSocket,
     private val logger: Logger
 ) {
@@ -79,7 +79,7 @@ class axeRPC(
      * @param activity_name
      * @return
      */
-    fun setName(activity_name: String?): axeRPC {
+    fun setName(activity_name: String?): AxeRPC {
         this.activityName = activity_name
         return this
     }
@@ -90,7 +90,7 @@ class axeRPC(
      * @param details
      * @return
      */
-    fun setDetails(details: String?): axeRPC {
+    fun setDetails(details: String?): AxeRPC {
         this.details = details
         return this
     }
@@ -101,7 +101,7 @@ class axeRPC(
      * @param state
      * @return
      */
-    fun setState(state: String?): axeRPC {
+    fun setState(state: String?): AxeRPC {
         this.state = state
         return this
     }
@@ -113,7 +113,7 @@ class axeRPC(
      * @param max Max party size
      * @return
      */
-    fun setPartySize(current: Int?, max: Int?): axeRPC {
+    fun setPartySize(current: Int?, max: Int?): AxeRPC {
         if (current != null && max != null) {
             this.party = Party(
                 id = "axe",
@@ -131,7 +131,7 @@ class axeRPC(
      * @param large_image
      * @return
      */
-    fun setLargeImage(large_image: RpcImage?, large_text: String? = null): axeRPC {
+    fun setLargeImage(large_image: RpcImage?, large_text: String? = null): AxeRPC {
         this.largeText = large_text.takeIf { !it.isNullOrEmpty() }
         this.largeImage = large_image
         return this
@@ -143,7 +143,7 @@ class axeRPC(
      * @param small_image
      * @return
      */
-    fun setSmallImage(small_image: RpcImage?, small_text: String? = null): axeRPC {
+    fun setSmallImage(small_image: RpcImage?, small_text: String? = null): AxeRPC {
         this.smallText = small_text.takeIf { !it.isNullOrEmpty() }
         this.smallImage = small_image
         return this
@@ -155,7 +155,7 @@ class axeRPC(
      * @param start_timestamps
      * @return
      */
-    fun setStartTimestamps(start_timestamps: Long?): axeRPC {
+    fun setStartTimestamps(start_timestamps: Long?): AxeRPC {
         this.startTimestamps = start_timestamps
         return this
     }
@@ -166,7 +166,7 @@ class axeRPC(
      * @param stop_timestamps
      * @return
      */
-    fun setStopTimestamps(stop_timestamps: Long?): axeRPC {
+    fun setStopTimestamps(stop_timestamps: Long?): AxeRPC {
         this.stopTimestamps = stop_timestamps
         return this
     }
@@ -183,7 +183,7 @@ class axeRPC(
      * @return
      */
 
-    fun setType(type: Int): axeRPC {
+    fun setType(type: Int): AxeRPC {
         if (type in 0..5)
             this.type = type
         else this.type = 0
@@ -195,7 +195,7 @@ class axeRPC(
      * @param status
      * @return
      */
-    fun setStatus(status: String?): axeRPC {
+    fun setStatus(status: String?): AxeRPC {
         this.status = status
         return this
     }
@@ -205,7 +205,7 @@ class axeRPC(
      * @param platform
      * @return
      */
-    fun setPlatform(platform: String?): axeRPC {
+    fun setPlatform(platform: String?): AxeRPC {
         this.platform = platform
         return this
     }
@@ -215,7 +215,7 @@ class axeRPC(
      * @param button1_Text
      * @return
      */
-    fun setButton1(button1_Text: String?): axeRPC {
+    fun setButton1(button1_Text: String?): AxeRPC {
         button1_Text?.let { buttons.add(it) }
         return this
     }
@@ -225,7 +225,7 @@ class axeRPC(
      * @param button2_text
      * @return
      */
-    fun setButton2(button2_text: String?): axeRPC {
+    fun setButton2(button2_text: String?): AxeRPC {
         button2_text?.let { buttons.add(it) }
         return this
     }
@@ -235,7 +235,7 @@ class axeRPC(
      * @param url
      * @return
      */
-    fun setButton1URL(url: String?): axeRPC {
+    fun setButton1URL(url: String?): AxeRPC {
         url?.let { buttonUrl.add(it) }
         return this
     }
@@ -245,7 +245,7 @@ class axeRPC(
      * @param url
      * @return
      */
-    fun setButton2URL(url: String?): axeRPC {
+    fun setButton2URL(url: String?): AxeRPC {
         url?.let { buttonUrl.add(it) }
         return this
     }
@@ -254,7 +254,7 @@ class axeRPC(
      * @param url The streaming type currently only supports Twitch and YouTube.
      * Only https://twitch.tv/ and https://youtube.com/ urls will work
      */
-    fun setStreamUrl(url: String?): axeRPC {
+    fun setStreamUrl(url: String?): AxeRPC {
         this.url = url
         return this
     }

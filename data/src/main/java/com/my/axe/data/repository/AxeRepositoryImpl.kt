@@ -24,17 +24,17 @@ import com.my.axe.domain.model.Contributor
 import com.my.axe.domain.model.Game
 import com.my.axe.domain.model.release.Release
 import com.my.axe.domain.model.user.User
-import com.my.axe.domain.repository.axeRepository
+import com.my.axe.domain.repository.AxeRepository
 import com.my.axe.preference.Prefs
 import io.ktor.client.call.body
 import io.ktor.client.statement.HttpResponse
 import java.io.File
 import javax.inject.Inject
 
-class axeRepositoryImpl @Inject constructor(
+class AxeRepositoryImpl @Inject constructor(
     private val api: ApiService,
     private val imgurApi: ImgurApiService,
-) : axeRepository {
+) : AxeRepository {
 
     override suspend fun getImage(url: String): String? {
         return if (Prefs[Prefs.USE_IMGUR, false]) {
