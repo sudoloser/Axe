@@ -14,6 +14,7 @@ package com.my.axe.feature_home.feature
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
 
 data class HomeFeature(
@@ -24,7 +25,7 @@ data class HomeFeature(
     val onClick: (String) -> Unit = {},
     val onCheckedChange: (Boolean) -> Unit = {},
     val showSwitch: Boolean = true,
-    val shape: RoundedCornerShape = RoundedCornerShape(0.dp),
+    val shape: Shape = RoundedCornerShape(0.dp),
     val tooltipText: String = "",
     val featureDocsLink: String = ""
 )
