@@ -19,7 +19,7 @@ data class Chips(
     val url: String
 )
 
-val chipsList = listOf<Chips>()
+val chips = listOf<Chips>()
 @Composable
 fun ChipSection() {
     val uriHandler = LocalUriHandler.current
