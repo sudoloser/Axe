@@ -51,7 +51,10 @@ fun KTextField(
     OutlinedTextField(
         modifier = Modifier.focusRequester(focusRequester),
         colors = OutlinedTextFieldDefaults.colors(
-            containerColor = Color.Transparent,
+            focusedContainerColor = Color.Transparent,
+            unfocusedContainerColor = Color.Transparent,
+            disabledContainerColor = Color.Transparent,
+            errorContainerColor = Color.Transparent,
         ),
         maxLines = 1,
         enabled = !readOnly,
