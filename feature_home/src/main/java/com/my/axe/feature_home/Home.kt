@@ -74,7 +74,7 @@ import com.my.axe.domain.model.user.User
 import com.my.axe.feature_home.feature.Features
 import com.my.axe.feature_home.feature.HomeFeature
 import com.my.axe.feature_home.feature.ToolTipContent
-import com.my.axe.feature_rpc_base.services.axeTileService
+import com.my.axe.feature_rpc_base.services.AxeTileService
 import com.my.axe.feature_settings.SettingsDrawer
 import com.my.axe.preference.AppSettingsStateFlow
 import com.my.axe.resources.R
@@ -138,7 +138,7 @@ fun Home(
                 if (componentName != null) {
                     SettingsDrawer(
                         user = user,
-                        showAxeQuickieRequestItem = !axeTileService.tileAdded.value,
+                        showAxeQuickieRequestItem = !AxeTileService.tileAdded.value,
                         componentName = componentName,
                         navigateToProfile = navigateToProfile,
                         navigateToStyleAndAppearance = navigateToStyleAndAppearance,

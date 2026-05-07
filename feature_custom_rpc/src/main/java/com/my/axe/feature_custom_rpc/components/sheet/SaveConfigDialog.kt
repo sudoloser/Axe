@@ -88,10 +88,7 @@ fun SaveConfigDialog(
                 isError = isError,
                 supportingText = { if (isError) Text(stringResource(R.string.config_name_empty)) else null },
                 shape = RoundedCornerShape(16.dp),
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderWidth = 2.dp,
-                    unfocusedBorderWidth = 1.dp,
-                ),
+                colors = OutlinedTextFieldDefaults.colors(),
                 singleLine = true
             )
         }
