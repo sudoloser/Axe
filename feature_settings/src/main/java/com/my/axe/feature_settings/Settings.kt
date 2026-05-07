@@ -291,14 +291,15 @@ fun SettingsDrawerPreview() {
             .background(Color.LightGray)
     ) {
         SettingsDrawer(
-            showaxeQuickieRequestItem = false,
+            showAxeQuickieRequestItem = false,
             componentName = ComponentName("", ""),
             user = null,
             navigateToProfile = {},
             navigateToStyleAndAppearance = {},
             navigateToLanguages = {},
             navigateToAbout = {},
-            navigateToRpcSettings = {}
-        ) {}
+            navigateToRpcSettings = {},
+            navigateToLogsScreen = {}
+        )
     }
 }
