@@ -27,6 +27,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
 
 @Composable
@@ -50,11 +51,7 @@ fun KTextField(
     OutlinedTextField(
         modifier = Modifier.focusRequester(focusRequester),
         colors = OutlinedTextFieldDefaults.colors(
-            focusedContainerColor = Color.Transparent,
-            unfocusedContainerColor = Color.Transparent,
-            disabledContainerColor = Color.Transparent,
-            focusedBorderWidth = 2.dp,
-            unfocusedBorderWidth = 1.dp,
+            containerColor = Color.Transparent,
         ),
         maxLines = 1,
         enabled = !readOnly,

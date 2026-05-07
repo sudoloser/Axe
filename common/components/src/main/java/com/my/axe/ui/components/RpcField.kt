@@ -58,10 +58,6 @@ fun RpcField(
             trailingIcon = trailingIcon,
             isError = isError,
             shape = RoundedCornerShape(16.dp),
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderWidth = 2.dp,
-                unfocusedBorderWidth = 1.dp,
-            ),
             singleLine = true
         )
         AnimatedVisibility(visible = isError) {
