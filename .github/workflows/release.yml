@@ -1,34 +1,56 @@
+name: Release Build
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+    paths-ignore:
+      - 'metadata/**'
+
+jobs:
+  build:
+    name: Build & Sign Release
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Set up JDK 17
+      - name: Setup JDK 17
         uses: actions/setup-java@v4
         with:
-          distribution: 'zulu'
           java-version: '17'
+          distribution: 'adopt'
+          cache: gradle
 
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
 
-      - name: Build Release APK
-        # This builds the main :app module
-        run: ./gradlew :app:assembleRelease
+      - name: Build Release APK & Bundle
+        run: ./gradlew assembleRelease bundleRelease
 
-      - name: Sign APK
+      - name: Prepare Staging
+        run: |
+          mkdir -p staging
+          find app/build/outputs/apk/release -name "*.apk" -exec cp {} staging/ \;
+          find app/build/outputs/bundle/release -name "*.aab" -exec cp {} staging/ \;
+          find app/build/outputs/mapping/release -name "mapping.txt" -exec cp {} staging/ \; || true
+
+      - name: Sign Artifacts
         uses: r0adkll/sign-android-release@v1
         id: sign_app
         with:
-          # This points to the build folder inside the 'app' directory
-          releaseDirectory: app/build/outputs/apk/release
-          signingKeyBase64: ${{ secrets.KEYSTORE }}
-          alias: ${{ secrets.KEYSTORE_ALIAS }}
+          releaseDirectory: staging
+          releaseKeyStore: ${{ secrets.KEYSTORE }}
+          alias: ${{ secrets.kEYSTORE_ALIAS }}
           keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
           keyPassword: ${{ secrets.KEY_PASSWORD }}
 
-      - name: Upload APK
+      - name: Upload Signed Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: Axe-v1.0.0
-          path: ${{ steps.sign_app.outputs.signedReleaseFile }}
-          
+          name: release-artifacts
+          path: |
+            staging/*.apk
+            staging/*.aab
+            staging/mapping.txt
