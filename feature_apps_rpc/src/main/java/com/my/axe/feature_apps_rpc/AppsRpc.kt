@@ -49,6 +49,9 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.my.axe.domain.model.rpc.RpcConfig
+import com.my.axe.domain.model.user.User
+import com.my.axe.feature_custom_rpc.components.sheet.PreviewDialog
 import com.my.axe.feature_rpc_base.AppUtils
 import com.my.axe.feature_rpc_base.services.AppDetectionService
 import com.my.axe.feature_rpc_base.services.CustomRpcService
@@ -65,8 +68,14 @@ import com.my.axe.ui.components.preference.PreferencesHint
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppsRPC(
+    user: User?,
     state: AppsState,
+    previewConfig: RpcConfig?,
     updateAppEnabled: (String) -> Unit,
+    updateAppConfig: (String, String?) -> Unit,
+    showPreview: (String) -> Unit,
+    dismissPreview: () -> Unit,
+    navigateToCustomRpc: (String) -> Unit,
     onBackPressed: () -> Unit,
     hasUsageAccess: Boolean,
 ) {
@@ -182,6 +191,19 @@ fun AppsRPC(
                                 name = state.apps[i].name,
                                 pkg = state.apps[i].pkg,
                                 isChecked = state.enabledApps[state.apps[i].pkg] ?: false,
+                                customConfigs = state.customConfigs,
+                                selectedConfig = state.appConfigs[state.apps[i].pkg],
+                                onConfigSelected = { config ->
+                                    updateAppConfig(state.apps[i].pkg, config)
+                                },
+                                onPreviewClick = { configName ->
+                                    showPreview(configName)
+                                },
+                                onLongClick = {
+                                    state.appConfigs[state.apps[i].pkg]?.let { config ->
+                                        navigateToCustomRpc(config)
+                                    }
+                                },
                                 onClick = { updateAppEnabled(state.apps[i].pkg) }
                             )
                         } else {
@@ -191,5 +213,13 @@ fun AppsRPC(
                 }
             }
         }
+    }
+
+    if (previewConfig != null && user != null) {
+        PreviewDialog(
+            user = user,
+            rpc = previewConfig,
+            onDismiss = { dismissPreview() }
+        )
     }
 }

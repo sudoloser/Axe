@@ -9,6 +9,7 @@ android {
 }
 
 dependencies {
+    implementation (libs.shizuku.api)
     implementation (libs.blankj.utilcodex)
     implementation(libs.androidx.material)
     implementation(libs.kotlinx.serialization.json)

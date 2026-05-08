@@ -71,10 +71,20 @@ import com.my.axe.ui.components.preference.PreferenceSwitch
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
+import androidx.compose.material.icons.filled.Bolt
+import rikka.shizuku.Shizuku
+import com.blankj.utilcode.util.AppUtils as AppUtilsCode
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RpcSettings(onBackPressed: () -> Boolean) {
     val context = LocalContext.current
+    var useShizuku by remember { mutableStateOf(Prefs[Prefs.USE_SHIZUKU, false]) }
+    var shizukuAvailable by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        shizukuAvailable = Shizuku.pingBinder()
+    }
     var isLowResIconsEnabled by remember { mutableStateOf(Prefs[Prefs.RPC_USE_LOW_RES_ICON, false]) }
     var useImgur by remember { mutableStateOf(Prefs[Prefs.USE_IMGUR, false]) }
     var configsDir by remember { mutableStateOf(Prefs[Prefs.CONFIGS_DIRECTORY, ""]) }
@@ -195,6 +205,33 @@ fun RpcSettings(onBackPressed: () -> Boolean) {
             }
             item {
                 Subtitle(text = stringResource(id = R.string.advance_settings))
+            }
+            item {
+                PreferenceSwitch(
+                    title = stringResource(id = R.string.shizuku_detection),
+                    description = if (shizukuAvailable) stringResource(id = R.string.shizuku_connected) else stringResource(id = R.string.shizuku_not_running),
+                    icon = Icons.Default.Bolt,
+                    isChecked = useShizuku && shizukuAvailable,
+                    enabled = shizukuAvailable
+                ) {
+                    useShizuku = !useShizuku
+                    Prefs[Prefs.USE_SHIZUKU] = useShizuku
+                }
+            }
+            if (!shizukuAvailable) {
+                item {
+                    SettingItem(
+                        title = stringResource(id = R.string.shizuku_open),
+                        description = stringResource(id = R.string.shizuku_not_running),
+                        icon = Icons.Default.Bolt
+                    ) {
+                        try {
+                            AppUtilsCode.launchApp("moe.shizuku.privileged.api")
+                        } catch (e: Exception) {
+                            Toast.makeText(context, "Shizuku not installed", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
             }
             item {
                 PreferenceSwitch(

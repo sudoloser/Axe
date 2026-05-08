@@ -10,5 +10,6 @@ android {
 
 dependencies {
     implementation(projects.featureRpcBase)
+    implementation(projects.featureCustomRpc)
     implementation (libs.material.icons.extended)
 }

@@ -243,6 +243,9 @@ object Prefs {
     const val EXPERIMENTAL_RPC_SHOW_PLAYBACK_STATE = "experimental_rpc_show_playback_state"
     const val EXPERIMENTAL_RPC_ENABLE_TIMESTAMPS = "experimental_rpc_enable_timestamps"
     const val EXPERIMENTAL_RPC_HIDE_ON_PAUSE = "experimental_rpc_hide_on_pause"
+    const val USE_SHIZUKU = "use_shizuku"
+    const val APP_CUSTOM_RPC_CONFIGS = "app_custom_rpc_configs"
+
     fun saveAppActivityType(packageName: String, activityType: Int) {
         val json = get(EXPERIMENTAL_RPC_APP_ACTIVITY_TYPES, "{}")
         val map: MutableMap<String, Int> = try {
@@ -254,8 +257,33 @@ object Prefs {
         set(EXPERIMENTAL_RPC_APP_ACTIVITY_TYPES, Json.encodeToString(map))
     }
 
-    fun getAppActivityTypes(): Map<String, Int> {
-        val json = get(EXPERIMENTAL_RPC_APP_ACTIVITY_TYPES, "{}")
+    fun saveAppCustomConfig(packageName: String, configName: String?) {
+        val json = get(APP_CUSTOM_RPC_CONFIGS, "{}")
+        val map: MutableMap<String, String> = try {
+            Json.decodeFromString(json)
+        } catch (_: Exception) {
+            mutableMapOf()
+        }
+        if (configName == null) {
+            map.remove(packageName)
+        } else {
+            map[packageName] = configName
+        }
+        set(APP_CUSTOM_RPC_CONFIGS, Json.encodeToString(map))
+    }
+
+    fun getAppCustomConfig(packageName: String): String? {
+        val json = get(APP_CUSTOM_RPC_CONFIGS, "{}")
+        return try {
+            val map: Map<String, String> = Json.decodeFromString(json)
+            map[packageName]
+        } catch (_: Exception) {
+            null
+        }
+    }
+
+    fun getAppCustomConfigs(): Map<String, String> {
+        val json = get(APP_CUSTOM_RPC_CONFIGS, "{}")
         return try {
             Json.decodeFromString(json)
         } catch (_: Exception) {

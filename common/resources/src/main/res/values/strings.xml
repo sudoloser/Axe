@@ -228,4 +228,10 @@
     <string name="set_imgur_client_id">Set Imgur Client ID</string>
     <string name="set_imgur_client_id_desc">If images aren\'t showing using Imgur, you can try setting your own Client ID</string>
     <string name="show_song_as_title">Show Song as Title</string>
+    <string name="none_default">None (Use Default)</string>
+    <string name="custom_rpc_config">Custom RPC Config</string>
+    <string name="shizuku_detection">Use Shizuku for better app detection</string>
+    <string name="shizuku_not_running">Shizuku is not running</string>
+    <string name="shizuku_connected">Shizuku: Connected</string>
+    <string name="shizuku_open">Open Shizuku</string>
 </resources>

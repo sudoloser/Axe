@@ -1,3 +1,11 @@
+# 5/8/2026 [v1.1.0]
+### Added
+- Per-App Custom RPC Configuration: Assign specific custom configs to individual apps.
+- Shizuku-Based App Detection: Faster and more accurate foreground detection (optional).
+- New release workflow for automated building, signing, and uploading artifacts.
+- Preview button for per-app custom RPC configurations.
+- Long-press to edit assigned custom RPC configs directly from the app list.
+
 # 5/6/2026 [v1.0.0]
 ### Added
 - Rename all occurences of Kizzy to Axe

@@ -24,6 +24,7 @@ kotlinx-coroutine = "1.7.3"
 lifecycle-ktx = "2.8.6"
 material3 = "1.3.0"
 mmkv = "1.3.16"
+shizuku = "13.1.5"
 junit = "4.13.2"
 androidx-test-ext-junit = "1.2.1"
 espresso-core = "3.6.1"
@@ -31,6 +32,8 @@ javax = "1"
 kotlinx-serialization-json = "1.6.3"
 
 [libraries]
+shizuku-api = { module = "dev.rikka.shizuku:api", version.ref = "shizuku" }
+shizuku-provider = { module = "dev.rikka.shizuku:provider", version.ref = "shizuku" }
 
 # Javax
 javax = { module = "javax.inject:javax.inject", version.ref = "javax" }

@@ -15,7 +15,9 @@ package com.my.axe.feature_apps_rpc
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.my.axe.data.utils.ConfigUtils
 import com.my.axe.data.utils.getInstalledApps
+import com.my.axe.domain.model.rpc.RpcConfig
 import com.my.axe.preference.Prefs
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -33,6 +35,9 @@ class AppsScreenViewModel @Inject constructor(
     private val _state: MutableStateFlow<AppsState> = MutableStateFlow(AppsState())
     val state = _state.asStateFlow()
 
+    private val _previewConfig: MutableStateFlow<RpcConfig?> = MutableStateFlow(null)
+    val previewConfig = _previewConfig.asStateFlow()
+
     init {
         getInstalledApps()
     }
@@ -44,11 +49,16 @@ class AppsScreenViewModel @Inject constructor(
                 isEnabled = Prefs::isAppEnabled
             ).sortedBy { !it.isChecked }
             val enabledApps = appList.associate { it.pkg to it.isChecked }
+            val customConfigs = ConfigUtils.getAllConfigs(context)
+            val appConfigs = Prefs.getAppCustomConfigs()
+
             _state.update {
                 AppsState(
                     apps = appList,
                     isLoading = false,
-                    enabledApps = enabledApps
+                    enabledApps = enabledApps,
+                    customConfigs = customConfigs,
+                    appConfigs = appConfigs
                 )
             }
         }
@@ -65,5 +75,29 @@ class AppsScreenViewModel @Inject constructor(
                 )
             }
         }
+    }
+
+    fun updateAppConfig(pkg: String, configName: String?) {
+        viewModelScope.launch(Dispatchers.IO) {
+            Prefs.saveAppCustomConfig(pkg, configName)
+            _state.update { currentState ->
+                currentState.copy(
+                    appConfigs = currentState.appConfigs.toMutableMap().apply {
+                        if (configName == null) remove(pkg) else this[pkg] = configName
+                    }
+                )
+            }
+        }
+    }
+
+    fun showPreview(configName: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val config = ConfigUtils.loadConfig(context, configName)
+            _previewConfig.value = config
+        }
+    }
+
+    fun dismissPreview() {
+        _previewConfig.value = null
     }
 }
