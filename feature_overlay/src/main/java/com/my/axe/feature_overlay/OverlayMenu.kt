@@ -1,6 +1,7 @@
 package com.my.axe.feature_overlay
 
 import android.content.Intent
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -18,7 +19,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
 import com.my.axe.data.utils.ConfigUtils
 import com.my.axe.data.utils.dataToString
 import com.my.axe.data.utils.stringToData
@@ -43,122 +43,120 @@ fun OverlayMenu(
         mutableStateOf(UiState(rpcConfig = lastRpc.stringToData())) 
     }
 
-    Dialog(onDismissRequest = onDismiss) {
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            shape = RoundedCornerShape(16.dp)
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        shape = RoundedCornerShape(16.dp)
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp)
         ) {
-            Column(
-                modifier = Modifier.padding(16.dp)
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
+                @Suppress("LocalVariableName")
+                val _title = if (isEditMode) "Edit RPC" else "Axe Quick Controls"
+                Text(
+                    text = _title,
+                    style = MaterialTheme.typography.titleLarge
+                )
+                IconButton(onClick = { if (isEditMode) isEditMode = false else onDismiss() }) {
+                    Icon(if (isEditMode) Icons.Default.ArrowBack else Icons.Default.Close, contentDescription = "Back/Close")
+                }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            if (isEditMode) {
+                CustomRpcForm(
+                    uiState = currentUiState,
+                    onEvent = { event ->
+                        if (event is UiEvent.SetFieldsFromConfig) {
+                            currentUiState = currentUiState.copy(rpcConfig = event.config)
+                            val json = event.config.dataToString()
+                            Prefs[Prefs.LAST_RUN_CUSTOM_RPC] = json
+                            if (isRunning) {
+                                val intent = Intent(context, CustomRpcService::class.java).apply {
+                                    putExtra("RPC", json as String)
+                                }
+                                context.startService(intent)
+                            }
+                        }
+                    },
+                    showEnableSwitch = false,
+                    modifier = Modifier
+                        .heightIn(max = 400.dp)
+                        .verticalScroll(rememberScrollState())
+                )
+            } else {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     @Suppress("LocalVariableName")
-                    val _title = if (isEditMode) "Edit RPC" else "Axe Quick Controls"
-                    Text(
-                        text = _title,
-                        style = MaterialTheme.typography.titleLarge
-                    )
-                    IconButton(onClick = { if (isEditMode) isEditMode = false else onDismiss() }) {
-                        Icon(if (isEditMode) Icons.Default.ArrowBack else Icons.Default.Close, contentDescription = "Back/Close")
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                if (isEditMode) {
-                    CustomRpcForm(
-                        uiState = currentUiState,
-                        onEvent = { event ->
-                            if (event is UiEvent.SetFieldsFromConfig) {
-                                currentUiState = currentUiState.copy(rpcConfig = event.config)
-                                val json = event.config.dataToString()
-                                Prefs[Prefs.LAST_RUN_CUSTOM_RPC] = json
-                                if (isRunning) {
+                    val _status = if (isRunning) "Running" else "Stopped"
+                    Text("Service Status: $_status")
+                    Switch(
+                        checked = isRunning,
+                        onCheckedChange = {
+                            isRunning = it
+                            if (it) {
+                                val json = currentUiState.rpcConfig.dataToString()
+                                if (json.isNotEmpty()) {
                                     val intent = Intent(context, CustomRpcService::class.java).apply {
                                         putExtra("RPC", json as String)
                                     }
                                     context.startService(intent)
                                 }
+                            } else {
+                                context.stopService(Intent(context, CustomRpcService::class.java))
                             }
-                        },
-                        showEnableSwitch = false,
-                        modifier = Modifier
-                            .heightIn(max = 400.dp)
-                            .verticalScroll(rememberScrollState())
+                        }
                     )
-                } else {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        @Suppress("LocalVariableName")
-                        val _status = if (isRunning) "Running" else "Stopped"
-                        Text("Service Status: $_status")
-                        Switch(
-                            checked = isRunning,
-                            onCheckedChange = {
-                                isRunning = it
-                                if (it) {
-                                    val json = currentUiState.rpcConfig.dataToString()
-                                    if (json.isNotEmpty()) {
+                }
+
+                Spacer(modifier = Modifier.height(8.dp))
+                
+                Button(
+                    onClick = { isEditMode = true },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Icon(Icons.Default.Settings, contentDescription = null)
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text("Configure RPC")
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+                @Suppress("LocalVariableName")
+                val _presetTitle = "Presets"
+                Text(_presetTitle, style = MaterialTheme.typography.labelLarge)
+                
+                LazyColumn(
+                    modifier = Modifier.heightIn(max = 200.dp)
+                ) {
+                    items(configs) { config ->
+                        ListItem(
+                            headlineContent = { Text(config) },
+                            modifier = Modifier.clickable {
+                                val loadedConfig = ConfigUtils.loadConfig(context, config)
+                                loadedConfig?.let {
+                                    currentUiState = currentUiState.copy(rpcConfig = it)
+                                    val json = it.dataToString()
+                                    Prefs[Prefs.LAST_RUN_CUSTOM_RPC] = json
+                                    if (isRunning) {
                                         val intent = Intent(context, CustomRpcService::class.java).apply {
                                             putExtra("RPC", json as String)
                                         }
                                         context.startService(intent)
                                     }
-                                } else {
-                                    context.stopService(Intent(context, CustomRpcService::class.java))
                                 }
+                                onDismiss()
                             }
                         )
-                    }
-
-                    Spacer(modifier = Modifier.height(8.dp))
-                    
-                    Button(
-                        onClick = { isEditMode = true },
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Icon(Icons.Default.Settings, contentDescription = null)
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text("Configure RPC")
-                    }
-
-                    Spacer(modifier = Modifier.height(16.dp))
-                    @Suppress("LocalVariableName")
-                    val _presetTitle = "Presets"
-                    Text(_presetTitle, style = MaterialTheme.typography.labelLarge)
-                    
-                    LazyColumn(
-                        modifier = Modifier.heightIn(max = 200.dp)
-                    ) {
-                        items(configs) { config ->
-                            ListItem(
-                                headlineContent = { Text(config) },
-                                modifier = Modifier.clickable {
-                                    val loadedConfig = ConfigUtils.loadConfig(context, config)
-                                    loadedConfig?.let {
-                                        currentUiState = currentUiState.copy(rpcConfig = it)
-                                        val json = it.dataToString()
-                                        Prefs[Prefs.LAST_RUN_CUSTOM_RPC] = json
-                                        if (isRunning) {
-                                            val intent = Intent(context, CustomRpcService::class.java).apply {
-                                                putExtra("RPC", json as String)
-                                            }
-                                            context.startService(intent)
-                                        }
-                                    }
-                                    onDismiss()
-                                }
-                            )
-                        }
                     }
                 }
             }

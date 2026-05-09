@@ -1,6 +1,5 @@
 package com.my.axe.feature_overlay
 
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.*
@@ -14,34 +13,26 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.my.axe.preference.Prefs
 import com.my.axe.resources.R
-import kotlin.math.roundToInt
 
 @Composable
 fun FloatingAxeButton(
     onExpand: () -> Unit,
-    onClose: () -> Unit
+    onDrag: (Float, Float) -> Unit
 ) {
     val opacity by remember { mutableStateOf(Prefs[Prefs.OVERLAY_OPACITY, 0.8f]) }
     val scale by remember { mutableStateOf(Prefs[Prefs.OVERLAY_SCALE, 1.0f]) }
-    
-    var offsetX by remember { mutableStateOf(0f) }
-    var offsetY by remember { mutableStateOf(0f) }
 
     Box(
         modifier = Modifier
-            .offset { IntOffset(offsetX.roundToInt(), offsetY.roundToInt()) }
             .pointerInput(Unit) {
                 detectDragGestures { change, dragAmount ->
                     change.consume()
-                    offsetX += dragAmount.x
-                    offsetY += dragAmount.y
+                    onDrag(dragAmount.x, dragAmount.y)
                 }
             }
             .scale(scale)
@@ -54,7 +45,7 @@ fun FloatingAxeButton(
     ) {
         IconButton(onClick = onExpand) {
             Icon(
-                painter = painterResource(id = R.drawable.ic_apps), // Use Axe icon when available
+                painter = painterResource(id = R.drawable.ic_apps),
                 contentDescription = "Axe Overlay",
                 tint = MaterialTheme.colorScheme.onPrimaryContainer,
                 modifier = Modifier.fillMaxSize()
