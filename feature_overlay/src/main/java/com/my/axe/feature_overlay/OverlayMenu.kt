@@ -58,8 +58,10 @@ fun OverlayMenu(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
+                    @Suppress("LocalVariableName")
+                    val _title = if (isEditMode) "Edit RPC" else "Axe Quick Controls"
                     Text(
-                        text = if (isEditMode) "Edit RPC" else "Axe Quick Controls",
+                        text = _title,
                         style = MaterialTheme.typography.titleLarge
                     )
                     IconButton(onClick = { if (isEditMode) isEditMode = false else onDismiss() }) {
@@ -74,12 +76,12 @@ fun OverlayMenu(
                         uiState = currentUiState,
                         onEvent = { event ->
                             if (event is UiEvent.SetFieldsFromConfig) {
-                                currentUiState = currentUiState.copy(rpcConfig = event.rpc)
-                                val json = event.rpc.dataToString()
+                                currentUiState = currentUiState.copy(rpcConfig = event.config)
+                                val json = event.config.dataToString()
                                 Prefs[Prefs.LAST_RUN_CUSTOM_RPC] = json
                                 if (isRunning) {
                                     val intent = Intent(context, CustomRpcService::class.java).apply {
-                                        putExtra("RPC", json)
+                                        putExtra("RPC", json as String)
                                     }
                                     context.startService(intent)
                                 }
@@ -96,7 +98,9 @@ fun OverlayMenu(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Text("Service Status: ${if (isRunning) "Running" else "Stopped"}")
+                        @Suppress("LocalVariableName")
+                        val _status = if (isRunning) "Running" else "Stopped"
+                        Text("Service Status: $_status")
                         Switch(
                             checked = isRunning,
                             onCheckedChange = {
@@ -105,7 +109,7 @@ fun OverlayMenu(
                                     val json = currentUiState.rpcConfig.dataToString()
                                     if (json.isNotEmpty()) {
                                         val intent = Intent(context, CustomRpcService::class.java).apply {
-                                            putExtra("RPC", json)
+                                            putExtra("RPC", json as String)
                                         }
                                         context.startService(intent)
                                     }
@@ -128,7 +132,9 @@ fun OverlayMenu(
                     }
 
                     Spacer(modifier = Modifier.height(16.dp))
-                    Text("Presets", style = MaterialTheme.typography.labelLarge)
+                    @Suppress("LocalVariableName")
+                    val _presetTitle = "Presets"
+                    Text(_presetTitle, style = MaterialTheme.typography.labelLarge)
                     
                     LazyColumn(
                         modifier = Modifier.heightIn(max = 200.dp)
@@ -144,7 +150,7 @@ fun OverlayMenu(
                                         Prefs[Prefs.LAST_RUN_CUSTOM_RPC] = json
                                         if (isRunning) {
                                             val intent = Intent(context, CustomRpcService::class.java).apply {
-                                                putExtra("RPC", json)
+                                                putExtra("RPC", json as String)
                                             }
                                             context.startService(intent)
                                         }

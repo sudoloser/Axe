@@ -12,7 +12,7 @@
 
 package com.my.axe.feature_rpc_base
 
-internal object Constants {
+object Constants {
     const val CHANNEL_ID = "axe.notification"
     const val CHANNEL_NAME = "axe RPC"
     const val CHANNEL_DESCRIPTION = "Background Service notification which runs rpc"

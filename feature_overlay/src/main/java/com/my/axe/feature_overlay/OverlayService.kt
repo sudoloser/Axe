@@ -40,12 +40,12 @@ class OverlayService : Service(), LifecycleOwner, ViewModelStoreOwner, SavedStat
     private var isExpanded by mutableStateOf(false)
 
     private val lifecycleRegistry = LifecycleRegistry(this)
-    private val viewModelStore = ViewModelStore()
+    private val _viewModelStore = ViewModelStore()
     private val savedStateRegistryController = SavedStateRegistryController.create(this)
 
     override val lifecycle: Lifecycle get() = lifecycleRegistry
-    override val viewModelStore: ViewModelStore get() = viewModelStore
-    override val savedStateRegistry: SavedState get() = savedStateRegistryController.savedStateRegistry
+    override val viewModelStore: ViewModelStore get() = _viewModelStore
+    override val savedStateRegistry: SavedStateRegistry get() = savedStateRegistryController.savedStateRegistry
 
     private val serviceScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
 
@@ -141,7 +141,8 @@ class OverlayService : Service(), LifecycleOwner, ViewModelStoreOwner, SavedStat
     }
 
     private fun createNotification(): Notification {
-        return Notification.Builder(this, Constants.CHANNEL_ID)
+        val channelId = Constants.CHANNEL_ID
+        return Notification.Builder(this, channelId)
             .setContentTitle("Axe Overlay Active")
             .setSmallIcon(com.my.axe.resources.R.drawable.ic_apps)
             .build()
@@ -151,7 +152,9 @@ class OverlayService : Service(), LifecycleOwner, ViewModelStoreOwner, SavedStat
         lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_PAUSE)
         lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_STOP)
         lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-        composeView?.let { windowManager.removeView(it) }
+        composeView?.let { 
+            if (it.parent != null) windowManager.removeView(it) 
+        }
         serviceScope.cancel()
         super.onDestroy()
     }
