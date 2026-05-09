@@ -22,6 +22,8 @@ import com.my.axe.resources.R
 @Composable
 fun FloatingAxeButton(
     onExpand: () -> Unit,
+    onDragStart: () -> Unit = {},
+    onDragEnd: () -> Unit = {},
     onDrag: (Float, Float) -> Unit
 ) {
     val opacity by remember { mutableStateOf(Prefs[Prefs.OVERLAY_OPACITY, 0.8f]) }
@@ -30,10 +32,15 @@ fun FloatingAxeButton(
     Box(
         modifier = Modifier
             .pointerInput(Unit) {
-                detectDragGestures { change, dragAmount ->
-                    change.consume()
-                    onDrag(dragAmount.x, dragAmount.y)
-                }
+                detectDragGestures(
+                    onDragStart = { onDragStart() },
+                    onDragEnd = { onDragEnd() },
+                    onDragCancel = { onDragEnd() },
+                    onDrag = { change, dragAmount ->
+                        change.consume()
+                        onDrag(dragAmount.x, dragAmount.y)
+                    }
+                )
             }
             .scale(scale)
             .alpha(opacity)
