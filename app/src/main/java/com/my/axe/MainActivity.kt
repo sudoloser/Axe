@@ -53,9 +53,11 @@ class MainActivity : AppCompatActivity() {
                     isHighContrastModeEnabled = LocalDarkTheme.current.isHighContrastModeEnabled,
                     isDynamicColorEnabled = LocalDynamicColorSwitch.current,
                 ) {
+                    val initialRoute = intent.getStringExtra("NAVIGATE_TO")
                     axe(
                         usageAccessStatus = usageAccessStatus,
                         notificationListenerAccess = notificationListenerAccess,
+                        initialRoute = initialRoute
                     )
                 }
             }

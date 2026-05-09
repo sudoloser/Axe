@@ -234,4 +234,15 @@
     <string name="shizuku_not_running">Shizuku is not running</string>
     <string name="shizuku_connected">Shizuku: Connected</string>
     <string name="shizuku_open">Open Shizuku</string>
+    <string name="main_floatingOverlay">Floating Overlay</string>
+    <string name="main_floatingOverlay_details">Floating controls for quick RPC management</string>
+    <string name="overlay_settings">Overlay Settings</string>
+    <string name="overlay_enable">Enable Overlay</string>
+    <string name="overlay_permission_required">Permission required to show overlay</string>
+    <string name="overlay_system_wide">System-wide</string>
+    <string name="overlay_system_wide_desc">Show overlay over all applications</string>
+    <string name="overlay_whitelist_apps">Whitelist Apps</string>
+    <string name="overlay_appearance">Appearance</string>
+    <string name="overlay_visibility">Visibility</string>
+    <string name="overlay_status">Status</string>
 </resources>

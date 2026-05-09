@@ -143,6 +143,12 @@
                 <action android:name="android.service.quicksettings.action.QS_TILE"/>
             </intent-filter>
         </service>
+
+        <service
+            android:name="com.my.axe.feature_overlay.OverlayService"
+            android:exported="false"
+            android:foregroundServiceType="specialUse"
+            tools:ignore="ForegroundServiceSpecialUse" />
     </application>
 
 </manifest>
