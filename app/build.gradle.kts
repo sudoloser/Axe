@@ -38,6 +38,7 @@ android {
     }
 }
 dependencies {
+    implementation (projects.data)
     implementation (projects.domain)
     implementation (projects.theme)
     implementation (projects.featureStartup)

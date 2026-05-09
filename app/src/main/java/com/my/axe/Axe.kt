@@ -145,8 +145,10 @@ internal fun ComponentActivity.axe(
             }
             animatedComposable(Routes.APPS_DETECTION) {
                 val viewModel by viewModels<AppsScreenViewModel>()
+                val user = Prefs.getUser()
+                val context = LocalContext.current
                 AppsRPC(
-                    user = user.value,
+                    user = user,
                     onBackPressed = { navController.popBackStack() },
                     hasUsageAccess = usageAccessStatus.value,
                     state = viewModel.state.collectAsState().value,
@@ -156,7 +158,7 @@ internal fun ComponentActivity.axe(
                     showPreview = viewModel::showPreview,
                     dismissPreview = viewModel::dismissPreview,
                     navigateToCustomRpc = { configName ->
-                        val config = com.my.axe.data.utils.ConfigUtils.loadConfig(ctx, configName)
+                        val config = com.my.axe.data.utils.ConfigUtils.loadConfig(context, configName)
                         if (config != null) {
                             Prefs[Prefs.LAST_RUN_CUSTOM_RPC] = com.my.axe.data.utils.ConfigUtils.run { config.dataToString() }
                             Prefs[Prefs.APPLY_FIELDS_FROM_LAST_RUN_RPC] = true
