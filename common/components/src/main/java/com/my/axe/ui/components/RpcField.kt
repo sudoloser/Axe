@@ -13,16 +13,12 @@
 package com.my.axe.ui.components
 
 import androidx.annotation.StringRes
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -58,10 +54,9 @@ fun RpcField(
             keyboardOptions = keyboardOptions,
             trailingIcon = trailingIcon,
             isError = isError,
-            shape = RoundedCornerShape(16.dp),
             singleLine = true
         )
-        AnimatedVisibility(visible = isError) {
+        if (isError) {
             Text(
                 text = errorMessage,
                 modifier = Modifier

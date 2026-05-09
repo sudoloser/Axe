@@ -16,8 +16,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.my.axe.data.rpc.Constants
-import com.my.axe.data.rpc.Constants.MAX_ALLOWED_CHARACTER_LENGTH
-import com.my.axe.data.utils.uriToFile
 import com.my.axe.feature_custom_rpc.UiEvent
 import com.my.axe.feature_custom_rpc.UiState
 import com.my.axe.feature_rpc_base.AppUtils
@@ -30,7 +28,6 @@ import com.my.axe.resources.R
 import com.my.axe.ui.components.RpcField
 import com.my.axe.ui.components.SwitchBar
 import com.my.axe.feature_custom_rpc.components.sheet.dataToString
-import kotlinx.coroutines.launch
 
 @Composable
 fun CustomRpcForm(
@@ -43,7 +40,6 @@ fun CustomRpcForm(
     var isCustomRpcEnabled by remember {
         mutableStateOf(AppUtils.customRpcRunning())
     }
-    val scope = rememberCoroutineScope()
 
     Column(modifier = modifier) {
         if (showEnableSwitch) {
@@ -85,7 +81,7 @@ fun CustomRpcForm(
                 RpcField(
                     value = partyCurrentSize,
                     label = R.string.party_current,
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     modifier = Modifier.weight(1f)
                 ) {
                     onEvent(UiEvent.SetFieldsFromConfig(uiState.rpcConfig.copy(partyCurrentSize = it)))
@@ -94,7 +90,7 @@ fun CustomRpcForm(
                     RpcField(
                         value = partyMaxSize,
                         label = R.string.party_max,
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         modifier = Modifier.weight(1f)
                     ) {
                         onEvent(UiEvent.SetFieldsFromConfig(uiState.rpcConfig.copy(partyMaxSize = it)))
@@ -126,9 +122,6 @@ fun CustomRpcForm(
                 }) {
                 onEvent(UiEvent.SetFieldsFromConfig(uiState.rpcConfig.copy(timestampsStart = it)))
             }
-
-            // ... images, type, etc can be added here as needed for overlay
-            // For now, let's keep the main fields to keep it compact
         }
     }
 }

@@ -106,7 +106,15 @@ class OverlayService : Service(), LifecycleOwner, ViewModelStoreOwner, SavedStat
                         onDrag = { dx, dy ->
                             params.x += dx.toInt()
                             params.y += dy.toInt()
-                            windowManager.updateViewLayout(this@apply, params)
+                            
+                            // Drag to bottom check
+                            val displayMetrics = resources.displayMetrics
+                            val screenHeight = displayMetrics.heightPixels
+                            if (params.y > screenHeight - 200) {
+                                stopSelf()
+                            } else {
+                                windowManager.updateViewLayout(this@apply, params)
+                            }
                         }
                     )
                     
@@ -156,10 +164,20 @@ class OverlayService : Service(), LifecycleOwner, ViewModelStoreOwner, SavedStat
                     val isWhitelisted = Prefs.isOverlayWhitelisted(packageName)
                     
                     withContext(Dispatchers.Main) {
-                        composeView?.visibility = if (isWhitelisted) View.VISIBLE else View.GONE
+                        if (isWhitelisted) {
+                            if (composeView?.parent == null) {
+                                windowManager.addView(composeView, params)
+                            }
+                            composeView?.visibility = View.VISIBLE
+                        } else {
+                            composeView?.visibility = View.GONE
+                        }
                     }
                 } else {
                     withContext(Dispatchers.Main) {
+                        if (composeView?.parent == null) {
+                            windowManager.addView(composeView, params)
+                        }
                         composeView?.visibility = View.VISIBLE
                     }
                 }
@@ -193,6 +211,9 @@ class OverlayService : Service(), LifecycleOwner, ViewModelStoreOwner, SavedStat
             if (it.parent != null) windowManager.removeView(it) 
         }
         serviceScope.cancel()
+        
+        // Ensure preference is updated if closed via drag
+        Prefs[Prefs.USE_OVERLAY] = false
         super.onDestroy()
     }
 
