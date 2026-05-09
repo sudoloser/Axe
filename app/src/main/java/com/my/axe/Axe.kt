@@ -25,9 +25,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.platform.LocalContext
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
+import com.my.axe.data.utils.dataToString
 import com.my.axe.domain.model.toVersion
 import com.my.axe.feature_about.about.About
 import com.my.axe.feature_about.about.Credits
@@ -169,7 +171,7 @@ internal fun ComponentActivity.axe(
                     navigateToCustomRpc = { configName ->
                         val config = com.my.axe.data.utils.ConfigUtils.loadConfig(context, configName)
                         if (config != null) {
-                            Prefs[Prefs.LAST_RUN_CUSTOM_RPC] = com.my.axe.data.utils.ConfigUtils.run { config.dataToString() }
+                            Prefs[Prefs.LAST_RUN_CUSTOM_RPC] = config.dataToString()
                             Prefs[Prefs.APPLY_FIELDS_FROM_LAST_RUN_RPC] = true
                             navController.navigate(Routes.CUSTOM_RPC)
                         }
@@ -189,34 +191,39 @@ internal fun ComponentActivity.axe(
                 val viewModel by viewModels<MediaScreenViewModel>()
                 MediaRPC(
                     onBackPressed = { navController.popBackStack() },
-                    state = viewModel.mediaState.collectAsState().value,
-                    onEvent = viewModel::onEvent
+                    state = viewModel.state.collectAsState().value,
+                    hasNotificationAccess = notificationListenerAccess.value,
+                    updateMediaAppEnabled = viewModel::updateMediaAppEnabled
                 )
             }
 
             animatedComposable(Routes.CONSOLE_RPC) {
                 val viewModel by viewModels<GamesViewModel>()
                 GamesScreen(
-                    state = viewModel.gamesScreenState.collectAsState().value,
+                    state = viewModel.state.value,
                     onBackPressed = {
                         navController.popBackStack()
-                    }
+                    },
+                    onEvent = viewModel::onUiEvent,
+                    serviceEnabled = AppUtils.customRpcRunning(),
+                    isSearchBarVisible = viewModel.isSearchBarVisible.value
                 )
             }
             animatedComposable(Routes.PROFILE) {
                 val viewModel by viewModels<UserViewModel>()
-                val state = viewModel.loginState.collectAsState().value
-                if (state.isLoggedIn) {
+                val state = viewModel.state.value
+                if (Prefs[Prefs.TOKEN, ""].isNotEmpty()) {
                     UserScreen(
                         state = state,
-                        onBackPressed = { navController.popBackStack() },
-                        onLogout = { viewModel.logout() }
+                        onBackPressed = { navController.popBackStack() }
                     )
                 } else {
                     LoginScreen(
-                        state = state,
-                        onBackPressed = { navController.popBackStack() },
-                        onLogin = { viewModel.login(it) }
+                        onCompleted = { 
+                            navController.popBackStack()
+                            navController.navigate(Routes.PROFILE)
+                        },
+                        onBackPressed = { navController.popBackStack() }
                     )
                 }
             }
@@ -224,6 +231,9 @@ internal fun ComponentActivity.axe(
                 Language(
                     onBackPressed = {
                         navController.popBackStack()
+                    },
+                    updateLocaleLanguage = {
+                        MainActivity.setLanguage(it)
                     }
                 )
             }
@@ -254,10 +264,7 @@ internal fun ComponentActivity.axe(
             animatedComposable(Routes.LOGS_SCREEN) {
                 val viewModel by viewModels<LogsViewModel>()
                 LogScreen(
-                    state = viewModel.logsState.collectAsState().value,
-                    onBackPressed = {
-                        navController.popBackStack()
-                    }
+                    viewModel = viewModel
                 )
             }
             animatedComposable(Routes.ABOUT) {
@@ -299,7 +306,8 @@ internal fun ComponentActivity.axe(
 
             animatedComposable(Routes.EXPERIMENTAL_RPC_APPS) {
                 ExperimentalRpcAppsScreen(
-                    onBackPressed = { navController.popBackStack() }
+                    onBackPressed = { navController.popBackStack() },
+                    viewModel = experimentalRpcViewModel.value
                 )
             }
             
