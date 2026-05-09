@@ -12,6 +12,7 @@ android {
 }
 
 dependencies {
+    implementation (projects.featureOverlay)
     implementation (libs.accompanist.flowLayout)
     implementation (libs.material.icons.extended)
     implementation (projects.featureRpcBase)

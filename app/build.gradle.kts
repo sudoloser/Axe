@@ -55,6 +55,7 @@ dependencies {
     implementation (projects.featureCustomRpc)
     implementation (projects.featureExperimentalRpc)
     implementation (projects.featureHome)
+    implementation (projects.featureOverlay)
     implementation (projects.common.preference)
     implementation (projects.common.navigation)
 
