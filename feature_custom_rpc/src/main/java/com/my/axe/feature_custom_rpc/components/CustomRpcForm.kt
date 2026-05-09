@@ -77,24 +77,30 @@ fun CustomRpcForm(
                 onEvent(UiEvent.SetFieldsFromConfig(uiState.rpcConfig.copy(state = it)))
             }
 
-            Row {
-                RpcField(
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                OutlinedTextField(
                     value = partyCurrentSize,
-                    label = R.string.party_current,
+                    onValueChange = { onEvent(UiEvent.SetFieldsFromConfig(uiState.rpcConfig.copy(partyCurrentSize = it))) },
+                    label = { Text(stringResource(id = R.string.party_current)) },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    modifier = Modifier.weight(1f)
-                ) {
-                    onEvent(UiEvent.SetFieldsFromConfig(uiState.rpcConfig.copy(partyCurrentSize = it)))
-                }
-                AnimatedVisibility(visible = partyCurrentSize.isNotBlank()) {
-                    RpcField(
+                    modifier = Modifier.weight(1f),
+                    singleLine = true
+                )
+                
+                if (partyCurrentSize.isNotBlank()) {
+                    OutlinedTextField(
                         value = partyMaxSize,
-                        label = R.string.party_max,
+                        onValueChange = { onEvent(UiEvent.SetFieldsFromConfig(uiState.rpcConfig.copy(partyMaxSize = it))) },
+                        label = { Text(stringResource(id = R.string.party_max)) },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                        modifier = Modifier.weight(1f)
-                    ) {
-                        onEvent(UiEvent.SetFieldsFromConfig(uiState.rpcConfig.copy(partyMaxSize = it)))
-                    }
+                        modifier = Modifier.weight(1f),
+                        singleLine = true
+                    )
                 }
             }
 

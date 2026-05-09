@@ -52,6 +52,7 @@ class OverlayService : Service(), LifecycleOwner, ViewModelStoreOwner, SavedStat
 
     private lateinit var windowManager: WindowManager
     private var composeView: ComposeView? = null
+    private var indicatorView: ComposeView? = null
     private var isExpanded by mutableStateOf(false)
     private var isDragging by mutableStateOf(false)
 
@@ -78,6 +79,19 @@ class OverlayService : Service(), LifecycleOwner, ViewModelStoreOwner, SavedStat
         gravity = Gravity.TOP or Gravity.START
         x = 0
         y = 300
+    }
+
+    private var indicatorParams = WindowManager.LayoutParams(
+        WindowManager.LayoutParams.MATCH_PARENT,
+        200.dpToPx(),
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+            WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
+        else
+            WindowManager.LayoutParams.TYPE_PHONE,
+        WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE or WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+        PixelFormat.TRANSLUCENT
+    ).apply {
+        gravity = Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL
     }
 
     override fun onCreate() {
@@ -109,34 +123,9 @@ class OverlayService : Service(), LifecycleOwner, ViewModelStoreOwner, SavedStat
             setViewTreeSavedStateRegistryOwner(this@OverlayService)
             
             setContent {
-                val rootModifier = if (isExpanded || isDragging) Modifier.fillMaxSize() else Modifier.wrapContentSize()
+                val rootModifier = if (isExpanded) Modifier.fillMaxSize() else Modifier.wrapContentSize()
                 
                 Box(modifier = rootModifier) {
-                    // Drag-to-Delete Indicator
-                    AnimatedVisibility(
-                        visible = isDragging,
-                        enter = fadeIn() + scaleIn(),
-                        exit = fadeOut() + scaleOut(),
-                        modifier = Modifier
-                            .align(Alignment.BottomCenter)
-                            .padding(bottom = 60.dp)
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .size(80.dp)
-                                .clip(CircleShape)
-                                .background(Color.Red.copy(alpha = 0.5f)),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Close,
-                                contentDescription = "Remove",
-                                tint = Color.White,
-                                modifier = Modifier.size(40.dp)
-                            )
-                        }
-                    }
-
                     FloatingAxeButton(
                         onExpand = { 
                             isExpanded = true
@@ -144,11 +133,11 @@ class OverlayService : Service(), LifecycleOwner, ViewModelStoreOwner, SavedStat
                         },
                         onDragStart = {
                             isDragging = true
-                            updateWindow()
+                            showIndicator()
                         },
                         onDragEnd = {
                             isDragging = false
-                            updateWindow()
+                            hideIndicator()
                         },
                         onDrag = { dx, dy ->
                             params.x += dx.toInt()
@@ -187,9 +176,44 @@ class OverlayService : Service(), LifecycleOwner, ViewModelStoreOwner, SavedStat
         lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_RESUME)
     }
 
+    private fun showIndicator() {
+        if (indicatorView != null) return
+        indicatorView = ComposeView(this).apply {
+            setViewTreeLifecycleOwner(this@OverlayService)
+            setViewTreeViewModelStoreOwner(this@OverlayService)
+            setViewTreeSavedStateRegistryOwner(this@OverlayService)
+            setContent {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Box(
+                        modifier = Modifier
+                            .size(80.dp)
+                            .clip(CircleShape)
+                            .background(Color.Red.copy(alpha = 0.5f)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Close,
+                            contentDescription = "Remove",
+                            tint = Color.White,
+                            modifier = Modifier.size(40.dp)
+                        )
+                    }
+                }
+            }
+        }
+        windowManager.addView(indicatorView, indicatorParams)
+    }
+
+    private fun hideIndicator() {
+        indicatorView?.let {
+            if (it.parent != null) windowManager.removeView(it)
+            indicatorView = null
+        }
+    }
+
     private fun updateWindow() {
         composeView?.let { view ->
-            if (isExpanded || isDragging) {
+            if (isExpanded) {
                 params.width = WindowManager.LayoutParams.MATCH_PARENT
                 params.height = WindowManager.LayoutParams.MATCH_PARENT
                 params.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL or WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
@@ -257,6 +281,7 @@ class OverlayService : Service(), LifecycleOwner, ViewModelStoreOwner, SavedStat
         composeView?.let { 
             if (it.parent != null) windowManager.removeView(it) 
         }
+        hideIndicator()
         serviceScope.cancel()
         
         // Ensure preference is updated if closed via drag
@@ -265,4 +290,6 @@ class OverlayService : Service(), LifecycleOwner, ViewModelStoreOwner, SavedStat
     }
 
     override fun onBind(intent: Intent?): IBinder? = null
+
+    private fun Int.dpToPx(): Int = (this * resources.displayMetrics.density).toInt()
 }
