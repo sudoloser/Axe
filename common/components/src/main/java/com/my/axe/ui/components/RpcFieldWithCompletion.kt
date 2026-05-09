@@ -84,6 +84,7 @@ fun RpcFieldWithCompletions(
     errorMessage: String = "",
     keyboardOptions: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
     content: @Composable (() -> Unit) = {},
+    modifier: Modifier = Modifier,
     onValueChange: (String) -> Unit = {},
     completionList: List<Pair<String, ResourceId>> = emptyList(),
 ) {
@@ -180,7 +181,7 @@ fun RpcFieldWithCompletions(
 
     LocalContext.current
     Box(
-        modifier = Modifier.fillMaxWidth()
+        modifier = modifier.fillMaxWidth()
     ) {
         OutlinedTextField(
             modifier = Modifier
@@ -416,4 +417,3 @@ private fun getCurrentWord(text: String): String {
     val matcher = Regex(wordPattern).find(text)
     return matcher?.value ?: ""
 }
-

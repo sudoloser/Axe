@@ -41,10 +41,11 @@ fun RpcField(
     errorMessage: String = "",
     keyboardOptions: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
     content: @Composable (() -> Unit) = {},
+    modifier: Modifier = Modifier,
     onValueChange: (String) -> Unit = {}
 ) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 8.dp)
     ) {
