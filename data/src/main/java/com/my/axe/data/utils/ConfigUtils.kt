@@ -65,8 +65,16 @@ object ConfigUtils {
             null
         }
     }
+}
 
-    fun RpcConfig.dataToString(): String {
-        return json.encodeToString(this)
+fun RpcConfig.dataToString(): String {
+    return ConfigUtils.json.encodeToString(this)
+}
+
+fun String.stringToData(): RpcConfig {
+    return try {
+        ConfigUtils.json.decodeFromString(this)
+    } catch (e: Exception) {
+        RpcConfig()
     }
 }

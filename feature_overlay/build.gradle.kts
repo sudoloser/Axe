@@ -15,6 +15,7 @@ dependencies {
     implementation(projects.common.preference)
     implementation(projects.common.resources)
     implementation(projects.featureRpcBase)
+    implementation(projects.featureCustomRpc)
     implementation(projects.theme)
     implementation(projects.color)
 

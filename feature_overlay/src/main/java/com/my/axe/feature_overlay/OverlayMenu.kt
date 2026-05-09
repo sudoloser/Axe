@@ -20,13 +20,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.my.axe.data.utils.ConfigUtils
+import com.my.axe.data.utils.dataToString
+import com.my.axe.data.utils.stringToData
 import com.my.axe.feature_rpc_base.AppUtils
 import com.my.axe.feature_rpc_base.services.CustomRpcService
 import com.my.axe.preference.Prefs
 import com.my.axe.feature_custom_rpc.UiEvent
 import com.my.axe.feature_custom_rpc.UiState
 import com.my.axe.feature_custom_rpc.components.CustomRpcForm
-import com.my.axe.feature_custom_rpc.components.sheet.stringToData
 
 @Composable
 fun OverlayMenu(
@@ -74,7 +75,7 @@ fun OverlayMenu(
                         onEvent = { event ->
                             if (event is UiEvent.SetFieldsFromConfig) {
                                 currentUiState = currentUiState.copy(rpcConfig = event.rpc)
-                                val json = ConfigUtils.run { event.rpc.dataToString() }
+                                val json = event.rpc.dataToString()
                                 Prefs[Prefs.LAST_RUN_CUSTOM_RPC] = json
                                 if (isRunning) {
                                     val intent = Intent(context, CustomRpcService::class.java).apply {
@@ -101,7 +102,7 @@ fun OverlayMenu(
                             onCheckedChange = {
                                 isRunning = it
                                 if (it) {
-                                    val json = ConfigUtils.run { currentUiState.rpcConfig.dataToString() }
+                                    val json = currentUiState.rpcConfig.dataToString()
                                     if (json.isNotEmpty()) {
                                         val intent = Intent(context, CustomRpcService::class.java).apply {
                                             putExtra("RPC", json)
@@ -139,7 +140,7 @@ fun OverlayMenu(
                                     val loadedConfig = ConfigUtils.loadConfig(context, config)
                                     loadedConfig?.let {
                                         currentUiState = currentUiState.copy(rpcConfig = it)
-                                        val json = ConfigUtils.run { it.dataToString() }
+                                        val json = it.dataToString()
                                         Prefs[Prefs.LAST_RUN_CUSTOM_RPC] = json
                                         if (isRunning) {
                                             val intent = Intent(context, CustomRpcService::class.java).apply {
