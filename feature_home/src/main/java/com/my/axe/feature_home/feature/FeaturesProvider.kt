@@ -28,6 +28,8 @@ import com.my.axe.navigation.Routes
 import com.my.axe.preference.Prefs
 import com.my.axe.resources.R
 
+import com.my.axe.feature_overlay.OverlayService
+
 @Composable
 fun homeFeaturesProvider(
     navigateTo: (String) -> Unit,
@@ -37,6 +39,24 @@ fun homeFeaturesProvider(
 ): List<HomeFeature> {
     val ctx = LocalContext.current
     return listOf(
+        HomeFeature(
+            title = stringResource(id = R.string.main_floatingOverlay),
+            icon = R.drawable.ic_apps, // Use Axe icon when available
+            route = Routes.OVERLAY_SETTINGS,
+            isChecked = Prefs[Prefs.USE_OVERLAY, false],
+            onClick = { navigateTo(it) },
+            onCheckedChange = {
+                Prefs[Prefs.USE_OVERLAY] = it
+                if (it) {
+                    ctx.startService(Intent(ctx, OverlayService::class.java))
+                } else {
+                    ctx.stopService(Intent(ctx, OverlayService::class.java))
+                }
+            },
+            shape = RoundedCornerShape(44.dp, 20.dp, 44.dp, 20.dp),
+            tooltipText = stringResource(id = R.string.main_floatingOverlay_details),
+            featureDocsLink = ""
+        ),
         HomeFeature(
             title = stringResource(id = R.string.main_appDetection),
             icon = R.drawable.ic_apps,

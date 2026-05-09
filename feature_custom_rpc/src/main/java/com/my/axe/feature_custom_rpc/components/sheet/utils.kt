@@ -17,32 +17,17 @@ import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import com.blankj.utilcode.util.FileIOUtils
-import com.my.axe.data.rpc.Constants
+import com.my.axe.data.utils.ConfigUtils
 import com.my.axe.data.utils.getFileName
 import com.my.axe.domain.model.rpc.RpcConfig
-import com.my.axe.preference.Prefs
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.io.File
-import java.io.FilenameFilter
 
-internal val FILE_FILTER = FilenameFilter { _: File?, f: String ->
-    f.endsWith(".json")
-}
+internal val FILE_FILTER = ConfigUtils.FILE_FILTER
 
-internal fun Context.dir() =
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
-        File(this.filesDir, "Configs")
-    else {
-        val selected = Prefs[Prefs.CONFIGS_DIRECTORY, Constants.DOWNLOADS_DIRECTORY]
-        if (selected == Constants.DOWNLOADS_DIRECTORY)
-            File(
-                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
-                "axe")
-        else
-            File(this.filesDir, "Configs")
-    }
+internal fun Context.dir() = ConfigUtils.getConfigDir(this)
 
 internal fun Context.handleUriResult(uri: Uri?, onSuccess: (json: String) -> Unit) {
     if (uri == null)

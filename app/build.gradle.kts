@@ -38,6 +38,8 @@ android {
     }
 }
 dependencies {
+    implementation (libs.shizuku.provider)
+    implementation (projects.data)
     implementation (projects.domain)
     implementation (projects.theme)
     implementation (projects.featureStartup)
@@ -53,6 +55,7 @@ dependencies {
     implementation (projects.featureCustomRpc)
     implementation (projects.featureExperimentalRpc)
     implementation (projects.featureHome)
+    implementation (projects.featureOverlay)
     implementation (projects.common.preference)
     implementation (projects.common.navigation)
 

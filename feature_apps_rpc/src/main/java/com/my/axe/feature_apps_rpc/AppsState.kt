@@ -20,4 +20,6 @@ data class AppsState(
     val apps: List<AppsInfo> = emptyList(),
     val enabledApps: Map<String, Boolean> = emptyMap(),
     val isLoading: Boolean = true,
+    val customConfigs: List<String> = emptyList(),
+    val appConfigs: Map<String, String> = emptyMap()
 )

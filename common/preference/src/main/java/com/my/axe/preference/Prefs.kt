@@ -243,6 +243,14 @@ object Prefs {
     const val EXPERIMENTAL_RPC_SHOW_PLAYBACK_STATE = "experimental_rpc_show_playback_state"
     const val EXPERIMENTAL_RPC_ENABLE_TIMESTAMPS = "experimental_rpc_enable_timestamps"
     const val EXPERIMENTAL_RPC_HIDE_ON_PAUSE = "experimental_rpc_hide_on_pause"
+    const val USE_SHIZUKU = "use_shizuku"
+    const val APP_CUSTOM_RPC_CONFIGS = "app_custom_rpc_configs"
+    const val USE_OVERLAY = "use_overlay"
+    const val OVERLAY_OPACITY = "overlay_opacity"
+    const val OVERLAY_SCALE = "overlay_scale"
+    const val OVERLAY_SYSTEM_WIDE = "overlay_system_wide"
+    const val OVERLAY_WHITELIST = "overlay_whitelist"
+
     fun saveAppActivityType(packageName: String, activityType: Int) {
         val json = get(EXPERIMENTAL_RPC_APP_ACTIVITY_TYPES, "{}")
         val map: MutableMap<String, Int> = try {
@@ -261,6 +269,66 @@ object Prefs {
         } catch (_: Exception) {
             emptyMap()
         }
+    }
+
+    fun saveAppCustomConfig(packageName: String, configName: String?) {
+        val json = get(APP_CUSTOM_RPC_CONFIGS, "{}")
+        val map: MutableMap<String, String> = try {
+            Json.decodeFromString(json)
+        } catch (_: Exception) {
+            mutableMapOf()
+        }
+        if (configName == null) {
+            map.remove(packageName)
+        } else {
+            map[packageName] = configName
+        }
+        set(APP_CUSTOM_RPC_CONFIGS, Json.encodeToString(map))
+    }
+
+    fun getAppCustomConfig(packageName: String): String? {
+        val json = get(APP_CUSTOM_RPC_CONFIGS, "{}")
+        return try {
+            val map: Map<String, String> = Json.decodeFromString(json)
+            map[packageName]
+        } catch (_: Exception) {
+            null
+        }
+    }
+
+    fun getAppCustomConfigs(): Map<String, String> {
+        val json = get(APP_CUSTOM_RPC_CONFIGS, "{}")
+        return try {
+            Json.decodeFromString(json)
+        } catch (_: Exception) {
+            emptyMap()
+        }
+    }
+
+    fun saveOverlayWhitelist(packageName: String) {
+        val apps = get(OVERLAY_WHITELIST, "[]")
+        val whitelist: MutableSet<String> = try {
+            Json.decodeFromString(apps)
+        } catch (_: Exception) {
+            mutableSetOf()
+        }
+        if (whitelist.contains(packageName))
+            whitelist.remove(packageName)
+        else
+            whitelist.add(packageName)
+
+        set(OVERLAY_WHITELIST, Json.encodeToString(whitelist))
+    }
+
+    fun isOverlayWhitelisted(packageName: String?): Boolean {
+        if (packageName == null) return false
+        val apps = get(OVERLAY_WHITELIST, "[]")
+        val whitelist: Set<String> = try {
+            Json.decodeFromString(apps)
+        } catch (_: Exception) {
+            emptySet()
+        }
+        return whitelist.contains(packageName)
     }
 
     fun isExperimentalAppEnabled(packageName: String?): Boolean {

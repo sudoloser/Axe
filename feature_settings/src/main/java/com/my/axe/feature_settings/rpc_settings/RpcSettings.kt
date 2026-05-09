@@ -47,13 +47,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarState
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -71,10 +70,39 @@ import com.my.axe.ui.components.preference.PreferenceSwitch
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
+import androidx.compose.material.icons.filled.Bolt
+import rikka.shizuku.Shizuku
+import com.blankj.utilcode.util.AppUtils as AppUtilsCode
+
+import android.content.pm.PackageManager
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RpcSettings(onBackPressed: () -> Boolean) {
     val context = LocalContext.current
+    var useShizuku by remember { mutableStateOf(Prefs[Prefs.USE_SHIZUKU, false]) }
+    var shizukuAvailable by remember { mutableStateOf(false) }
+    var shizukuPermissionGranted by remember { mutableStateOf(false) }
+
+    val permissionListener = remember {
+        Shizuku.OnRequestPermissionResultListener { _, grantResult ->
+            shizukuPermissionGranted = grantResult == PackageManager.PERMISSION_GRANTED
+        }
+    }
+
+    DisposableEffect(Unit) {
+        Shizuku.addRequestPermissionResultListener(permissionListener)
+        onDispose {
+            Shizuku.removeRequestPermissionResultListener(permissionListener)
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        shizukuAvailable = Shizuku.pingBinder()
+        if (shizukuAvailable) {
+            shizukuPermissionGranted = Shizuku.checkSelfPermission() == PackageManager.PERMISSION_GRANTED
+        }
+    }
     var isLowResIconsEnabled by remember { mutableStateOf(Prefs[Prefs.RPC_USE_LOW_RES_ICON, false]) }
     var useImgur by remember { mutableStateOf(Prefs[Prefs.USE_IMGUR, false]) }
     var configsDir by remember { mutableStateOf(Prefs[Prefs.CONFIGS_DIRECTORY, ""]) }
@@ -195,6 +223,44 @@ fun RpcSettings(onBackPressed: () -> Boolean) {
             }
             item {
                 Subtitle(text = stringResource(id = R.string.advance_settings))
+            }
+            item {
+                PreferenceSwitch(
+                    title = stringResource(id = R.string.shizuku_detection),
+                    description = when {
+                        !shizukuAvailable -> stringResource(id = R.string.shizuku_not_running)
+                        !shizukuPermissionGranted -> "Shizuku: Permission required"
+                        else -> stringResource(id = R.string.shizuku_connected)
+                    },
+                    icon = Icons.Default.Bolt,
+                    isChecked = useShizuku && shizukuAvailable && shizukuPermissionGranted,
+                    enabled = shizukuAvailable
+                ) {
+                    if (shizukuAvailable) {
+                        if (Shizuku.checkSelfPermission() == PackageManager.PERMISSION_GRANTED) {
+                            useShizuku = !useShizuku
+                            Prefs[Prefs.USE_SHIZUKU] = useShizuku
+                            shizukuPermissionGranted = true
+                        } else {
+                            Shizuku.requestPermission(101)
+                        }
+                    }
+                }
+            }
+            if (!shizukuAvailable) {
+                item {
+                    SettingItem(
+                        title = stringResource(id = R.string.shizuku_open),
+                        description = stringResource(id = R.string.shizuku_not_running),
+                        icon = Icons.Default.Bolt
+                    ) {
+                        try {
+                            AppUtilsCode.launchApp("moe.shizuku.privileged.api")
+                        } catch (e: Exception) {
+                            Toast.makeText(context, "Shizuku not installed", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
             }
             item {
                 PreferenceSwitch(

@@ -30,6 +30,7 @@ class Routes {
         const val CONSOLE_RPC = "console_rpc"
         const val EXPERIMENTAL_RPC = "experimental_rpc"
         const val EXPERIMENTAL_RPC_APPS = "experimental_rpc_apps"
+        const val OVERLAY_SETTINGS = "overlay_settings"
 
         /* Settings Screens */
         const val LANGUAGES = "languages"
