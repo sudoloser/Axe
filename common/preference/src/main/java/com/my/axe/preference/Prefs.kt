@@ -257,6 +257,15 @@ object Prefs {
         set(EXPERIMENTAL_RPC_APP_ACTIVITY_TYPES, Json.encodeToString(map))
     }
 
+    fun getAppActivityTypes(): Map<String, Int> {
+        val json = get(EXPERIMENTAL_RPC_APP_ACTIVITY_TYPES, "{}")
+        return try {
+            Json.decodeFromString(json)
+        } catch (_: Exception) {
+            emptyMap()
+        }
+    }
+
     fun saveAppCustomConfig(packageName: String, configName: String?) {
         val json = get(APP_CUSTOM_RPC_CONFIGS, "{}")
         val map: MutableMap<String, String> = try {

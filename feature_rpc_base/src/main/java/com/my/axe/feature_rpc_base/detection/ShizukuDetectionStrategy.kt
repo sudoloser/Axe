@@ -4,6 +4,7 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.IBinder
 import rikka.shizuku.Shizuku
+import rikka.shizuku.ShizukuBinderWrapper
 
 class ShizukuDetectionStrategy : DetectionStrategy {
     override fun getForegroundApp(): String? {
@@ -15,7 +16,7 @@ class ShizukuDetectionStrategy : DetectionStrategy {
             val serviceName = if (isAtLeastQ) "activity_task" else "activity"
             
             val serviceBinder = getServiceBinder(serviceName) ?: return null
-            val wrappedBinder = Shizuku.newBinderWrapper(serviceBinder)
+            val wrappedBinder = ShizukuBinderWrapper(serviceBinder)
             
             val stubClass = if (isAtLeastQ) "android.app.IActivityTaskManager\$Stub" else "android.app.IActivityManager\$Stub"
             val iInterface = Class.forName(stubClass)
