@@ -177,6 +177,7 @@ object Prefs {
     const val CUSTOM_ACTIVITY_TYPE = "custom_activity_type"
     const val SHOW_LOGS_IN_COMPACT_MODE = "logs_compact_mode"
     const val LOGS_AUTO_SCROLL = "logs_auto_scroll"
+    const val ALLOW_EXTERNAL_APPS = "allow_external_apps"
 
     const val PALETTE_STYLE = "palette_style"
 

@@ -245,4 +245,6 @@
     <string name="overlay_appearance">Appearance</string>
     <string name="overlay_visibility">Visibility</string>
     <string name="overlay_status">Status</string>
+    <string name="allow_external_apps">Allow external apps</string>
+    <string name="allow_external_apps_desc">Allow other apps/games to update your Discord presence via Intents</string>
 </resources>

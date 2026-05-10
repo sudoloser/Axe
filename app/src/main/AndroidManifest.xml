@@ -29,6 +29,12 @@
     <uses-permission android:name="moe.shizuku.manager.permission.API_V23" />
     <uses-permission android:name="moe.shizuku.privileged.api.permission.RECEIVE_QUERY_RESULT" />
 
+    <permission
+        android:name="com.my.axe.PERMISSION_RPC"
+        android:protectionLevel="normal" />
+
+    <uses-permission android:name="com.my.axe.PERMISSION_RPC" />
+
     <queries>
         <package android:name="moe.shizuku.privileged.api" />
     </queries>
@@ -43,6 +49,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.axe"
         tools:targetApi="tiramisu">
+        <receiver
+            android:name="com.my.axe.feature_rpc_base.AxeRpcReceiver"
+            android:exported="true"
+            android:permission="com.my.axe.PERMISSION_RPC">
+            <intent-filter>
+                <action android:name="com.my.axe.UPDATE_PRESENCE" />
+                <action android:name="com.my.axe.CLEAR_PRESENCE" />
+            </intent-filter>
+        </receiver>
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.provider"
