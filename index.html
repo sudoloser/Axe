@@ -4,19 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Axe Developer API Documentation</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg-color: #0d1117;
-            --sidebar-bg: #161b22;
-            --card-bg: #1c2128;
-            --primary: #58a6ff;
-            --text-main: #c9d1d9;
-            --text-muted: #8b949e;
+            --sidebar-bg: #0d1117;
+            --sidebar-border: #30363d;
+            --card-bg: #161b22;
+            --primary: #ffffff;
+            --text-main: #e6edf3;
+            --text-muted: #848d97;
             --border-color: #30363d;
-            --accent: #238636;
-            --code-bg: #0d1117;
+            --code-bg: #161b22;
+            --hover-bg: #21262d;
+            --selection-bg: #388bfd4d;
         }
 
         * {
@@ -25,33 +25,37 @@
             padding: 0;
         }
 
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
             background-color: var(--bg-color);
             color: var(--text-main);
-            line-height: 1.6;
+            line-height: 1.5;
             display: flex;
         }
 
         /* Sidebar */
         aside {
-            width: 280px;
+            width: 248px;
             background-color: var(--sidebar-bg);
             height: 100vh;
             position: fixed;
-            border-right: 1px solid var(--border-color);
-            padding: 2rem 1rem;
+            border-right: 1px solid var(--sidebar-border);
+            padding: 32px 16px;
             overflow-y: auto;
+            z-index: 100;
         }
 
         .brand {
-            font-size: 1.5rem;
-            font-weight: 700;
+            font-size: 1.25rem;
+            font-weight: 600;
             color: var(--primary);
-            margin-bottom: 2rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            margin-bottom: 32px;
+            padding-left: 8px;
+            letter-spacing: -0.02em;
         }
 
         nav ul {
@@ -59,135 +63,200 @@
         }
 
         nav li {
-            margin-bottom: 0.5rem;
+            margin-bottom: 4px;
         }
 
         nav a {
             color: var(--text-muted);
             text-decoration: none;
-            font-size: 0.9rem;
+            font-size: 14px;
             display: block;
-            padding: 0.5rem;
+            padding: 6px 12px;
             border-radius: 6px;
-            transition: all 0.2s;
+            transition: background-color 0.15s ease;
         }
 
-        nav a:hover, nav a.active {
+        nav a:hover {
             color: var(--text-main);
-            background-color: var(--card-bg);
+            background-color: var(--hover-bg);
+        }
+
+        nav a.active {
+            color: var(--text-main);
+            background-color: var(--hover-bg);
+            font-weight: 600;
         }
 
         /* Main Content */
         main {
-            margin-left: 280px;
-            padding: 3rem 10%;
+            margin-left: 248px;
+            padding: 48px 64px;
             width: 100%;
-            max-width: 1200px;
+            max-width: 1012px;
         }
 
         section {
-            margin-bottom: 4rem;
-            scroll-margin-top: 2rem;
+            margin-bottom: 64px;
+            scroll-margin-top: 48px;
         }
 
-        h1 { font-size: 2.5rem; margin-bottom: 1rem; color: #fff; }
-        h2 { font-size: 1.8rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem; color: var(--primary); }
-        h3 { font-size: 1.3rem; margin-bottom: 1rem; }
+        h1 {
+            font-size: 32px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: var(--primary);
+            letter-spacing: -0.02em;
+        }
 
-        p { margin-bottom: 1rem; color: var(--text-main); }
+        h2 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-top: 40px;
+            margin-bottom: 16px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 8px;
+            color: var(--primary);
+            letter-spacing: -0.01em;
+        }
+
+        h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-top: 24px;
+            margin-bottom: 8px;
+            color: var(--text-main);
+        }
+
+        p {
+            margin-bottom: 16px;
+            color: var(--text-main);
+            font-size: 16px;
+        }
 
         /* Tables */
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+            margin-bottom: 24px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 1.5rem;
-            background: var(--card-bg);
-            border-radius: 8px;
-            overflow: hidden;
+            background: transparent;
+            font-size: 14px;
         }
 
         th, td {
-            padding: 12px 15px;
+            padding: 12px 16px;
             text-align: left;
             border-bottom: 1px solid var(--border-color);
         }
 
         th {
-            background-color: rgba(255, 255, 255, 0.05);
-            color: var(--primary);
+            background-color: var(--card-bg);
+            color: var(--text-muted);
             font-weight: 600;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 0.05em;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
         }
 
         /* Code Blocks */
         .code-container {
             position: relative;
-            margin-bottom: 1.5rem;
+            margin-bottom: 24px;
             background-color: var(--code-bg);
-            border-radius: 8px;
+            border-radius: 6px;
             border: 1px solid var(--border-color);
         }
 
         pre {
-            padding: 1.5rem;
+            padding: 16px;
             overflow-x: auto;
-            font-family: 'Fira Code', monospace;
-            font-size: 0.9rem;
-        }
-
-        code {
-            color: #d19a66;
+            font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace;
+            font-size: 13.6px;
+            color: #e6edf3;
         }
 
         .copy-btn {
             position: absolute;
-            top: 10px;
-            right: 10px;
-            background: rgba(255, 255, 255, 0.1);
-            border: none;
+            top: 8px;
+            right: 8px;
+            background-color: var(--hover-bg);
+            border: 1px solid var(--border-color);
             color: var(--text-muted);
-            padding: 5px 10px;
-            border-radius: 4px;
+            padding: 4px 8px;
+            border-radius: 6px;
             cursor: pointer;
-            font-size: 0.8rem;
-            transition: all 0.2s;
+            font-size: 12px;
+            font-weight: 500;
+            transition: all 0.1s ease;
         }
 
         .copy-btn:hover {
-            background: var(--primary);
-            color: #fff;
-        }
-
-        /* Responsive */
-        @media (max-width: 900px) {
-            aside { display: none; }
-            main { margin-left: 0; padding: 2rem; }
+            background-color: #30363d;
+            color: var(--text-main);
+            border-color: #8b949e;
         }
 
         .tag {
-            background: rgba(88, 166, 255, 0.1);
-            color: var(--primary);
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-family: 'Fira Code', monospace;
-            font-size: 0.85rem;
+            background-color: rgba(110, 118, 129, 0.2);
+            color: var(--text-main);
+            padding: 0.2em 0.4em;
+            border-radius: 6px;
+            font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace;
+            font-size: 85%;
+        }
+
+        ul {
+            margin-bottom: 16px;
+            padding-left: 24px;
+        }
+
+        li {
+            margin-bottom: 4px;
         }
 
         footer {
-            margin-top: 5rem;
-            padding-top: 2rem;
+            margin-top: 80px;
+            padding-top: 32px;
             border-top: 1px solid var(--border-color);
-            text-align: center;
+            text-align: left;
             color: var(--text-muted);
-            font-size: 0.8rem;
+            font-size: 14px;
         }
+
+        /* Responsive */
+        @media (max-width: 1012px) {
+            main {
+                padding: 48px 32px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            aside { display: none; }
+            main { margin-left: 0; padding: 32px 16px; }
+        }
+
+        /* Code Highlighting Sim */
+        .keyword { color: #ff7b72; }
+        .string { color: #a5d6ff; }
+        .comment { color: #8b949e; }
+        .function { color: #d2a8ff; }
+        .number { color: #79c0ff; }
     </style>
 </head>
 <body>
 
     <aside>
-        <div class="brand">
-            <i class="fab fa-discord"></i> Axe API
-        </div>
+        <div class="brand">Axe API</div>
         <nav>
             <ul>
                 <li><a href="#overview">Overview</a></li>
@@ -206,20 +275,20 @@
     <main>
         <section id="overview">
             <h1>Axe Public Intent API</h1>
-            <p>Empower your Android apps and games with Discord Rich Presence. Axe provides a seamless bridge between your application and Discord, handling the complex gateway logic so you can focus on your product.</p>
+            <p>Integrate Discord Rich Presence into your Android applications. Axe handles the gateway communication, allowing you to update user status with simple Broadcast Intents.</p>
         </section>
 
         <section id="setup">
             <h2>Setup / Prerequisites</h2>
-            <h3>1. Custom Permission</h3>
-            <p>Declare the following permission in your <span class="tag">AndroidManifest.xml</span> to authorize your app to communicate with Axe.</p>
+            <h3>Permission</h3>
+            <p>Add the Axe RPC permission to your <span class="tag">AndroidManifest.xml</span>:</p>
             <div class="code-container">
                 <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                 <pre><code>&lt;uses-permission android:name="com.my.axe.PERMISSION_RPC" /&gt;</code></pre>
             </div>
 
-            <h3>2. Package Visibility</h3>
-            <p>For apps targeting Android 11+, include Axe in your queries block:</p>
+            <h3>Package Visibility</h3>
+            <p>For Android 11 (API 30) or higher, include Axe in your queries:</p>
             <div class="code-container">
                 <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                 <pre><code>&lt;queries&gt;
@@ -230,64 +299,67 @@
 
         <section id="actions">
             <h2>Available Intent Actions</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Action</th>
-                        <th>Description</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><span class="tag">com.my.axe.UPDATE_PRESENCE</span></td>
-                        <td>Updates or starts a Discord presence.</td>
-                    </tr>
-                    <tr>
-                        <td><span class="tag">com.my.axe.CLEAR_PRESENCE</span></td>
-                        <td>Stops and clears the current presence.</td>
-                    </tr>
-                </tbody>
-            </table>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Action</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="tag">com.my.axe.UPDATE_PRESENCE</span></td>
+                            <td>Update or start a Discord presence session.</td>
+                        </tr>
+                        <tr>
+                            <td><span class="tag">com.my.axe.CLEAR_PRESENCE</span></td>
+                            <td>Stop the active presence session.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </section>
 
         <section id="extras">
             <h2>Supported Extras</h2>
-            <p>Use these extras with the <span class="tag">UPDATE_PRESENCE</span> action.</p>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Key</th>
-                        <th>Type</th>
-                        <th>Description</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr><td>activity_name</td><td>String</td><td>Primary activity title</td></tr>
-                    <tr><td>details</td><td>String</td><td>Second line of text</td></tr>
-                    <tr><td>state</td><td>String</td><td>Third line of text</td></tr>
-                    <tr><td>large_image</td><td>String</td><td>Public URL for large image</td></tr>
-                    <tr><td>small_image</td><td>String</td><td>Public URL for small image</td></tr>
-                    <tr><td>timestamp_start</td><td>Long</td><td>Start time (ms)</td></tr>
-                    <tr><td>activity_type</td><td>String</td><td>playing, listening, watching...</td></tr>
-                    <tr><td>source_package</td><td>String</td><td>Your package name (required)</td></tr>
-                </tbody>
-            </table>
+            <p>Sent via <span class="tag">UPDATE_PRESENCE</span>.</p>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Key</th>
+                            <th>Type</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>activity_name</td><td>String</td><td>Main title of the activity</td></tr>
+                        <tr><td>details</td><td>String</td><td>Secondary status line</td></tr>
+                        <tr><td>state</td><td>String</td><td>Third status line</td></tr>
+                        <tr><td>large_image</td><td>String</td><td>Public image URL</td></tr>
+                        <tr><td>small_image</td><td>String</td><td>Public image URL (overlay)</td></tr>
+                        <tr><td>timestamp_start</td><td>Long</td><td>Start time in ms</td></tr>
+                        <tr><td>activity_type</td><td>String</td><td>playing, listening, etc.</td></tr>
+                        <tr><td>source_package</td><td>String</td><td>Your app's package name</td></tr>
+                    </tbody>
+                </table>
+            </div>
         </section>
 
         <section id="kotlin">
-            <h2>Complete Kotlin Example</h2>
+            <h2>Kotlin Example</h2>
             <div class="code-container">
                 <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                <pre><code>fun updateAxePresence(context: Context) {
-    val intent = Intent("com.my.axe.UPDATE_PRESENCE").apply {
-        `package` = "com.my.axe"
-        putExtra("activity_name", "Kingdom of Kotlin")
-        putExtra("details", "Battling the NullPointerException")
-        putExtra("state", "Level 99 Mage")
-        putExtra("large_image", "https://example.com/assets/world_map.png")
-        putExtra("timestamp_start", System.currentTimeMillis())
-        putExtra("activity_type", "playing")
-        putExtra("source_package", context.packageName)
+                <pre><code><span class="keyword">fun</span> <span class="function">updateAxePresence</span>(context: Context) {
+    <span class="keyword">val</span> intent = Intent(<span class="string">"com.my.axe.UPDATE_PRESENCE"</span>).apply {
+        `package` = <span class="string">"com.my.axe"</span>
+        putExtra(<span class="string">"activity_name"</span>, <span class="string">"Kingdom of Kotlin"</span>)
+        putExtra(<span class="string">"details"</span>, <span class="string">"Battling Bugs"</span>)
+        putExtra(<span class="string">"large_image"</span>, <span class="string">"https://example.com/asset.png"</span>)
+        putExtra(<span class="string">"timestamp_start"</span>, System.currentTimeMillis())
+        putExtra(<span class="string">"activity_type"</span>, <span class="string">"playing"</span>)
+        putExtra(<span class="string">"source_package"</span>, context.packageName)
     }
     context.sendBroadcast(intent)
 }</code></pre>
@@ -298,57 +370,56 @@
             <h2>Java Example</h2>
             <div class="code-container">
                 <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                <pre><code>public void updateDiscordPresence(Context context) {
-    Intent intent = new Intent("com.my.axe.UPDATE_PRESENCE");
-    intent.setPackage("com.my.axe");
-    intent.putExtra("activity_name", "Java Legends");
-    intent.putExtra("details", "Managing GC Overhead");
-    intent.putExtra("timestamp_start", System.currentTimeMillis());
-    intent.putExtra("activity_type", "playing");
-    intent.putExtra("source_package", context.getPackageName());
+                <pre><code><span class="keyword">public void</span> <span class="function">updateDiscordPresence</span>(Context context) {
+    Intent intent = <span class="keyword">new</span> Intent(<span class="string">"com.my.axe.UPDATE_PRESENCE"</span>);
+    intent.setPackage(<span class="string">"com.my.axe"</span>);
+    intent.putExtra(<span class="string">"activity_name"</span>, <span class="string">"Java Legends"</span>);
+    intent.putExtra(<span class="string">"timestamp_start"</span>, System.currentTimeMillis());
+    intent.putExtra(<span class="string">"activity_type"</span>, <span class="string">"playing"</span>);
+    intent.putExtra(<span class="string">"source_package"</span>, context.getPackageName());
     context.sendBroadcast(intent);
 }</code></pre>
             </div>
         </section>
 
         <section id="best-practices">
-            <h2>Best Practices & Tips</h2>
+            <h2>Best Practices</h2>
             <ul>
-                <li><strong>Rate Limiting:</strong> Minimum 15 seconds between updates.</li>
-                <li><strong>Image URLs:</strong> Must be direct public links (not redirects).</li>
-                <li><strong>Cleanup:</strong> Always call CLEAR_PRESENCE when your activity finishes.</li>
+                <li><strong>Rate Limiting:</strong> Enforced at 15 seconds per source.</li>
+                <li><strong>Image Hosting:</strong> Use stable, direct public URLs.</li>
+                <li><strong>Lifecycle:</strong> Clear presence on application exit.</li>
             </ul>
         </section>
 
         <section id="clear">
-            <h2>Clear Presence Example</h2>
+            <h2>Clear Presence</h2>
             <div class="code-container">
                 <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                <pre><code>val intent = Intent("com.my.axe.CLEAR_PRESENCE").apply {
-    `package` = "com.my.axe"
+                <pre><code><span class="keyword">val</span> intent = Intent(<span class="string">"com.my.axe.CLEAR_PRESENCE"</span>).apply {
+    `package` = <span class="string">"com.my.axe"</span>
 }
 context.sendBroadcast(intent)</code></pre>
             </div>
         </section>
 
         <section id="reference">
-            <h2>Full Constants Reference</h2>
-            <table>
-                <thead><tr><th>Constant</th><th>Value</th></tr></thead>
-                <tbody>
-                    <tr><td>Action: Update</td><td>com.my.axe.UPDATE_PRESENCE</td></tr>
-                    <tr><td>Action: Clear</td><td>com.my.axe.CLEAR_PRESENCE</td></tr>
-                    <tr><td>Extra: Activity Name</td><td>activity_name</td></tr>
-                    <tr><td>Extra: Details</td><td>details</td></tr>
-                    <tr><td>Extra: State</td><td>state</td></tr>
-                    <tr><td>Extra: Large Image</td><td>large_image</td></tr>
-                    <tr><td>Extra: Time Start</td><td>timestamp_start</td></tr>
-                </tbody>
-            </table>
+            <h2>Constants Reference</h2>
+            <div class="table-container">
+                <table>
+                    <thead><tr><th>Constant</th><th>Value</th></tr></thead>
+                    <tbody>
+                        <tr><td>Action Update</td><td>com.my.axe.UPDATE_PRESENCE</td></tr>
+                        <tr><td>Action Clear</td><td>com.my.axe.CLEAR_PRESENCE</td></tr>
+                        <tr><td>Extra Name</td><td>activity_name</td></tr>
+                        <tr><td>Extra Start Time</td><td>timestamp_start</td></tr>
+                        <tr><td>Extra App ID</td><td>application_id</td></tr>
+                    </tbody>
+                </table>
+            </div>
         </section>
 
         <footer>
-            &copy; 2026 Axe Discord Presence. Built for developers.
+            &copy; 2026 Axe Discord Presence.
         </footer>
     </main>
 
@@ -357,12 +428,12 @@ context.sendBroadcast(intent)</code></pre>
             const pre = btn.nextElementSibling;
             const code = pre.innerText;
             navigator.clipboard.writeText(code).then(() => {
-                btn.innerText = 'Copied!';
-                setTimeout(() => btn.innerText = 'Copy', 2000);
+                const originalText = btn.innerText;
+                btn.innerText = 'Copied';
+                setTimeout(() => btn.innerText = originalText, 2000);
             });
         }
 
-        // Active link highlighting
         const sections = document.querySelectorAll('section');
         const navLinks = document.querySelectorAll('nav a');
 
@@ -370,14 +441,14 @@ context.sendBroadcast(intent)</code></pre>
             let current = '';
             sections.forEach(section => {
                 const sectionTop = section.offsetTop;
-                if (pageYOffset >= sectionTop - 60) {
+                if (pageYOffset >= sectionTop - 100) {
                     current = section.getAttribute('id');
                 }
             });
 
             navLinks.forEach(link => {
                 link.classList.remove('active');
-                if (link.getAttribute('href').includes(current)) {
+                if (link.getAttribute('href').substring(1) === current) {
                     link.classList.add('active');
                 }
             });
