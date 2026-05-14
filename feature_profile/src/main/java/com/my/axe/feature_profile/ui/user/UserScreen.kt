@@ -12,6 +12,7 @@
 
 package com.my.axe.feature_profile.ui.user
 
+import android.content.Intent
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
@@ -25,6 +26,7 @@ import com.my.axe.domain.model.user.User
 import com.my.axe.feature_profile.ui.component.Logout
 import com.my.axe.feature_profile.ui.component.ProfileCard
 import com.my.axe.feature_profile.ui.component.ProfileNetworkError
+import com.my.axe.preference.Prefs
 import com.my.axe.resources.R
 import com.my.axe.ui.components.BackButton
 import com.my.axe.ui.components.shimmer.AnimatedShimmer
@@ -91,10 +93,13 @@ fun UserScreen(
                             ).run {
                                 when (this) {
                                     SnackbarResult.ActionPerformed -> try {
-                                        val runtime = Runtime.getRuntime()
-                                        // running shell command to clear data
-                                        // TODO replace with deleting directories and restarting the app to have multiple user accounts
-                                        runtime.exec("pm clear com.my.axe")
+                                        Prefs.remove(Prefs.TOKEN)
+                                        Prefs.remove(Prefs.USER_DATA)
+                                        val intent = ctx.packageManager.getLaunchIntentForPackage(ctx.packageName)
+                                        intent?.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                                        intent?.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                        ctx.startActivity(intent)
+                                        Runtime.getRuntime().exit(0)
                                     } catch (e: Exception) {
                                         e.printStackTrace()
                                     }
