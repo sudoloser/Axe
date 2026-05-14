@@ -107,6 +107,7 @@ fun ProfileCard(
                     model = user.getBannerImage() ?: USER_BANNER,
                     contentScale = ContentScale.FillWidth,
                     placeholder = painterResource(R.drawable.broken_image),
+                    error = painterResource(R.drawable.broken_image),
                     contentDescription = "User Avatar"
                 )
 
@@ -115,6 +116,7 @@ fun ProfileCard(
                     placeholder = painterResource(id = R.drawable.error_avatar),
                     error = painterResource(id = R.drawable.error_avatar),
                     contentDescription = null,
+                    contentScale = ContentScale.Fit,
                     modifier = Modifier
                         .padding(16.dp, 64.dp, 16.dp, 6.dp)
                         .size(110.dp)
@@ -137,6 +139,8 @@ fun ProfileCard(
                         AsyncImage(
                             model = NITRO_ICON,
                             placeholder = painterResource(R.drawable.broken_image),
+                            error = painterResource(R.drawable.broken_image),
+                            contentScale = ContentScale.Fit,
                             modifier = Modifier
                                 .size(40.dp)
                                 .padding(5.dp),
@@ -148,6 +152,8 @@ fun ProfileCard(
                             AsyncImage(
                                 model = badge.icon,
                                 placeholder = painterResource(R.drawable.broken_image),
+                                error = painterResource(R.drawable.broken_image),
+                                contentScale = ContentScale.Fit,
                                 modifier = Modifier
                                     .size(40.dp)
                                     .padding(5.dp),

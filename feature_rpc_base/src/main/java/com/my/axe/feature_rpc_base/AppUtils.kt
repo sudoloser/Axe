@@ -43,13 +43,22 @@ object AppUtils {
     fun experimentalRpcRunning(): Boolean {
         return checkForRunningService<ExperimentalRpc>()
     }
-    private inline fun <reified T : Any> checkForRunningService(): Boolean {
+
+    fun overlayRunning(): Boolean {
+        return isServiceRunning("com.my.axe.feature_overlay.OverlayService")
+    }
+
+    private fun isServiceRunning(className: String): Boolean {
         for (runningServiceInfo in activityManager.getRunningServices(
             Int.MAX_VALUE
         )) {
-            if (T::class.java.name == runningServiceInfo.service.className)
+            if (className == runningServiceInfo.service.className)
                 return true
         }
         return false
+    }
+
+    private inline fun <reified T : Any> checkForRunningService(): Boolean {
+        return isServiceRunning(T::class.java.name)
     }
 }

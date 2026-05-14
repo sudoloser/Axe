@@ -38,9 +38,11 @@ class ExperimentalRpcViewmodel @Inject constructor(
             templateName = Prefs[Prefs.EXPERIMENTAL_RPC_TEMPLATE_NAME, ""],
             templateDetails = Prefs[Prefs.EXPERIMENTAL_RPC_TEMPLATE_DETAILS, ""],
             templateState = Prefs[Prefs.EXPERIMENTAL_RPC_TEMPLATE_STATE, ""],
+            templateAlbum = Prefs[Prefs.EXPERIMENTAL_RPC_TEMPLATE_ALBUM, ""],
             showCoverArt = Prefs[Prefs.EXPERIMENTAL_RPC_SHOW_COVER_ART, false],
             showAppIcon = Prefs[Prefs.EXPERIMENTAL_RPC_SHOW_APP_ICON, false],
             showPlaybackState = Prefs[Prefs.EXPERIMENTAL_RPC_SHOW_PLAYBACK_STATE, false],
+            showAlbumTitle = Prefs[Prefs.EXPERIMENTAL_RPC_SHOW_ALBUM_TITLE, true],
             enableTimestamps = Prefs[Prefs.EXPERIMENTAL_RPC_ENABLE_TIMESTAMPS, false],
             hideOnPause = Prefs[Prefs.EXPERIMENTAL_RPC_HIDE_ON_PAUSE, false],
         )
@@ -99,6 +101,11 @@ class ExperimentalRpcViewmodel @Inject constructor(
                     _uiState.update { it.copy(templateState = event.value) }
                 }
 
+                is UiEvent.SetTemplateAlbum -> {
+                    Prefs[Prefs.EXPERIMENTAL_RPC_TEMPLATE_ALBUM] = event.value
+                    _uiState.update { it.copy(templateAlbum = event.value) }
+                }
+
                 is UiEvent.ToggleAppEnabled -> {
                     val current = _uiState.value.enabledApps[event.packageName] ?: false
                     Prefs.saveExperimentalAppToPrefs(event.packageName)
@@ -147,6 +154,11 @@ class ExperimentalRpcViewmodel @Inject constructor(
                         Prefs[Prefs.EXPERIMENTAL_RPC_SHOW_APP_ICON] = false
                         _uiState.update { it.copy(showAppIcon = false) }
                     }
+                }
+
+                is UiEvent.ToggleShowAlbumTitle -> {
+                    Prefs[Prefs.EXPERIMENTAL_RPC_SHOW_ALBUM_TITLE] = event.enabled
+                    _uiState.update { it.copy(showAlbumTitle = event.enabled) }
                 }
 
                 is UiEvent.ToggleEnableTimestamps -> {

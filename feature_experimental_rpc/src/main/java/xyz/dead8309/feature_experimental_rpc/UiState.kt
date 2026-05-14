@@ -22,6 +22,7 @@ data class UiState(
     val templateName: String = "",
     val templateDetails: String = "",
     val templateState: String = "",
+    val templateAlbum: String = "",
     val installedApps: List<AppsInfo> = emptyList(),
     val enabledApps: Map<String, Boolean> = emptyMap(), // pkg -> enabled
     val appActivityTypes: Map<String, Int> = emptyMap(), // pkg -> activity type
@@ -29,6 +30,7 @@ data class UiState(
     val showCoverArt: Boolean = true,
     val showAppIcon: Boolean = false,
     val showPlaybackState: Boolean = true,
+    val showAlbumTitle: Boolean = true,
     val enableTimestamps: Boolean = true,
     val hideOnPause: Boolean = false
 )

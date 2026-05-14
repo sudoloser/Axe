@@ -55,7 +55,10 @@ fun DynamicSVGImage(
                         tonalPalettes = tonalPalettes,
                         isDarkTheme = isDarkTheme
                     )
-                ).renderToPicture(size.width, size.height)
+                ).renderToPicture(
+                    if (size.width > 0) size.width else 1,
+                    if (size.height > 0) size.height else 1
+                )
             )
         )
     }

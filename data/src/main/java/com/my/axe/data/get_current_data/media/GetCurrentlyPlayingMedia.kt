@@ -124,6 +124,18 @@ class GetCurrentPlayingMedia @Inject constructor(
                         packageName = "$title::${mediaController.packageName}",
                         time = timestamps.takeIf { it != null }
                     )
+                } else if (Prefs[Prefs.MEDIA_RPC_SHOW_ARTIST_AS_TITLE, false]) {
+                    CommonRpc(
+                        name = author ?: appName,
+                        details = title,
+                        state = album,
+                        largeImage = largeIcon,
+                        smallImage = smallIcon,
+                        largeText = appName,
+                        smallText = smallText,
+                        packageName = "$title::${mediaController.packageName}",
+                        time = timestamps.takeIf { it != null }
+                    )
                 } else {
                     CommonRpc(
                         name = appName,

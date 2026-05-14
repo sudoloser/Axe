@@ -37,6 +37,8 @@ class AxeTileService : TileService() {
                 ctx.stopService(Intent(ctx, AppDetectionService::class.java))
                 ctx.stopService(Intent(ctx, MediaRpcService::class.java))
                 ctx.stopService(Intent(ctx, ExperimentalRpc::class.java))
+                ctx.stopService(Intent().setClassName(ctx, "com.my.axe.feature_overlay.OverlayService"))
+                Prefs[Prefs.USE_OVERLAY] = false
                 Toast.makeText(ctx, getString(R.string.stop_rpc_toast), Toast.LENGTH_SHORT).show()
             }
             Tile.STATE_INACTIVE -> {
@@ -67,7 +69,8 @@ class AxeTileService : TileService() {
         val rpc = arrayOf(
             getString(R.string.main_appDetection),
             getString(R.string.main_mediaRpc),
-            getString(R.string.main_experimentalRpc)
+            getString(R.string.main_experimentalRpc),
+            getString(R.string.main_floatingOverlay)
         )
         return MaterialAlertDialogBuilder(ContextThemeWrapper(ctx, com.my.axe.feature_rpc_base.R.style.MyTileDialogTheme))
             .setTitle(getString(R.string.choose_rpc))
@@ -85,6 +88,11 @@ class AxeTileService : TileService() {
                         ctx.startForegroundService(Intent(ctx, ExperimentalRpc::class.java))
                         Toast.makeText(ctx, getString(R.string.start_experimentalRPC_toast), Toast.LENGTH_SHORT).show()
                     }
+                    3 -> {
+                        ctx.startForegroundService(Intent().setClassName(ctx, "com.my.axe.feature_overlay.OverlayService"))
+                        Prefs[Prefs.USE_OVERLAY] = true
+                        Toast.makeText(ctx, getString(R.string.overlay_enable), Toast.LENGTH_SHORT).show()
+                    }
                     else -> {}
                 }
                 dialog.dismiss()
@@ -98,7 +106,7 @@ class AxeTileService : TileService() {
             qsTile.updateTile()
             return
         }
-        when (AppUtils.appDetectionRunning() || AppUtils.mediaRpcRunning() || AppUtils.experimentalRpcRunning()) {
+        when (AppUtils.appDetectionRunning() || AppUtils.mediaRpcRunning() || AppUtils.experimentalRpcRunning() || AppUtils.overlayRunning()) {
             true -> {
                 qsTile.state = Tile.STATE_ACTIVE
                 qsTile.icon = Icon.createWithResource(this, R.drawable.ic_tile_stop)
@@ -122,6 +130,8 @@ class AxeTileService : TileService() {
             getString(R.string.main_appDetection)
         else if (AppUtils.mediaRpcRunning())
             getString(R.string.main_mediaRpc)
+        else if (AppUtils.overlayRunning())
+            getString(R.string.main_floatingOverlay)
         else
             getString(R.string.main_experimentalRpc)
     }

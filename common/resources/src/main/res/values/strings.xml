@@ -60,6 +60,7 @@
     <string name="shape_triangles">Triangles</string>
     <string name="shape_star">Star</string>
     <string name="login_with_token">Login with Token</string>
+    <string name="passkey_login_not_working">Passkey login does not work</string>
     <string name="token_login_warning">Warning: Logging in with a token is not recommended for regular users and should be used with extreme caution. Your token gives full access to your Discord account.</string>
     <string name="enter_token">Enter Discord Token</string>
     <string name="enable_appsRpc">Enable App Detection</string>
@@ -207,6 +208,8 @@
     <string name="start_experimentalRPC_toast">Experimental RPC started</string>
     <string name="stop_rpc_toast">All services stopped</string>
     <string name="show_playback_state">Show Playback State</string>
+    <string name="show_album_title">Show Album Title</string>
+    <string name="album_title">Album Title</string>
     <string name="copied_to_clipboard">Copied to clipboard</string>
     <string name="application_id">Application ID</string>
     <string name="custom_application_id">Custom Activity Application ID</string>
@@ -224,10 +227,12 @@
     <string name="show_cover_art_desc">Display album cover art as large image</string>
     <string name="enable_experimental_rpc">Enable Experimental RPC</string>
     <string name="completion_media_author">Main Author</string>
+    <string name="completion_media_album">Album Name</string>
     <string name="imgur_client_id">Imgur Client ID</string>
     <string name="set_imgur_client_id">Set Imgur Client ID</string>
     <string name="set_imgur_client_id_desc">If images aren\'t showing using Imgur, you can try setting your own Client ID</string>
     <string name="show_song_as_title">Show Song as Title</string>
+    <string name="show_artist_as_title">Show Artist as Title</string>
     <string name="none_default">None (Use Default)</string>
     <string name="custom_rpc_config">Custom RPC Config</string>
     <string name="shizuku_detection">Use Shizuku for better app detection</string>
