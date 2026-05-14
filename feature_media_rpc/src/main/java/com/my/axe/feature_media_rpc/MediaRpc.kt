@@ -93,6 +93,7 @@ fun MediaRPC(
     var hideOnPause by remember { mutableStateOf(Prefs[MEDIA_RPC_HIDE_ON_PAUSE, false]) }
     var isShowPlaybackState by remember { mutableStateOf(Prefs[MEDIA_RPC_SHOW_PLAYBACK_STATE, false]) }
     var showSongAsTitle by remember { mutableStateOf(Prefs[Prefs.MEDIA_RPC_SHOW_SONG_AS_TITLE, false]) }
+    var showArtistAsTitle by remember { mutableStateOf(Prefs[Prefs.MEDIA_RPC_SHOW_ARTIST_AS_TITLE, false]) }
 
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
         rememberTopAppBarState(),
@@ -243,6 +244,24 @@ fun MediaRPC(
                     ) {
                         showSongAsTitle = !showSongAsTitle
                         Prefs[MEDIA_RPC_SHOW_SONG_AS_TITLE] = showSongAsTitle
+                        if (showSongAsTitle) {
+                            showArtistAsTitle = false
+                            Prefs[Prefs.MEDIA_RPC_SHOW_ARTIST_AS_TITLE] = false
+                        }
+                    }
+                }
+                item {
+                    PreferenceSwitch(
+                        title = stringResource(id = R.string.show_artist_as_title),
+                        icon = Icons.Default.Audiotrack,
+                        isChecked = showArtistAsTitle,
+                    ) {
+                        showArtistAsTitle = !showArtistAsTitle
+                        Prefs[Prefs.MEDIA_RPC_SHOW_ARTIST_AS_TITLE] = showArtistAsTitle
+                        if (showArtistAsTitle) {
+                            showSongAsTitle = false
+                            Prefs[MEDIA_RPC_SHOW_SONG_AS_TITLE] = false
+                        }
                     }
                 }
                 item {

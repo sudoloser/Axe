@@ -1,3 +1,11 @@
+# 5/13/2026 [v1.1.0]
+### Added
+- Media RPC: Add "Show artist as title" option (mutually exclusive with "Show song as title"). ([Issue #495](https://github.com/dead8309/Kizzy/issues/495))
+- Quick Settings: Added "Floating Overlay" to Axe Quickie tile for fast access.
+- Meta Quest: Fixed `java.lang.IllegalStateException: Size is unspecified` crash by enforcing bounded constraints and explicit image scaling. ([Issue #471](https://github.com/dead8309/Kizzy/issues/471))
+- Login: Added a note about passkey login not working.
+- Experimental RPC: Added ability to edit album title and a toggle to disable it. ([Issue #427](https://github.com/dead8309/Kizzy/issues/427))
+
 # 5/8/2026 [v1.0.0]
 ### Added
 - Floating Axe Overlay: Quick access to RPC controls (toggle service, switch presets, configure) while in other apps.

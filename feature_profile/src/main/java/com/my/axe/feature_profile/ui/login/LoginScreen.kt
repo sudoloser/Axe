@@ -127,6 +127,12 @@ fun LoginScreen(
                     ) {
                         Text(text = stringResource(R.string.login_with_token))
                     }
+                    Text(
+                        text = stringResource(R.string.passkey_login_not_working),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(top = 16.dp)
+                    )
                 }
             }
         }

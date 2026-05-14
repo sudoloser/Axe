@@ -57,7 +57,7 @@ Check out the Kizzy [QuickStart Guide](https://kizzydocs.vercel.app/quickstart/i
 
 ## Download
 > **Warning**
-> If you're thinking about downloading an Axe/axe clone or app from any third-party service (other than the ones listed in our repository), think again! We can't be held responsible for any issues that may arise with your account as a result. Stay safe and stick to our trusted download links for the genuine app.
+> If you're thinking about downloading an Axe/Kizzy clone or app from any third-party service (other than the ones listed in our repository), think again! We can't be held responsible for any issues that may arise with your account as a result. Stay safe and stick to our trusted download links for the genuine app.
 
 > **Warning**
 > This app uses the Discord Gateway connection. Use this at your own risk.
@@ -105,7 +105,7 @@ However people have been using custom rich presence for past 4-5 years and there
 - [x] Gif support
 - [x] External Url support (meaning you can give a url which points to an image on the web and discord will show it!)
 - [x] Use Images from Gallery
-
+- [x] Per app RPC configs for app detection
 
 ## Getting Started
 Read the Setup Guide from

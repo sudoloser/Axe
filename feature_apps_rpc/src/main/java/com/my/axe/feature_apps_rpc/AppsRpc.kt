@@ -87,127 +87,129 @@ fun AppsRPC(
     var searchText by remember { mutableStateOf("") }
     var isSearchBarVisible by remember { mutableStateOf(false) }
 
-    Scaffold(
-        modifier = Modifier
-            .fillMaxSize()
-            .nestedScroll(scrollBehavior.nestedScrollConnection),
-        topBar = {
-            LargeTopAppBar(
-                title = {
-                    Column {
-                        Text(
-                            text = stringResource(id = R.string.main_appDetection),
-                            style = MaterialTheme.typography.headlineLarge,
-                        )
-                    }
-                },
-                navigationIcon = { BackButton { onBackPressed() } },
-                actions = {
-                    if (isSearchBarVisible) {
-                        Column(
-                            modifier = Modifier.padding(10.dp)
-                        ) {
-                            SearchBar(
-                                text = searchText,
-                                onTextChanged = { searchText = it },
-                                onClose = { isSearchBarVisible = false },
-                                placeholder = stringResource(id = R.string.search_placeholder)
-                            )
-                        }
-                    } else {
-                        IconButton(onClick = { isSearchBarVisible = !isSearchBarVisible }) {
-                            Icon(imageVector = Icons.Outlined.Search, contentDescription = "Search")
-                        }
-                    }
-                },
-                scrollBehavior = scrollBehavior
-            )
-        }
-    ) {
-        Column(
+    Box(modifier = Modifier.fillMaxSize()) {
+        Scaffold(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(it)
-        ) {
-            if (state.isLoading) {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator()
-                }
-            } else {
-                LazyColumn {
-                    item {
-                        AnimatedVisibility(
-                            visible = !hasUsageAccess
-                        ) {
-                            PreferencesHint(
-                                title = stringResource(id = R.string.usage_access),
-                                description = stringResource(id = R.string.usage_access_desc),
-                                icon = Icons.Default.AppsOutage,
-                            ) {
-                                when (hasUsageAccess) {
-                                    false -> ctx.startActivity(Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS))
-                                    else -> Unit
-                                }
-                            }
+                .nestedScroll(scrollBehavior.nestedScrollConnection),
+            topBar = {
+                LargeTopAppBar(
+                    title = {
+                        Column {
+                            Text(
+                                text = stringResource(id = R.string.main_appDetection),
+                                style = MaterialTheme.typography.headlineLarge,
+                            )
                         }
-                    }
-                    item {
-                        SwitchBar(
-                            title = stringResource(id = R.string.enable_appsRpc),
-                            isChecked = serviceEnabled,
-                            enabled = hasUsageAccess
-                        ) {
-                            serviceEnabled = !serviceEnabled
-                            when (serviceEnabled) {
-                                true -> {
-                                    ctx.stopService(Intent(ctx, MediaRpcService::class.java))
-                                    ctx.stopService(Intent(ctx, CustomRpcService::class.java))
-                                    ctx.stopService(Intent(ctx, ExperimentalRpc::class.java))
-                                    ctx.startService(Intent(ctx, AppDetectionService::class.java))
-                                }
-
-                                false -> ctx.stopService(
-                                    Intent(
-                                        ctx,
-                                        AppDetectionService::class.java
-                                    )
+                    },
+                    navigationIcon = { BackButton { onBackPressed() } },
+                    actions = {
+                        if (isSearchBarVisible) {
+                            Column(
+                                modifier = Modifier.padding(10.dp)
+                            ) {
+                                SearchBar(
+                                    text = searchText,
+                                    onTextChanged = { searchText = it },
+                                    onClose = { isSearchBarVisible = false },
+                                    placeholder = stringResource(id = R.string.search_placeholder)
                                 )
                             }
-                        }
-                    }
-                    items(
-                        state.apps.size,
-                        key = { idx -> state.apps[idx].pkg }
-                    ) { i ->
-                        if (searchText.isEmpty() || state.apps[i].name.contains(
-                                searchText,
-                                ignoreCase = true
-                            ) || state.apps[i].pkg.contains(searchText, ignoreCase = true)
-                        ) {
-                            AppsItem(
-                                name = state.apps[i].name,
-                                pkg = state.apps[i].pkg,
-                                isChecked = state.enabledApps[state.apps[i].pkg] ?: false,
-                                customConfigs = state.customConfigs,
-                                selectedConfig = state.appConfigs[state.apps[i].pkg],
-                                onConfigSelected = { config ->
-                                    updateAppConfig(state.apps[i].pkg, config)
-                                },
-                                onPreviewClick = { configName ->
-                                    showPreview(configName)
-                                },
-                                onLongClick = {
-                                    state.appConfigs[state.apps[i].pkg]?.let { config ->
-                                        navigateToCustomRpc(config)
-                                    }
-                                },
-                                onClick = { updateAppEnabled(state.apps[i].pkg) }
-                            )
                         } else {
-                            Spacer(modifier = Modifier.height(0.dp))
+                            IconButton(onClick = { isSearchBarVisible = !isSearchBarVisible }) {
+                                Icon(imageVector = Icons.Outlined.Search, contentDescription = "Search")
+                            }
+                        }
+                    },
+                    scrollBehavior = scrollBehavior
+                )
+            }
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(it)
+            ) {
+                if (state.isLoading) {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator()
+                    }
+                } else {
+                    LazyColumn {
+                        item {
+                            AnimatedVisibility(
+                                visible = !hasUsageAccess
+                            ) {
+                                PreferencesHint(
+                                    title = stringResource(id = R.string.usage_access),
+                                    description = stringResource(id = R.string.usage_access_desc),
+                                    icon = Icons.Default.AppsOutage,
+                                ) {
+                                    when (hasUsageAccess) {
+                                        false -> ctx.startActivity(Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS))
+                                        else -> Unit
+                                    }
+                                }
+                            }
+                        }
+                        item {
+                            SwitchBar(
+                                title = stringResource(id = R.string.enable_appsRpc),
+                                isChecked = serviceEnabled,
+                                enabled = hasUsageAccess
+                            ) {
+                                serviceEnabled = !serviceEnabled
+                                when (serviceEnabled) {
+                                    true -> {
+                                        ctx.stopService(Intent(ctx, MediaRpcService::class.java))
+                                        ctx.stopService(Intent(ctx, CustomRpcService::class.java))
+                                        ctx.stopService(Intent(ctx, ExperimentalRpc::class.java))
+                                        ctx.startService(Intent(ctx, AppDetectionService::class.java))
+                                    }
+
+                                    false -> ctx.stopService(
+                                        Intent(
+                                            ctx,
+                                            AppDetectionService::class.java
+                                        )
+                                    )
+                                }
+                            }
+                        }
+                        items(
+                            state.apps.size,
+                            key = { idx -> state.apps[idx].pkg }
+                        ) { i ->
+                            if (searchText.isEmpty() || state.apps[i].name.contains(
+                                    searchText,
+                                    ignoreCase = true
+                                ) || state.apps[i].pkg.contains(searchText, ignoreCase = true)
+                            ) {
+                                AppsItem(
+                                    name = state.apps[i].name,
+                                    pkg = state.apps[i].pkg,
+                                    isChecked = state.enabledApps[state.apps[i].pkg] ?: false,
+                                    customConfigs = state.customConfigs,
+                                    selectedConfig = state.appConfigs[state.apps[i].pkg],
+                                    onConfigSelected = { config ->
+                                        updateAppConfig(state.apps[i].pkg, config)
+                                    },
+                                    onPreviewClick = { configName ->
+                                        showPreview(configName)
+                                    },
+                                    onLongClick = {
+                                        state.appConfigs[state.apps[i].pkg]?.let { config ->
+                                            navigateToCustomRpc(config)
+                                        }
+                                    },
+                                    onClick = { updateAppEnabled(state.apps[i].pkg) }
+                                )
+                            } else {
+                                Spacer(modifier = Modifier.height(0.dp))
+                            }
                         }
                     }
                 }

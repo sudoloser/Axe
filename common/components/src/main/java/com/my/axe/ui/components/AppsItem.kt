@@ -30,6 +30,9 @@ import com.my.axe.resources.R
 
 import androidx.compose.foundation.combinedClickable
 
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+
 @OptIn(ExperimentalMaterial3Api::class, androidx.compose.foundation.ExperimentalFoundationApi::class)
 @Composable
 fun AppsItem(
@@ -55,12 +58,16 @@ fun AppsItem(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .widthIn(max = 600.dp) // Ensure bounded width for spatial environments
                     .padding(16.dp, 20.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 AsyncImage(
                     model = AppUtils.getAppIcon(pkg),
                     contentDescription = null,
+                    contentScale = ContentScale.Fit,
+                    placeholder = painterResource(id = R.drawable.ic_apps),
+                    error = painterResource(id = R.drawable.ic_apps),
                     modifier = Modifier
                         .size(70.dp)
                         .padding(10.dp),

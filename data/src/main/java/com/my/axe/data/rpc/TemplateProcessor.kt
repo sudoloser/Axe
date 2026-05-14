@@ -19,6 +19,7 @@ class TemplateKeys {
         const val MEDIA_TITLE = "{{media_title}}"
         const val MEDIA_ARTIST = "{{media_artist}}"
         const val MEDIA_AUTHOR = "{{media_author}}"
+        const val MEDIA_ALBUM = "{{media_album}}"
         const val APP_NAME = "{{app_name}}"
     }
 }
@@ -47,6 +48,10 @@ class TemplateProcessor(
                 .replace(
                     TemplateKeys.MEDIA_AUTHOR,
                     mediaMetadata.getString(MediaMetadata.METADATA_KEY_AUTHOR) ?: ""
+                )
+                .replace(
+                    TemplateKeys.MEDIA_ALBUM,
+                    mediaMetadata.getString(MediaMetadata.METADATA_KEY_ALBUM) ?: ""
                 )
                 .replace(TemplateKeys.APP_NAME, mediaPlayerAppName)
         } else if (detectedAppInfo != null) {

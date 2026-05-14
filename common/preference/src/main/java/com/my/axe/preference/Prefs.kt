@@ -153,6 +153,7 @@ object Prefs {
     const val MEDIA_RPC_HIDE_ON_PAUSE = "hide_on_pause"
     const val MEDIA_RPC_SHOW_PLAYBACK_STATE = "show_playback_state"
     const val MEDIA_RPC_SHOW_SONG_AS_TITLE = "show_song_as_title"
+    const val MEDIA_RPC_SHOW_ARTIST_AS_TITLE = "show_artist_as_title"
 
     //Rpc Setting Preferences
     const val USE_RPC_BUTTONS = "use_saved_rpc_buttons"
@@ -177,6 +178,7 @@ object Prefs {
     const val CUSTOM_ACTIVITY_TYPE = "custom_activity_type"
     const val SHOW_LOGS_IN_COMPACT_MODE = "logs_compact_mode"
     const val LOGS_AUTO_SCROLL = "logs_auto_scroll"
+    const val ALLOW_EXTERNAL_APPS = "allow_external_apps"
 
     const val PALETTE_STYLE = "palette_style"
 
@@ -237,10 +239,12 @@ object Prefs {
     const val EXPERIMENTAL_RPC_TEMPLATE_NAME = "experimental_rpc_template_name"
     const val EXPERIMENTAL_RPC_TEMPLATE_DETAILS = "experimental_rpc_template_details"
     const val EXPERIMENTAL_RPC_TEMPLATE_STATE = "experimental_rpc_template_state"
+    const val EXPERIMENTAL_RPC_TEMPLATE_ALBUM = "experimental_rpc_template_album"
     const val EXPERIMENTAL_RPC_APP_ACTIVITY_TYPES = "experimental_rpc_app_activity_types"
     const val EXPERIMENTAL_RPC_SHOW_COVER_ART = "experimental_rpc_show_cover_art"
     const val EXPERIMENTAL_RPC_SHOW_APP_ICON = "experimental_rpc_show_app_icon"
     const val EXPERIMENTAL_RPC_SHOW_PLAYBACK_STATE = "experimental_rpc_show_playback_state"
+    const val EXPERIMENTAL_RPC_SHOW_ALBUM_TITLE = "experimental_rpc_show_album_title"
     const val EXPERIMENTAL_RPC_ENABLE_TIMESTAMPS = "experimental_rpc_enable_timestamps"
     const val EXPERIMENTAL_RPC_HIDE_ON_PAUSE = "experimental_rpc_hide_on_pause"
     const val USE_SHIZUKU = "use_shizuku"

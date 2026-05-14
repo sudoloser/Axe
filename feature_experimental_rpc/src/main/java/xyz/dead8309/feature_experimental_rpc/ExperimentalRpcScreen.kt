@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Album
 import androidx.compose.material.icons.filled.AppsOutage
 import androidx.compose.material.icons.filled.PauseCircle
 import androidx.compose.material.icons.filled.PlayCircle
@@ -72,6 +73,7 @@ private val completions = listOf(
     TemplateKeys.MEDIA_TITLE to R.string.completion_media_title,
     TemplateKeys.MEDIA_ARTIST to R.string.completion_media_artist,
     TemplateKeys.MEDIA_AUTHOR to R.string.completion_media_author,
+    TemplateKeys.MEDIA_ALBUM to R.string.completion_media_album,
     TemplateKeys.APP_NAME to R.string.completion_app_name,
 )
 
@@ -247,6 +249,16 @@ fun ExperimentalRpcScreen(
                 }
                 item {
                     PreferenceSwitch(
+                        title = stringResource(R.string.show_album_title),
+                        isChecked = state.showAlbumTitle,
+                        onClick = {
+                            onEvent(UiEvent.ToggleShowAlbumTitle(!state.showAlbumTitle))
+                        },
+                        icon = Icons.Default.Album
+                    )
+                }
+                item {
+                    PreferenceSwitch(
                         title = stringResource(R.string.enable_timestamps),
                         isChecked = state.enableTimestamps,
                         onClick = {
@@ -289,6 +301,14 @@ fun ExperimentalRpcScreen(
                         value = state.templateState,
                         label = R.string.activity_state,
                         onValueChange = { onEvent(UiEvent.SetTemplateState(it)) },
+                        completionList = completions
+                    )
+                }
+                item {
+                    RpcFieldWithCompletions(
+                        value = state.templateAlbum,
+                        label = R.string.album_title,
+                        onValueChange = { onEvent(UiEvent.SetTemplateAlbum(it)) },
                         completionList = completions
                     )
                 }

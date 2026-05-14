@@ -133,6 +133,7 @@ fun RpcSettings(onBackPressed: () -> Boolean) {
     var setLastRunRpcConfigOption by remember {
         mutableStateOf(Prefs[Prefs.APPLY_FIELDS_FROM_LAST_RUN_RPC, false])
     }
+    var allowExternalApps by remember { mutableStateOf(Prefs[Prefs.ALLOW_EXTERNAL_APPS, true]) }
     var customApplicationId by remember { mutableStateOf(Prefs[Prefs.CUSTOM_ACTIVITY_APPLICATION_ID, ""]) }
     var imgurClientId by remember { mutableStateOf(Prefs[Prefs.IMGUR_CLIENT_ID, Constants.IMGUR_CLIENT_ID]) }
 
@@ -209,6 +210,17 @@ fun RpcSettings(onBackPressed: () -> Boolean) {
                 ) {
                     setLastRunRpcConfigOption = !setLastRunRpcConfigOption
                     Prefs[Prefs.APPLY_FIELDS_FROM_LAST_RUN_RPC] = setLastRunRpcConfigOption
+                }
+            }
+            item {
+                PreferenceSwitch(
+                    title = stringResource(id = R.string.allow_external_apps),
+                    description = stringResource(id = R.string.allow_external_apps_desc),
+                    icon = Icons.Default.Bolt,
+                    isChecked = allowExternalApps,
+                ) {
+                    allowExternalApps = !allowExternalApps
+                    Prefs[Prefs.ALLOW_EXTERNAL_APPS] = allowExternalApps
                 }
             }
             item {

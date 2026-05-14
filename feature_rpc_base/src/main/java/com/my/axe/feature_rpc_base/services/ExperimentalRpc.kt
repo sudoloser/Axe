@@ -94,6 +94,8 @@ class ExperimentalRpc : Service() {
         Prefs[Prefs.EXPERIMENTAL_RPC_TEMPLATE_DETAILS, TemplateKeys.MEDIA_TITLE]
     private var templateState =
         Prefs[Prefs.EXPERIMENTAL_RPC_TEMPLATE_STATE, TemplateKeys.MEDIA_ARTIST]
+    private var templateAlbum =
+        Prefs[Prefs.EXPERIMENTAL_RPC_TEMPLATE_ALBUM, TemplateKeys.MEDIA_ALBUM]
 
     private var appActivityTypes: Map<String, Int> = Prefs.getAppActivityTypes()
     private var enabledExperimentalApps: List<String> = try {
@@ -146,6 +148,7 @@ class ExperimentalRpc : Service() {
             templateName = Prefs[Prefs.EXPERIMENTAL_RPC_TEMPLATE_NAME, TemplateKeys.APP_NAME]
             templateDetails = Prefs[Prefs.EXPERIMENTAL_RPC_TEMPLATE_DETAILS, TemplateKeys.MEDIA_TITLE]
             templateState = Prefs[Prefs.EXPERIMENTAL_RPC_TEMPLATE_STATE, TemplateKeys.MEDIA_ARTIST]
+            templateAlbum = Prefs[Prefs.EXPERIMENTAL_RPC_TEMPLATE_ALBUM, TemplateKeys.MEDIA_ALBUM]
             useAppsRpc = Prefs[Prefs.EXPERIMENTAL_RPC_USE_APPS_RPC, true]
             useMediaRpc = Prefs[Prefs.EXPERIMENTAL_RPC_USE_MEDIA_RPC, true]
             appActivityTypes = Prefs.getAppActivityTypes()
@@ -279,7 +282,10 @@ class ExperimentalRpc : Service() {
                 else -> null
             }
 
-            finalLargeText = richMediaInfo?.album
+            finalLargeText = if (Prefs[Prefs.EXPERIMENTAL_RPC_SHOW_ALBUM_TITLE, true]) {
+                processor.process(templateAlbum) ?: richMediaInfo?.album
+            } else null
+
             finalSmallText =
                 if (finalSmallImage == richMediaInfo?.appIcon) richMediaInfo?.appName else null
 
