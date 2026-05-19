@@ -54,11 +54,6 @@
     <string name="language">Language</string>
     <string name="design_credits">Design Credits</string>
     <string name="developer_credits">Developer Credits</string>
-    <string name="button_shape">Button Shape</string>
-    <string name="shape_default">Default</string>
-    <string name="shape_circles">Circles</string>
-    <string name="shape_triangles">Triangles</string>
-    <string name="shape_star">Star</string>
     <string name="login_with_token">Login with Token</string>
     <string name="passkey_login_not_working">Passkey login does not work</string>
     <string name="token_login_warning">Warning: Logging in with a token is not recommended for regular users and should be used with extreme caution. Your token gives full access to your Discord account.</string>

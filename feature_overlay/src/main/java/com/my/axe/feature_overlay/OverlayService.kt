@@ -81,6 +81,9 @@ class OverlayService : Service(), LifecycleOwner, ViewModelStoreOwner, SavedStat
         y = 300
     }
 
+    private val indicatorHeightDp = 200
+    private val triggerThresholdDp = 130 // (indicatorHeightDp / 2) + (buttonHeight / 2)
+
     private lateinit var indicatorParams: WindowManager.LayoutParams
 
     override fun onCreate() {
@@ -90,7 +93,7 @@ class OverlayService : Service(), LifecycleOwner, ViewModelStoreOwner, SavedStat
         windowManager = getSystemService(WINDOW_SERVICE) as WindowManager
         indicatorParams = WindowManager.LayoutParams(
             WindowManager.LayoutParams.MATCH_PARENT,
-            200.dpToPx(),
+            indicatorHeightDp.dpToPx(),
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
                 WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
             else
@@ -147,7 +150,7 @@ class OverlayService : Service(), LifecycleOwner, ViewModelStoreOwner, SavedStat
                             // Drag to bottom check
                             val displayMetrics = resources.displayMetrics
                             val screenHeight = displayMetrics.heightPixels
-                            if (params.y > screenHeight - 200) {
+                            if (params.y > screenHeight - triggerThresholdDp.dpToPx()) {
                                 stopSelf()
                             } else {
                                 windowManager.updateViewLayout(this@apply, params)

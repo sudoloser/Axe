@@ -1,3 +1,11 @@
+# 5/19/2026 [v1.1.1]
+### Fixed
+- RPC: Fixed images stopping after some time by implementing asset caching and preventing WebSocket leaks.
+- RPC: Optimized connection stability by properly handling session re-authentication and omitting empty payload fields.
+- Fixed X circle being slightly above the actual remove point in floating overlay
+### Removed
+- Custom button shapes from display settings.
+
 # 5/13/2026 [v1.1.0]
 ### Added
 - Media RPC: Add "Show artist as title" option (mutually exclusive with "Show song as title"). ([Issue #495](https://github.com/dead8309/Kizzy/issues/495))
