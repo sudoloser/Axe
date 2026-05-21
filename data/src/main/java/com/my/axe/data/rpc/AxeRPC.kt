@@ -316,33 +316,33 @@ class AxeRPC(
             Timestamps(end = commonRpc.time.end, start = commonRpc.time.start).also { time = it }
         if (commonRpc.partyCurrentSize != null && commonRpc.partyMaxSize != null)
             Party(id = "axe", size = arrayOf(commonRpc.partyCurrentSize, commonRpc.partyMaxSize)).also { party = it }
-        discordWebSocket.sendActivity(
-            Presence(
-                activities = listOf(
-                    Activity(
-                        name = commonRpc.name,
-                        details = commonRpc.details?.takeIf { it.isNotEmpty() }?.sanitize(),
-                        state = commonRpc.state?.takeIf { it.isNotEmpty() }?.sanitize(),
-                        type = commonRpc.type ?: Prefs[CUSTOM_ACTIVITY_TYPE, 0],
-                        platform = commonRpc.platform?.sanitize(),
-                        timestamps = time.takeIf { enableTimestamps == true },
-                        assets = Assets(
-                                largeImage = commonRpc.largeImage?.resolveImage(axeRepository),
-                                smallImage = commonRpc.smallImage?.resolveImage(axeRepository),
-                                largeText = commonRpc.largeText?.sanitize(),
-                                smallText = commonRpc.smallText?.sanitize()
-                            ).takeIf { commonRpc.largeImage != null || commonRpc.smallImage != null },
-                        party = party.takeIf { party != null },
-                        buttons = buttons.takeIf { buttons.size > 0 },
-                        metadata = Metadata(buttonUrls = buttonUrl).takeIf { buttonUrl.size > 0 },
-                        applicationId = applicationIdNumber.takeIf { it.isNotEmpty() } ?: Constants.APPLICATION_ID
+        
+        presence = Presence(
+            activities = listOf(
+                Activity(
+                    name = commonRpc.name,
+                    details = commonRpc.details?.takeIf { it.isNotEmpty() }?.sanitize(),
+                    state = commonRpc.state?.takeIf { it.isNotEmpty() }?.sanitize(),
+                    type = commonRpc.type ?: Prefs[CUSTOM_ACTIVITY_TYPE, 0],
+                    platform = commonRpc.platform?.sanitize(),
+                    timestamps = time.takeIf { enableTimestamps == true },
+                    assets = Assets(
+                        largeImage = commonRpc.largeImage?.resolveImage(axeRepository),
+                        smallImage = commonRpc.smallImage?.resolveImage(axeRepository),
+                        largeText = commonRpc.largeText?.sanitize(),
+                        smallText = commonRpc.smallText?.sanitize()
+                    ).takeIf { commonRpc.largeImage != null || commonRpc.smallImage != null },
+                    party = party.takeIf { party != null },
+                    buttons = buttons.takeIf { buttons.size > 0 },
+                    metadata = Metadata(buttonUrls = buttonUrl).takeIf { buttonUrl.size > 0 },
+                    applicationId = applicationIdNumber.takeIf { it.isNotEmpty() } ?: Constants.APPLICATION_ID
 
-                    )
-                ),
-                afk = true,
-                since = startTimestamps,
-                status = this.status
-            )
+                )
+            ),
+            afk = true,
+            since = startTimestamps,
+            status = this.status
         )
+        discordWebSocket.sendActivity(presence)
     }
 }

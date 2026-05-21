@@ -28,21 +28,25 @@ sealed class RpcImage {
 
     class DiscordImage(val image: String) : RpcImage() {
         override suspend fun resolveImage(repository: AxeRepository): String {
-            return "mp:${image}"
+            return if (image.startsWith("mp:")) image else "mp:${image}"
         }
     }
 
     class ExternalImage(val image: String) : RpcImage() {
         override suspend fun resolveImage(repository: AxeRepository): String? {
-            return repository.getImage(image)
+            return if (resolvedCache.containsKey(image)) {
+                resolvedCache[image]
+            } else {
+                val result = repository.getImage(image)
+                result?.let { resolvedCache[image] = it }
+                result
+            }
         }
     }
 
     class ApplicationIcon(val packageName: String, private val context: Context) : RpcImage() {
-        val data = Prefs[Prefs.SAVED_IMAGES, "{}"]
-        private val savedImages: HashMap<String, String> = Json.decodeFromString(data)
-
         override suspend fun resolveImage(repository: AxeRepository): String? {
+            val savedImages = getSavedImages()
             return if (savedImages.containsKey(packageName))
                 savedImages[packageName]
             else
@@ -58,10 +62,20 @@ sealed class RpcImage {
             val bitmap = applicationInfo.toBitmap(context)
             val response = repository.uploadImage(bitmap.toFile(context, "image"))
             response?.let {
+                val savedImages = getSavedImages().toMutableMap()
                 savedImages[packageName] = it
-                Prefs[Prefs.SAVED_IMAGES] = Json.encodeToString(savedImages)
+                saveImages(savedImages)
             }
             return response
+        }
+
+        private fun getSavedImages(): Map<String, String> {
+            val data = Prefs[Prefs.SAVED_IMAGES, "{}"]
+            return try { Json.decodeFromString(data) } catch (e: Exception) { emptyMap() }
+        }
+
+        private fun saveImages(images: Map<String, String>) {
+            Prefs[Prefs.SAVED_IMAGES] = Json.encodeToString(images)
         }
     }
 
@@ -72,19 +86,36 @@ sealed class RpcImage {
         val title: String,
     ) : RpcImage() {
         override suspend fun resolveImage(repository: AxeRepository): String? {
-            val data = Prefs[Prefs.SAVED_ARTWORK, "{}"]
             val schema = "${this.packageName}:${this.title}"
-            val savedImages = Json.decodeFromString<HashMap<String, String>>(data)
-            return if (savedImages.containsKey(schema))
-                savedImages[schema]
+            val savedArtwork = getSavedArtwork()
+            return if (savedArtwork.containsKey(schema))
+                savedArtwork[schema]
             else {
                 val result = repository.uploadImage(bitmap.toFile(this.context, "art"))
                 result?.let {
-                    savedImages[schema] = it
-                    Prefs[Prefs.SAVED_ARTWORK] = Json.encodeToString(savedImages)
+                    val updatedArtwork = getSavedArtwork().toMutableMap()
+                    updatedArtwork[schema] = it
+                    saveArtwork(updatedArtwork)
                 }
                 result
             }
+        }
+
+        private fun getSavedArtwork(): Map<String, String> {
+            val data = Prefs[Prefs.SAVED_ARTWORK, "{}"]
+            return try { Json.decodeFromString(data) } catch (e: Exception) { emptyMap() }
+        }
+
+        private fun saveArtwork(artwork: Map<String, String>) {
+            Prefs[Prefs.SAVED_ARTWORK] = Json.encodeToString(artwork)
+        }
+    }
+
+    companion object {
+        private val resolvedCache = mutableMapOf<String, String>()
+        
+        fun clearCache() {
+            resolvedCache.clear()
         }
     }
 }

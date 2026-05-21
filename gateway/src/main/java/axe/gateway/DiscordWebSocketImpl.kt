@@ -40,13 +40,16 @@ open class DiscordWebSocketImpl(
     }
     private val json = Json{
         ignoreUnknownKeys = true
-        encodeDefaults = true
+        encodeDefaults = false
     }
 
-    override val coroutineContext: CoroutineContext
-        get() = SupervisorJob() + Dispatchers.Default
+    override val coroutineContext: CoroutineContext = SupervisorJob() + Dispatchers.Default
 
     override suspend fun connect() {
+        if (isWebSocketConnected()) {
+            logger.i("Gateway", "Already connected, closing existing session before reconnect")
+            websocket?.close()
+        }
         launch {
             try {
                 logger.i("Gateway","Connect called")

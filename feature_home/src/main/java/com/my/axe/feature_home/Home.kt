@@ -80,7 +80,6 @@ import com.my.axe.preference.AppSettingsStateFlow
 import com.my.axe.resources.R
 import com.my.axe.ui.components.ChipSection
 import com.my.axe.ui.components.UpdateDialog
-import com.my.axe.ui.components.getButtonShape
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -101,13 +100,10 @@ fun Home(
 ) {
     val ctx = LocalContext.current
     val appSettings by AppSettingsStateFlow.collectAsState()
-    val buttonShape = appSettings.buttonShape
 
     var timestamp by remember { mutableLongStateOf(System.currentTimeMillis()) }
-    var homeItems by remember(timestamp, buttonShape) {
-        mutableStateOf(features.mapIndexed { index, feature ->
-            feature.copy(shape = getButtonShape(buttonShape, index))
-        })
+    var homeItems by remember(timestamp) {
+        mutableStateOf(features)
     }
     var showUpdateDialog by remember {
         mutableStateOf(false)
