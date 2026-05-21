@@ -1,88 +1,77 @@
-name: Release Build
+name: Build and Release APK
 
 on:
   workflow_dispatch:
     inputs:
-      version_name:
-        description: 'Version Name (e.g., v1.0.0)'
+      version:
+        description: 'Version name (e.g. v1.0.0)'
         required: true
         default: 'v1.0.0'
   push:
-    branches:
-      - master
-    paths-ignore:
-      - 'metadata/**'
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
 
 jobs:
   build:
-    name: Build & Sign Release
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    
     steps:
-      - name: Checkout Code
+      - name: Checkout code
         uses: actions/checkout@v4
-
-      - name: Setup JDK 17
+        
+      - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
           java-version: '17'
-          distribution: 'adopt'
+          distribution: 'temurin'
           cache: gradle
-
-      # Added ID here so we can reference the Android SDK path later
+          
       - name: Setup Android SDK
-        id: setup-android
         uses: android-actions/setup-android@v3
-        with:
-          build-tools-version: '34.0.0'
-
+        
       - name: Install Build Tools
-        run: sdkmanager "build-tools;34.0.0"
-
+        run: sdkmanager "build-tools;29.0.3" "build-tools;34.0.0"
+          
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
-
-      # Optional: You can inject the version name dynamically into Gradle if needed,
-      # but for now, we will just use it to label the GitHub Release.
-      - name: Build Release APK & Bundle
-        run: ./gradlew assembleRelease bundleRelease
-
-      - name: Prepare Staging
-        run: |
-          mkdir -p staging
-          find app/build/outputs/apk/release -name "*.apk" -exec cp {} staging/ \;
-          find app/build/outputs/bundle/release -name "*.aab" -exec cp {} staging/ \;
-          find app/build/outputs/mapping/release -name "mapping.txt" -exec cp {} staging/ \; || true
-
-      - name: Sign Artifacts
+        
+      - name: Build Release APK
+        run: ./gradlew assembleRelease
+        
+      - name: Sign APK
         uses: r0adkll/sign-android-release@v1
         id: sign_app
-        env:
-          ANDROID_HOME: ${{ steps.setup-android.outputs.ANDROID_HOME }}
         with:
-          releaseDirectory: staging
+          releaseDirectory: app/build/outputs/apk/release
           signingKeyBase64: ${{ secrets.KEYSTORE }}
           alias: ${{ secrets.KEYSTORE_ALIAS }}
           keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
-          keyPassword: ${{ secrets.KEY_PASSWORD }}
-
-      - name: Upload Signed Artifacts to Actions
+          keyPassword: ${{ secrets.KEYSTORE_PASSWORD }}
+        
+      - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: release-artifacts
-          path: |
-            staging/*.apk
-            staging/*.aab
-            staging/mapping.txt
-
-      # Dynamic Release Step: Fallback to the commit SHA if pushed to master without an input
-      - name: Create GitHub Release
-        uses: ncipollo/release-action@v1
+          name: release-apk
+          path: ${{ steps.sign_app.outputs.signedReleaseFile }}
+          
+      - name: Get version
+        id: get_version
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "VERSION=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
+          else
+            echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+          fi
+        
+      - name: Create Release and Upload Asset
+        uses: softprops/action-gh-release@v2
         with:
-          artifacts: "staging/*.apk,staging/*.aab"
-          token: ${{ secrets.GITHUB_TOKEN }}
-          tag: ${{ github.event.inputs.version_name || github.sha }}
-          name: "Release ${{ github.event.inputs.version_name || github.sha }}"
-          body: "Automated release containing the signed APK and App Bundle."
+          tag_name: ${{ steps.get_version.outputs.VERSION }}
+          name: Release ${{ steps.get_version.outputs.VERSION }}
+          files: ${{ steps.sign_app.outputs.signedReleaseFile }}
           draft: false
           prerelease: false
-          
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
