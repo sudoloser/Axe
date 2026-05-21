@@ -103,7 +103,7 @@ fun homeFeaturesProvider(
             title = stringResource(id = R.string.main_customRpc),
             icon = R.drawable.ic_rpc_placeholder,
             route = Routes.CUSTOM_RPC,
-            isChecked = AppUtils.customRpcRunning(),
+            isChecked = AppUtils.customRpcRunning("CUSTOM"),
             onClick = {
                 navigateTo(it)
             },
@@ -113,6 +113,7 @@ fun homeFeaturesProvider(
                     val intent = Intent(ctx, CustomRpcService::class.java)
                     intent.apply {
                         putExtra("RPC", lastRpc)
+                        putExtra("TYPE", "CUSTOM")
                     }
                     ctx.stopService(Intent(ctx, MediaRpcService::class.java))
                     ctx.stopService(Intent(ctx, ExperimentalRpc::class.java))
@@ -129,7 +130,7 @@ fun homeFeaturesProvider(
             title = stringResource(id = R.string.main_consoleRpc),
             icon = R.drawable.ic_console_games,
             route = Routes.CONSOLE_RPC,
-            isChecked = AppUtils.customRpcRunning(),
+            isChecked = AppUtils.customRpcRunning("CONSOLE"),
             onClick = {
                 navigateTo(it)
             },
@@ -139,6 +140,7 @@ fun homeFeaturesProvider(
                     val intent = Intent(ctx, CustomRpcService::class.java)
                     intent.apply {
                         putExtra("RPC", lastRpc)
+                        putExtra("TYPE", "CONSOLE")
                     }
                     ctx.stopService(Intent(ctx, MediaRpcService::class.java))
                     ctx.stopService(Intent(ctx, ExperimentalRpc::class.java))

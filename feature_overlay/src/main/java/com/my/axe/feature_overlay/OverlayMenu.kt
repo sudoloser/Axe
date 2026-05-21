@@ -34,7 +34,7 @@ fun OverlayMenu(
     onDismiss: () -> Unit
 ) {
     val context = LocalContext.current
-    var isRunning by remember { mutableStateOf(AppUtils.customRpcRunning()) }
+    var isRunning by remember { mutableStateOf(AppUtils.customRpcRunning("CUSTOM")) }
     val configs = remember { ConfigUtils.getAllConfigs(context) }
     
     var isEditMode by remember { mutableStateOf(false) }
@@ -81,6 +81,7 @@ fun OverlayMenu(
                             if (isRunning) {
                                 val intent = Intent(context, CustomRpcService::class.java).apply {
                                     putExtra("RPC", json as String)
+                                    putExtra("TYPE", "CUSTOM")
                                 }
                                 context.startService(intent)
                             }
@@ -109,6 +110,7 @@ fun OverlayMenu(
                                 if (json.isNotEmpty()) {
                                     val intent = Intent(context, CustomRpcService::class.java).apply {
                                         putExtra("RPC", json as String)
+                                        putExtra("TYPE", "CUSTOM")
                                     }
                                     context.startService(intent)
                                 }

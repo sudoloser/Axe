@@ -179,6 +179,7 @@ fun GamesScreen(
                                     if (intent.hasExtra("RPC")) {
                                         Prefs[Prefs.LAST_RUN_CONSOLE_RPC] =
                                             intent.getStringExtra("RPC")
+                                        intent.putExtra("TYPE", "CONSOLE")
                                         context.stopService(
                                             Intent(
                                                 context,

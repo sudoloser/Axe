@@ -52,8 +52,12 @@ class CustomRpcService : Service() {
     @SuppressLint("WakelockTimeout")
     @Suppress("DEPRECATION")
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        if (intent?.action.equals(Constants.ACTION_STOP_SERVICE)) stopSelf()
+        if (intent?.action.equals(Constants.ACTION_STOP_SERVICE)) {
+            runningType = null
+            stopSelf()
+        }
         else {
+            runningType = intent?.getStringExtra("TYPE")
             val string = intent?.getStringExtra("RPC")
             string?.let {
                 rpcData = Json.decodeFromString(it)
@@ -119,6 +123,7 @@ class CustomRpcService : Service() {
     }
 
     override fun onDestroy() {
+        runningType = null
         scope.cancel()
         AxeRPC.closeRPC()
         wakeLock?.let {
@@ -133,5 +138,6 @@ class CustomRpcService : Service() {
 
     companion object {
         const val WAKELOCK = "axe:CustomRPC"
+        var runningType: String? = null
     }
 }

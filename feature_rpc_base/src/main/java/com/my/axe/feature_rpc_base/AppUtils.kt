@@ -36,8 +36,12 @@ object AppUtils {
         return checkForRunningService<MediaRpcService>()
     }
 
-    fun customRpcRunning(): Boolean {
-        return checkForRunningService<CustomRpcService>()
+    fun customRpcRunning(type: String? = null): Boolean {
+        return if (type == null) {
+            checkForRunningService<CustomRpcService>()
+        } else {
+            checkForRunningService<CustomRpcService>() && CustomRpcService.runningType == type
+        }
     }
 
     fun experimentalRpcRunning(): Boolean {

@@ -201,13 +201,12 @@ internal fun ComponentActivity.axe(
                 GamesScreen(
                     state = viewModel.state.value,
                     onBackPressed = {
-                        navController.popBackStack()
+                    navController.popBackStack()
                     },
                     onEvent = viewModel::onUiEvent,
-                    serviceEnabled = AppUtils.customRpcRunning(),
+                    serviceEnabled = AppUtils.customRpcRunning("CONSOLE"),
                     isSearchBarVisible = viewModel.isSearchBarVisible.value
-                )
-            }
+                    )            }
             animatedComposable(Routes.PROFILE) {
                 val viewModel by viewModels<UserViewModel>()
                 val state = viewModel.state.value

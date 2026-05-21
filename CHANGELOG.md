@@ -1,10 +1,13 @@
 # 5/20/2026 [v1.1.1]
+### Added
+- Custom RPC Memory: Configuration is now automatically saved and restored when reopening the app.
 ### Fixed
-Custom RPC fields clearing after closing and reopening the app
+- RPC State Conflict: Console RPC and Custom RPC toggles now operate independently.
+- Custom RPC Toggle Visibility: The toggle remains visible on the home screen even after clearing fields.
 ### Removed
-Custom button shapes
+- Custom Button Shapes: Removed all references and UI settings for button shapes.
 ### Modified
-Button shape to be a more consistant rounded square radius
+- UI Consistency: Applied a consistent `RoundedCornerShape(24.dp)` to all home screen feature buttons.
 
 # 5/13/2026 [v1.1.0]
 ### Added

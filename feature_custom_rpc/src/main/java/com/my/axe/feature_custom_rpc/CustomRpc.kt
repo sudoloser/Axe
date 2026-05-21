@@ -218,7 +218,7 @@ private fun RpcTextFieldsColumn(
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     var isCustomRpcEnabled by remember {
-        mutableStateOf(AppUtils.customRpcRunning())
+        mutableStateOf(AppUtils.customRpcRunning("CUSTOM"))
     }
     LazyColumn(
         modifier = Modifier.fillMaxSize()
@@ -237,6 +237,7 @@ private fun RpcTextFieldsColumn(
                         val intent = Intent(context, CustomRpcService::class.java)
                         val string = uiState.rpcConfig.dataToString()
                         intent.putExtra("RPC", string)
+                        intent.putExtra("TYPE", "CUSTOM")
                         Prefs[Prefs.LAST_RUN_CUSTOM_RPC] = string
                         context.startService(intent)
                     }
