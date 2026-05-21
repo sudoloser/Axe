@@ -2,6 +2,11 @@ name: Release Build
 
 on:
   workflow_dispatch:
+    inputs:
+      version_name:
+        description: 'Version Name (e.g., v1.0.0)'
+        required: true
+        default: 'v1.0.0'
   push:
     branches:
       - master
@@ -23,13 +28,16 @@ jobs:
           distribution: 'adopt'
           cache: gradle
 
-      # This ensures build-tools (like zipalign) are available in the path
+      # Added ID here so we can reference the Android SDK path later
       - name: Setup Android SDK
+        id: setup-android
         uses: android-actions/setup-android@v3
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
+      # Optional: You can inject the version name dynamically into Gradle if needed,
+      # but for now, we will just use it to label the GitHub Release.
       - name: Build Release APK & Bundle
         run: ./gradlew assembleRelease bundleRelease
 
@@ -43,15 +51,16 @@ jobs:
       - name: Sign Artifacts
         uses: r0adkll/sign-android-release@v1
         id: sign_app
+        env:
+          ANDROID_HOME: ${{ steps.setup-android.outputs.ANDROID_HOME }}
         with:
           releaseDirectory: staging
-          # Ensure your secret is a Base64 encoded string of your .jks file
           signingKeyBase64: ${{ secrets.KEYSTORE }}
           alias: ${{ secrets.KEYSTORE_ALIAS }}
           keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
           keyPassword: ${{ secrets.KEY_PASSWORD }}
 
-      - name: Upload Signed Artifacts
+      - name: Upload Signed Artifacts to Actions
         uses: actions/upload-artifact@v4
         with:
           name: release-artifacts
@@ -59,4 +68,16 @@ jobs:
             staging/*.apk
             staging/*.aab
             staging/mapping.txt
-            
+
+      # Dynamic Release Step: Fallback to the commit SHA if pushed to master without an input
+      - name: Create GitHub Release
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: "staging/*.apk,staging/*.aab"
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ github.event.inputs.version_name || github.sha }}
+          name: "Release ${{ github.event.inputs.version_name || github.sha }}"
+          body: "Automated release containing the signed APK and App Bundle."
+          draft: false
+          prerelease: false
+          
