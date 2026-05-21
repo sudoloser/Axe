@@ -172,7 +172,6 @@ internal fun ComponentActivity.axe(
                         val config = com.my.axe.data.utils.ConfigUtils.loadConfig(context, configName)
                         if (config != null) {
                             Prefs[Prefs.LAST_RUN_CUSTOM_RPC] = config.dataToString()
-                            Prefs[Prefs.APPLY_FIELDS_FROM_LAST_RUN_RPC] = true
                             navController.navigate(Routes.CUSTOM_RPC)
                         }
                     }

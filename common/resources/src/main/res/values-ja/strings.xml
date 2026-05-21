@@ -87,8 +87,6 @@
     <string name="stream_url">ストリームURL</string>
     <string name="stream_url_info">https://twitch.tv/ および https://youtube.com/ のみが動作します。</string>
     <string name="activity_button_max_character">最大文字数は31文字です。</string>
-    <string name="set_previous_run_config_in_custom_rpc">前回実行時の設定をカスタムアクティビティフィールドに設定</string>
-    <string name="set_previous_run_config_in_custom_rpc_desc">前回、実行したときの設定を今のカスタムアクティビティのフィールドに反映します。</string>
     <string name="clear_all_fields">全てのフィールドをクリア</string>
     <string name="share_config">構成ファイルを共有</string>
     <string name="change_log">変更ログ</string>

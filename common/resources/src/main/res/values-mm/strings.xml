@@ -87,8 +87,6 @@
     <string name="stream_url">Stream Url</string>
     <string name="stream_url_info">Only https://twitch.tv/ and https://youtube.com/ urls will work.</string>
     <string name="activity_button_max_character">Max character limit is 31</string>
-    <string name="set_previous_run_config_in_custom_rpc">Set Previous Run config to Custom Rpc Fields</string>
-    <string name="set_previous_run_config_in_custom_rpc_desc">Automatically set fields in custom rpc from the last run rpc</string>
     <string name="clear_all_fields">Clear All Fields</string>
     <string name="share_config">config ကိုမျှဝေမည်။</string>
     <string name="change_log">မှတ်တမ်းအပြောင်းအလဲများ</string>

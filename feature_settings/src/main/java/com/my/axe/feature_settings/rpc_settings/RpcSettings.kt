@@ -130,9 +130,6 @@ fun RpcSettings(onBackPressed: () -> Boolean) {
     var showImgurClientIdDialog by remember {
         mutableStateOf(false)
     }
-    var setLastRunRpcConfigOption by remember {
-        mutableStateOf(Prefs[Prefs.APPLY_FIELDS_FROM_LAST_RUN_RPC, false])
-    }
     var allowExternalApps by remember { mutableStateOf(Prefs[Prefs.ALLOW_EXTERNAL_APPS, true]) }
     var customApplicationId by remember { mutableStateOf(Prefs[Prefs.CUSTOM_ACTIVITY_APPLICATION_ID, ""]) }
     var imgurClientId by remember { mutableStateOf(Prefs[Prefs.IMGUR_CLIENT_ID, Constants.IMGUR_CLIENT_ID]) }
@@ -199,17 +196,6 @@ fun RpcSettings(onBackPressed: () -> Boolean) {
                     icon = Icons.Default.DoNotDisturbOn
                 ) {
                     showActivityStatusDialog = true
-                }
-            }
-            item {
-                PreferenceSwitch(
-                    title = stringResource(R.string.set_previous_run_config_in_custom_rpc),
-                    description = stringResource(R.string.set_previous_run_config_in_custom_rpc_desc),
-                    icon = Icons.Default.Cached,
-                    isChecked = setLastRunRpcConfigOption
-                ) {
-                    setLastRunRpcConfigOption = !setLastRunRpcConfigOption
-                    Prefs[Prefs.APPLY_FIELDS_FROM_LAST_RUN_RPC] = setLastRunRpcConfigOption
                 }
             }
             item {

@@ -88,8 +88,6 @@
     <string name="stream_url">آدرس stream</string>
     <string name="stream_url_info">فقط https://twitch.tv/ و https://youtube.com/ کار می کنند.</string>
     <string name="activity_button_max_character">حداکثر محدودیت کاراکتر 31 است</string>
-    <string name="set_previous_run_config_in_custom_rpc">تنظیم پیکربندی اجرای قبلی روی فیلدهای سفارشی Rpc</string>
-    <string name="set_previous_run_config_in_custom_rpc_desc">تنظیم خودکار فیلدها در rpc سفارشی از آخرین rpc اجرا شده</string>
     <string name="clear_all_fields">پاک کردن تمام فیلدها</string>
     <string name="share_config">اشتراک گذاری پیکربندی</string>
     <string name="change_log">گذارش تغییرات</string>

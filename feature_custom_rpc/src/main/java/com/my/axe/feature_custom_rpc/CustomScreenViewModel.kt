@@ -17,6 +17,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.my.axe.domain.model.rpc.RpcConfig
 import com.my.axe.domain.use_case.upload_galleryImage.UploadGalleryImageUseCase
+import com.my.axe.feature_custom_rpc.components.sheet.dataToString
 import com.my.axe.feature_custom_rpc.components.sheet.stringToData
 import com.my.axe.preference.Prefs
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -40,11 +41,9 @@ class CustomScreenViewModel @Inject constructor(
     private val uiEventChannel = Channel<UiEvent>(capacity = Channel.UNLIMITED)
 
     init {
-        if (Prefs[Prefs.APPLY_FIELDS_FROM_LAST_RUN_RPC, false]) {
-            _uiState.value = _uiState.value.copy(
-                rpcConfig = Prefs[Prefs.LAST_RUN_CUSTOM_RPC, ""].stringToData()
-            )
-        }
+        _uiState.value = _uiState.value.copy(
+            rpcConfig = Prefs[Prefs.LAST_RUN_CUSTOM_RPC, ""].stringToData()
+        )
         viewModelScope.launch {
             uiEventChannel.consumeAsFlow()
                 .collect { event ->
@@ -71,6 +70,7 @@ class CustomScreenViewModel @Inject constructor(
         when (event) {
             is UiEvent.SetFieldsFromConfig -> {
                 _uiState.value = _uiState.value.copy(rpcConfig = event.config)
+                Prefs[Prefs.LAST_RUN_CUSTOM_RPC] = event.config.dataToString()
             }
 
             UiEvent.TriggerBottomSheet -> {
@@ -157,6 +157,7 @@ class CustomScreenViewModel @Inject constructor(
                     rpcConfig = RpcConfig(),
                     showBottomSheet = false
                 )
+                Prefs.remove(Prefs.LAST_RUN_CUSTOM_RPC)
             }
         }
     }

@@ -88,8 +88,6 @@
     <string name="stream_url">스트림 URL</string>
     <string name="stream_url_info">https://twitch.tv/ 및 https://youtube.com/ URL만 작동합니다.</string>
     <string name="activity_button_max_character">최대 문자 제한은 31자입니다</string>
-    <string name="set_previous_run_config_in_custom_rpc">이전 실행 설정을 사용자 정의 RPC 필드에 설정</string>
-    <string name="set_previous_run_config_in_custom_rpc_desc">마지막 실행 RPC에서 사용자 정의 RPC 필드에 자동으로 설정</string>
     <string name="clear_all_fields">모든 필드 지우기</string>
     <string name="share_config">설정 공유</string>
     <string name="change_log">변경 로그</string>

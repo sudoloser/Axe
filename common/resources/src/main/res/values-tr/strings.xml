@@ -87,8 +87,6 @@
     <string name="stream_url">Yayın URL\'si</string>
     <string name="stream_url_info">Yalnızca https://twitch.tv/ ve https://youtube.com/ bağlantıları desteklenir.</string>
     <string name="activity_button_max_character">En fazla 31 karakter kullanılabilir</string>
-    <string name="set_previous_run_config_in_custom_rpc">Son yapılandırmayı kullan</string>
-    <string name="set_previous_run_config_in_custom_rpc_desc">Özel RPC alanlarını son kullanılan ayarlarla doldur</string>
     <string name="clear_all_fields">Tüm Alanları Temizle</string>
     <string name="share_config">Yapılandırma Paylaş</string>
     <string name="change_log">Değişim Kaydı</string>

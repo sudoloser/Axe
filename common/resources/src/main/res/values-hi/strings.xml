@@ -88,8 +88,6 @@
     <string name="stream_url">स्ट्रीम का लिंक</string>
     <string name="stream_url_info">सिर्फ https://twitch.tv/ और https://youtube.com/ के लिंक ही चलेंगे।</string>
     <string name="activity_button_max_character">ज़्यादा से ज़्यादा 31 अक्षर लिख सकते हैं</string>
-    <string name="set_previous_run_config_in_custom_rpc">पिछली बार चलाए गए config को Custom RPC में भरे</string>
-    <string name="set_previous_run_config_in_custom_rpc_desc">पिछली बार के RPC से खुद ही Custom RPC भर दी जाएगी</string>
     <string name="clear_all_fields">सब खाली करो</string>
     <string name="share_config">config को शेयर करें</string>
     <string name="change_log">बदलाव का रिकॉर्ड</string>

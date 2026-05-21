@@ -87,8 +87,6 @@
     <string name="stream_url">رابط البث</string>
     <string name="stream_url_info">فقط روابط https://twitch.tv/ و https://youtube.com/ ستعمل.</string>
     <string name="activity_button_max_character">الحد الأقصى للأحرف هو 31</string>
-    <string name="set_previous_run_config_in_custom_rpc">تعيين تكوين التشغيل السابق في RPC المخصص</string>
-    <string name="set_previous_run_config_in_custom_rpc_desc">تعيين الحقول في RPC المخصص تلقائياً من آخر تشغيل RPC</string>
     <string name="clear_all_fields">مسح جميع الحقول</string>
     <string name="share_config">مشاركة الإعدادات</string>
     <string name="change_log">سجل التغييرات</string>

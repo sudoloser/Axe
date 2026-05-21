@@ -87,8 +87,6 @@
     <string name="stream_url">流媒體連結</string>
     <string name="stream_url_info">只在 https://twitch.tv/ and https://youtube.com/ 的連結上有效</string>
     <string name="activity_button_max_character">最大字符限制為 31</string>
-    <string name="set_previous_run_config_in_custom_rpc">在自定義 Rpc 字段中設置上一次運行的配置</string>
-    <string name="set_previous_run_config_in_custom_rpc_desc">自動從上一次運行的 Rpc 中設置自定義 Rpc 字段</string>
     <string name="clear_all_fields">清除所有字段</string>
     <string name="share_config">分享配置</string>
     <string name="change_log">更改日誌</string>

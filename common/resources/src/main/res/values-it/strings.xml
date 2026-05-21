@@ -87,8 +87,6 @@
     <string name="stream_url">URL stream</string>
     <string name="stream_url_info">Funzioneranno solo URL https://twitch.tv/ e https://youtube.com/</string>
     <string name="activity_button_max_character">Il limite massimo di caratteri è 31</string>
-    <string name="set_previous_run_config_in_custom_rpc">Imposta configurazione RPC precedente come campi RPC personalizzati</string>
-    <string name="set_previous_run_config_in_custom_rpc_desc">Imposta automaticamente i campi RPC personalizzato come quelli dell\'ultimo RPC eseguito</string>
     <string name="clear_all_fields">Cancella tutti i campi</string>
     <string name="share_config">Condividi configurazione</string>
     <string name="change_log">Changelog</string>

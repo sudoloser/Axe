@@ -88,8 +88,6 @@
     <string name="stream_url">直播連結</string>
     <string name="stream_url_info">只有 https://twitch.tv/ 或 https://youtube.com/ 能用。</string>
     <string name="activity_button_max_character">最多字數限制為31</string>
-    <string name="set_previous_run_config_in_custom_rpc">將上次運行的設定檔套用為自訂RPC欄位</string>
-    <string name="set_previous_run_config_in_custom_rpc_desc">從上次執行的 RPC 自動設定到自訂 RPC 中的欄位</string>
     <string name="clear_all_fields">清除所有欄位</string>
     <string name="share_config">分享設定檔</string>
     <string name="change_log">更改日誌</string>

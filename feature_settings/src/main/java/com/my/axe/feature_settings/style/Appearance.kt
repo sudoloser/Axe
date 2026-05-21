@@ -48,7 +48,6 @@ import com.my.axe.preference.DEFAULT_SEED_COLOR
 import com.my.axe.preference.AppSettingsStateFlow
 import com.my.axe.preference.Prefs
 import com.my.axe.preference.Prefs.CUSTOM_THEME_COLOR
-import com.my.axe.preference.modifyButtonShape
 import com.my.axe.preference.modifyThemeSeedColor
 import com.my.axe.preference.palettesMap
 import com.my.axe.preference.switchDynamicColor
@@ -56,7 +55,6 @@ import com.my.axe.ui.components.BackButton
 import com.my.axe.ui.components.SettingItem
 import com.my.axe.ui.components.Subtitle
 import com.my.axe.ui.components.dialog.TextFieldDialog
-import com.my.axe.ui.components.getButtonShape
 import com.my.axe.ui.components.preference.PreferenceSwitch
 import com.my.axe.ui.theme.LocalDarkTheme
 import com.my.axe.ui.theme.LocalDynamicColorSwitch
@@ -162,70 +160,6 @@ fun Appearance(
                 description = LocalDarkTheme.current.getDarkThemeDesc(),
                 icon = Icons.Outlined.DarkMode,
             ) { navigateToDarkTheme() }
-
-            Subtitle(text = stringResource(id = R.string.button_shape))
-            val buttonShapes = listOf("Default", "Circles", "Triangles", "Star")
-            val currentShape = AppSettingsStateFlow.collectAsState().value.buttonShape
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                buttonShapes.forEach { shape ->
-                    ButtonShapeItem(
-                        shapeName = shape,
-                        isSelected = currentShape == shape,
-                        onClick = { modifyButtonShape(shape) }
-                    )
-                }
-            }
-            Text(
-                text = "Experimental: It is not recommended to change this setting.",
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-        }
-    }
-}
-
-@Composable
-fun RowScope.ButtonShapeItem(
-    shapeName: String,
-    isSelected: Boolean,
-    onClick: () -> Unit
-) {
-    val shape = getButtonShape(shapeName)
-    val containerColor = if (isSelected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceVariant
-    val contentColor = if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurfaceVariant
-
-    Surface(
-        modifier = Modifier
-            .weight(1f)
-            .aspectRatio(1f),
-        shape = RoundedCornerShape(16.dp),
-        color = containerColor,
-        onClick = onClick
-    ) {
-        Box(contentAlignment = Alignment.Center) {
-            Surface(
-                modifier = Modifier.size(32.dp),
-                shape = shape,
-                color = contentColor
-            ) {}
-            if (isSelected) {
-                Icon(
-                    imageVector = Icons.Outlined.Check,
-                    contentDescription = null,
-                    modifier = Modifier
-                        .align(Alignment.TopEnd)
-                        .padding(8.dp)
-                        .size(16.dp),
-                    tint = contentColor
-                )
-            }
         }
     }
 }

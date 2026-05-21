@@ -88,8 +88,6 @@
     <string name="stream_url">Stream-Url</string>
     <string name="stream_url_info">Nur https://twitch.tv/ und https://youtube.com/ urls werden funktionieren.</string>
     <string name="activity_button_max_character">Maximale Zeichenanzahl ist 31</string>
-    <string name="set_previous_run_config_in_custom_rpc">Vorherige Run konfig in benutzerdefinierter Rpc einstellen</string>
-    <string name="set_previous_run_config_in_custom_rpc_desc">Automatisches Setzen von Feldern in benutzerdefinierten Rpc aus dem zuletzt ausgeführten Rpc</string>
     <string name="clear_all_fields">Alle Felder löschen</string>
     <string name="share_config">Konfiguration teilen</string>
     <string name="change_log">Änderungsliste</string>

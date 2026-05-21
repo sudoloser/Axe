@@ -172,7 +172,6 @@ object Prefs {
     const val HIGH_CONTRAST = "high_contrast"
     const val DYNAMIC_COLOR = "dynamic_color"
     const val THEME_COLOR = "theme_color"
-    const val MAIN_SCREEN_BUTTON_SHAPE = "main_screen_button_shape"
     const val CUSTOM_THEME_COLOR = "custom_theme_color"
     const val IS_FIRST_LAUNCHED = "is_first_launched"
     const val CUSTOM_ACTIVITY_TYPE = "custom_activity_type"
@@ -182,7 +181,6 @@ object Prefs {
 
     const val PALETTE_STYLE = "palette_style"
 
-    const val APPLY_FIELDS_FROM_LAST_RUN_RPC = "enable_setting_from_last_config"
     const val CUSTOM_ACTIVITY_STATUS = "custom_activity_status"
 
     const val LATEST_RELEASE = "latest_release"
