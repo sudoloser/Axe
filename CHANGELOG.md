@@ -1,3 +1,11 @@
+# 5/20/2026 [v1.1.1]
+### Fixed
+Custom RPC fields clearing after closing and reopening the app
+### Removed
+Custom button shapes
+### Modified
+Button shape to be a more consistant rounded square radius
+
 # 5/13/2026 [v1.1.0]
 ### Added
 - Media RPC: Add "Show artist as title" option (mutually exclusive with "Show song as title"). ([Issue #495](https://github.com/dead8309/Kizzy/issues/495))
