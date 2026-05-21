@@ -23,6 +23,10 @@ jobs:
           distribution: 'adopt'
           cache: gradle
 
+      # This ensures build-tools (like zipalign) are available in the path
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
@@ -41,8 +45,9 @@ jobs:
         id: sign_app
         with:
           releaseDirectory: staging
-          releaseKeyStore: ${{ secrets.KEYSTORE }}
-          alias: ${{ secrets.kEYSTORE_ALIAS }}
+          # Ensure your secret is a Base64 encoded string of your .jks file
+          signingKeyBase64: ${{ secrets.KEYSTORE }}
+          alias: ${{ secrets.KEYSTORE_ALIAS }}
           keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
           keyPassword: ${{ secrets.KEY_PASSWORD }}
 
@@ -54,3 +59,4 @@ jobs:
             staging/*.apk
             staging/*.aab
             staging/mapping.txt
+            
