@@ -1,10 +1,3 @@
-
-<div align="center">
-    <img src="https://user-images.githubusercontent.com/68665948/207296272-d1985003-1681-4df4-b8ea-ca71f2043f89.png">
-</div>
-<br>
-
-
 <div align="center">
 <img src="https://img.shields.io/badge/Minimum%20SDK-27-%23?&style=flat-square&color=5b5ef7">
 
@@ -25,13 +18,6 @@
 
 <img src="https://img.shields.io/badge/Android_Studio-5b5ef7?logo=android-studio&logoColor=white&style=flat-square">
 
-
-<img src="https://dcbadge.vercel.app/api/shield/888890990956511263?style=flat-square&compact=true">
-
-
-<a href="https://discord.gg/vUPc7zzpV5">
-<img src="https://dcbadge.vercel.app/api/server/vUPc7zzpV5">
-</a>
 </div>
 
 
@@ -40,7 +26,7 @@
 <h4>A fork of Kizzy, a Discord Rich Presence manager for Android fully written in Kotlin.
 </h4>
 <p>
-<img src="https://user-images.githubusercontent.com/68665948/207303492-c537af75-0d63-49e9-91c5-97114d974883.png" width=60%/>
+<img src="./axe-1.png" width=60%/>
 </p>
 </div>
 
