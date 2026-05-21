@@ -26,9 +26,11 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.io.File
-import javax.inject.Inject
+import com.my.axe.feature_custom_rpc.components.sheet.dataToString
+import com.my.axe.feature_custom_rpc.components.sheet.stringToData
+import com.my.axe.feature_rpc_base.AppUtils
+import com.my.axe.preference.Prefs
+import dagger.hilt.android.lifecycle.HiltViewModel
 
 @SuppressLint("StaticFieldLeak")
 @HiltViewModel
@@ -40,7 +42,7 @@ class CustomScreenViewModel @Inject constructor(
     private val uiEventChannel = Channel<UiEvent>(capacity = Channel.UNLIMITED)
 
     init {
-        if (Prefs[Prefs.APPLY_FIELDS_FROM_LAST_RUN_RPC, false]) {
+        if (Prefs[Prefs.APPLY_FIELDS_FROM_LAST_RUN_RPC, false] || AppUtils.customRpcRunning()) {
             _uiState.value = _uiState.value.copy(
                 rpcConfig = Prefs[Prefs.LAST_RUN_CUSTOM_RPC, ""].stringToData()
             )
@@ -71,7 +73,9 @@ class CustomScreenViewModel @Inject constructor(
         when (event) {
             is UiEvent.SetFieldsFromConfig -> {
                 _uiState.value = _uiState.value.copy(rpcConfig = event.config)
+                Prefs[Prefs.LAST_RUN_CUSTOM_RPC] = event.config.dataToString()
             }
+
 
             UiEvent.TriggerBottomSheet -> {
                 _uiState.value =
@@ -157,6 +161,7 @@ class CustomScreenViewModel @Inject constructor(
                     rpcConfig = RpcConfig(),
                     showBottomSheet = false
                 )
+                Prefs[Prefs.LAST_RUN_CUSTOM_RPC] = RpcConfig().dataToString()
             }
         }
     }

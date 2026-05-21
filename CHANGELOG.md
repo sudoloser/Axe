@@ -2,6 +2,7 @@
 ### Fixed
 - RPC: Fixed images stopping after some time by implementing asset caching and preventing WebSocket leaks.
 - RPC: Optimized connection stability by properly handling session re-authentication and omitting empty payload fields.
+- RPC: Fixed custom configuration fields not persisting after app restart.
 - Fixed X circle being slightly above the actual remove point in floating overlay
 ### Removed
 - Custom button shapes from display settings.

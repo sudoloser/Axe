@@ -48,6 +48,7 @@ import com.my.axe.preference.DEFAULT_SEED_COLOR
 import com.my.axe.preference.AppSettingsStateFlow
 import com.my.axe.preference.Prefs
 import com.my.axe.preference.Prefs.CUSTOM_THEME_COLOR
+import com.my.axe.preference.modifyThemeSeedColor
 import com.my.axe.preference.palettesMap
 import com.my.axe.preference.switchDynamicColor
 import com.my.axe.ui.components.BackButton
