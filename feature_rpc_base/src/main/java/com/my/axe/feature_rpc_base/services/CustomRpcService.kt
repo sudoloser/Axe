@@ -58,6 +58,7 @@ class CustomRpcService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if (intent?.action.equals(Constants.ACTION_STOP_SERVICE)) {
             runningType = null
+            stopForeground(true)
             stopSelf()
         }
         else {
@@ -141,6 +142,7 @@ class CustomRpcService : Service() {
         wakeLock?.let {
             if (it.isHeld) it.release()
         }
+        notificationManager.cancel(Constants.NOTIFICATION_ID)
         super.onDestroy()
     }
 

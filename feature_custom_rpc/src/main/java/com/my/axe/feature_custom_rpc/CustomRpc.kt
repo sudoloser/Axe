@@ -239,7 +239,12 @@ private fun RpcTextFieldsColumn(
                         intent.putExtra("RPC", string)
                         intent.putExtra("TYPE", "CUSTOM")
                         Prefs[Prefs.LAST_RUN_CUSTOM_RPC] = string
-                        context.startService(intent)
+                        
+                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                            context.startForegroundService(intent)
+                        } else {
+                            context.startService(intent)
+                        }
                     }
 
                     false -> context.stopService(Intent(context, CustomRpcService::class.java))
