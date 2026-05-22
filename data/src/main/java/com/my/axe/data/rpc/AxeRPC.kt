@@ -33,7 +33,7 @@ class AxeRPC(
 ) {
     private lateinit var presence: Presence
     private var activityName: String? = null
-    private var applicationIdNumber = Prefs[Prefs.CUSTOM_ACTIVITY_APPLICATION_ID, Constants.APPLICATION_ID]
+    private fun getApplicationId() = Prefs[Prefs.CUSTOM_ACTIVITY_APPLICATION_ID, Constants.APPLICATION_ID]
     private var details: String? = null
     private var state: String? = null
     private var party: Party? = null
@@ -48,10 +48,38 @@ class AxeRPC(
     private var platform: String? = null
     private var buttons = ArrayList<String>()
     private var buttonUrl = ArrayList<String>()
+    private var button1: String? = null
+    private var button2: String? = null
+    private var button1Url: String? = null
+    private var button2Url: String? = null
     private var url: String? = null
 
     fun closeRPC() {
         discordWebSocket.close()
+        clearState()
+    }
+
+    fun clearState() {
+        activityName = null
+        details = null
+        state = null
+        party = null
+        largeImage = null
+        smallImage = null
+        largeText = null
+        smallText = null
+        status = null
+        startTimestamps = null
+        stopTimestamps = null
+        type = 0
+        platform = null
+        button1 = null
+        button2 = null
+        button1Url = null
+        button2Url = null
+        url = null
+        buttons.clear()
+        buttonUrl.clear()
     }
 
     fun isRpcRunning(): Boolean {
@@ -216,7 +244,7 @@ class AxeRPC(
      * @return
      */
     fun setButton1(button1_Text: String?): AxeRPC {
-        button1_Text?.let { buttons.add(it) }
+        this.button1 = button1_Text
         return this
     }
 
@@ -226,7 +254,7 @@ class AxeRPC(
      * @return
      */
     fun setButton2(button2_text: String?): AxeRPC {
-        button2_text?.let { buttons.add(it) }
+        this.button2 = button2_text
         return this
     }
 
@@ -236,7 +264,7 @@ class AxeRPC(
      * @return
      */
     fun setButton1URL(url: String?): AxeRPC {
-        url?.let { buttonUrl.add(it) }
+        this.button1Url = url
         return this
     }
 
@@ -246,7 +274,7 @@ class AxeRPC(
      * @return
      */
     fun setButton2URL(url: String?): AxeRPC {
-        url?.let { buttonUrl.add(it) }
+        this.button2Url = url
         return this
     }
     /**
@@ -268,6 +296,22 @@ class AxeRPC(
     }
 
     suspend fun build() {
+        val buttonsList = mutableListOf<String>()
+        val buttonUrlsList = mutableListOf<String>()
+
+        button1?.let { label ->
+            button1Url?.let { url ->
+                buttonsList.add(label)
+                buttonUrlsList.add(url)
+            }
+        }
+        button2?.let { label ->
+            button2Url?.let { url ->
+                buttonsList.add(label)
+                buttonUrlsList.add(url)
+            }
+        }
+
         presence = Presence(
             activities = listOf(
                 Activity(
@@ -287,9 +331,9 @@ class AxeRPC(
                         largeText = largeText?.sanitize(),
                         smallText = smallText?.sanitize()
                     ).takeIf { largeImage != null || smallImage != null },
-                    buttons = buttons.takeIf { buttons.size > 0 },
-                    metadata = Metadata(buttonUrls = buttonUrl).takeIf { buttonUrl.size > 0 },
-                    applicationId = applicationIdNumber.takeIf { it.isNotEmpty() } ?: Constants.APPLICATION_ID,
+                    buttons = buttonsList.takeIf { buttonsList.isNotEmpty() },
+                    metadata = Metadata(buttonUrls = buttonUrlsList).takeIf { buttonUrlsList.isNotEmpty() },
+                    applicationId = getApplicationId().takeIf { it.isNotEmpty() } ?: Constants.APPLICATION_ID,
                     url = url
                 )
             ),
@@ -316,6 +360,23 @@ class AxeRPC(
             Timestamps(end = commonRpc.time.end, start = commonRpc.time.start).also { time = it }
         if (commonRpc.partyCurrentSize != null && commonRpc.partyMaxSize != null)
             Party(id = "axe", size = arrayOf(commonRpc.partyCurrentSize, commonRpc.partyMaxSize)).also { party = it }
+
+        val buttonsList = mutableListOf<String>()
+        val buttonUrlsList = mutableListOf<String>()
+
+        button1?.let { label ->
+            button1Url?.let { url ->
+                buttonsList.add(label)
+                buttonUrlsList.add(url)
+            }
+        }
+        button2?.let { label ->
+            button2Url?.let { url ->
+                buttonsList.add(label)
+                buttonUrlsList.add(url)
+            }
+        }
+
         discordWebSocket.sendActivity(
             Presence(
                 activities = listOf(
@@ -333,9 +394,9 @@ class AxeRPC(
                                 smallText = commonRpc.smallText?.sanitize()
                             ).takeIf { commonRpc.largeImage != null || commonRpc.smallImage != null },
                         party = party.takeIf { party != null },
-                        buttons = buttons.takeIf { buttons.size > 0 },
-                        metadata = Metadata(buttonUrls = buttonUrl).takeIf { buttonUrl.size > 0 },
-                        applicationId = applicationIdNumber.takeIf { it.isNotEmpty() } ?: Constants.APPLICATION_ID
+                        buttons = buttonsList.takeIf { buttonsList.isNotEmpty() },
+                        metadata = Metadata(buttonUrls = buttonUrlsList).takeIf { buttonUrlsList.isNotEmpty() },
+                        applicationId = getApplicationId().takeIf { it.isNotEmpty() } ?: Constants.APPLICATION_ID
 
                     )
                 ),

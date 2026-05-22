@@ -43,11 +43,12 @@ open class DiscordWebSocketImpl(
         encodeDefaults = true
     }
 
-    override val coroutineContext: CoroutineContext
-        get() = SupervisorJob() + Dispatchers.Default
+    private var connectJob: Job? = null
+    override val coroutineContext: CoroutineContext = SupervisorJob() + Dispatchers.Default
 
     override suspend fun connect() {
-        launch {
+        connectJob?.cancel()
+        connectJob = launch {
             try {
                 logger.i("Gateway","Connect called")
                 val url = resumeGatewayUrl ?: gatewayUrl
@@ -209,12 +210,14 @@ open class DiscordWebSocketImpl(
     override fun close() {
         heartbeatJob?.cancel()
         heartbeatJob = null
-        this.cancel()
+        connectJob?.cancel()
+        connectJob = null
         resumeGatewayUrl = null
         sessionId = null
         connected = false
         runBlocking {
             websocket?.close()
+            websocket = null
             logger.e("Gateway","Connection to gateway closed")
         }
     }
