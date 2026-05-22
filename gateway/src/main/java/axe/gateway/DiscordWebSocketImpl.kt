@@ -211,7 +211,6 @@ open class DiscordWebSocketImpl(
     }
 
     override fun close() {
-        logger.i("Gateway", "close() called from stack trace: ${Thread.currentThread().stackTrace.getOrNull(3)}")
         heartbeatJob?.cancel()
         heartbeatJob = null
         connectJob?.cancel()
@@ -223,6 +222,7 @@ open class DiscordWebSocketImpl(
         runBlocking {
             websocket?.close()
             websocket = null
+            client.close()
             logger.e("Gateway","Connection to gateway closed")
         }
     }
