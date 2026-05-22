@@ -59,6 +59,7 @@ class RemoteGatewayManager(
     private val maxRetryDelay = 60000L
     
     private var isAuthorized = false
+    private var isDeliberatelyClosed = false
     
     private val json = Json {
         ignoreUnknownKeys = true
@@ -80,6 +81,7 @@ class RemoteGatewayManager(
             return
         }
         
+        isDeliberatelyClosed = false
         isAuthorized = false
         logger.i("RemoteGateway", "Initiating Connection...")
         logger.d("RemoteGateway", "WS URL: $wsUrl")
@@ -178,6 +180,10 @@ class RemoteGatewayManager(
         
         // Reconnect with exponential backoff if not closed deliberately
         scope.launch {
+            if (isDeliberatelyClosed) {
+                logger.i("RemoteGateway", "Deliberately closed, skipping retry.")
+                return@launch
+            }
             logger.i("RemoteGateway", "Retrying connection in ${retryDelay/1000}s...")
             delay(retryDelay)
             retryDelay = (retryDelay * 2).coerceAtMost(maxRetryDelay)
@@ -253,6 +259,7 @@ class RemoteGatewayManager(
 
     override fun close() {
         logger.i("RemoteGateway", "Close called. Cleaning up...")
+        isDeliberatelyClosed = true
         isAuthorized = false
         stopHeartbeat()
         webSocket?.close(1000, "App closed")

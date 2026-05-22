@@ -116,6 +116,7 @@ open class DiscordWebSocketImpl(
             }
             "RESUMED" -> {
                 logger.i("Gateway","Session Resumed")
+                connected = true
             }
             else -> {}
         }
@@ -125,6 +126,7 @@ open class DiscordWebSocketImpl(
         logger.i("Gateway","Handling Invalid Session")
         logger.d("Gateway","Sending Identify after 150ms")
         delay(150)
+        sequence = 0
         sendIdentify()
     }
 
@@ -132,6 +134,7 @@ open class DiscordWebSocketImpl(
         if (sequence > 0 && !sessionId.isNullOrBlank()) {
             sendResume()
         } else {
+            sequence = 0
             sendIdentify()
         }
         heartbeatInterval =  json.decodeFromJsonElement<Heartbeat>(this.d!!).heartbeatInterval
@@ -214,6 +217,7 @@ open class DiscordWebSocketImpl(
         connectJob = null
         resumeGatewayUrl = null
         sessionId = null
+        sequence = 0
         connected = false
         runBlocking {
             websocket?.close()
