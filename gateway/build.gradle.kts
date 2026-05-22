@@ -8,6 +8,7 @@ dependencies {
     api (libs.okhttp)
     implementation (libs.okhttp.logging)
     implementation (projects.domain)
+    implementation (projects.common.preference)
     implementation (libs.kotlinx.coroutine)
     implementation (libs.bundles.network.ktor)
     implementation (libs.ktor.websockets)

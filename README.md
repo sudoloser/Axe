@@ -92,7 +92,7 @@ However people have been using custom rich presence for past 4-5 years and there
 - [x] External Url support (meaning you can give a url which points to an image on the web and discord will show it!)
 - [x] Use Images from Gallery
 - [x] Per app RPC configs for app detection
-
+- [x] Remote server for a gateway proxy. (More reliable than locally)
 ## Getting Started
 Read the Setup Guide from
 [![DOCS](https://kizzydocs.vercel.app/api/og?title=kizzy+Docs)](https://kizzydocs.vercel.app)
