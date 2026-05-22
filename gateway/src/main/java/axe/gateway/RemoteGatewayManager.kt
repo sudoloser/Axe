@@ -258,6 +258,7 @@ class RemoteGatewayManager(
     }
 
     override fun close() {
+        logger.i("RemoteGateway", "close() called from stack trace: ${Thread.currentThread().stackTrace.getOrNull(3)}")
         logger.i("RemoteGateway", "Close called. Cleaning up...")
         isDeliberatelyClosed = true
         isAuthorized = false

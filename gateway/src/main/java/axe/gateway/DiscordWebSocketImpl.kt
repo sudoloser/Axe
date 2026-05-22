@@ -211,6 +211,7 @@ open class DiscordWebSocketImpl(
     }
 
     override fun close() {
+        logger.i("Gateway", "close() called from stack trace: ${Thread.currentThread().stackTrace.getOrNull(3)}")
         heartbeatJob?.cancel()
         heartbeatJob = null
         connectJob?.cancel()
@@ -228,8 +229,18 @@ open class DiscordWebSocketImpl(
 
     override suspend fun sendActivity(presence: Presence) {
         // TODO : Figure out a better way to wait for socket to be connected to account
-        while (!isSocketConnectedToAccount()){
+        var timeout = 0
+        while (!isSocketConnectedToAccount() && timeout < 1000){
             delay(10.milliseconds)
+            timeout++
+            if (connectJob?.isActive != true && !connected) {
+                 logger.e("Gateway", "sendActivity failed: Connection job is not active and not connected")
+                 return
+            }
+        }
+        if (timeout >= 1000) {
+            logger.e("Gateway", "sendActivity timed out waiting for connection")
+            return
         }
         logger.i("Gateway","Sending $PRESENCE_UPDATE")
         send(
