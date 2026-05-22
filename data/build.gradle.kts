@@ -25,7 +25,7 @@ dependencies {
     implementation (libs.ktor.logging)
     implementation (projects.common.preference)
     implementation (projects.common.resources)
-    implementation (projects.gateway)
+    api (projects.gateway)
     implementation (libs.blankj.utilcodex)
     testImplementation(libs.junit)
 }
