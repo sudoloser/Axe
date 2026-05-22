@@ -249,6 +249,7 @@ object Prefs {
     const val USE_REMOTE_GATEWAY = "use_remote_gateway"
     const val REMOTE_GATEWAY_URL = "remote_gateway_url"
     const val REMOTE_GATEWAY_SIGNATURE = "remote_gateway_signature"
+    const val REMOTE_GATEWAY_SESSION_ID = "remote_gateway_session_id"
     const val APP_CUSTOM_RPC_CONFIGS = "app_custom_rpc_configs"
     const val USE_OVERLAY = "use_overlay"
     const val OVERLAY_OPACITY = "overlay_opacity"

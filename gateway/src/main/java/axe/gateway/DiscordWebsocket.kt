@@ -7,5 +7,6 @@ interface DiscordWebSocket: CoroutineScope {
     suspend fun connect()
     suspend fun sendActivity(presence: Presence)
     fun isWebSocketConnected(): Boolean
+    fun refreshSession() {}
     fun close()
 }

@@ -37,49 +37,35 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
         
-      - name: Build Release APKs
-        run: ./gradlew assembleUserRelease assembleSystemRelease
+      - name: Build Release APK
+        run: ./gradlew assembleRelease
         env:
           AXE_APP_SIGNATURE: ${{ secrets.AXE_APP_SIGNATURE }}
         
-      - name: Sign User APK
+      - name: Sign APK
         uses: r0adkll/sign-android-release@v1
-        id: sign_user
+        id: sign_app
         with:
-          releaseDirectory: app/build/outputs/apk/user/release
-          signingKeyBase64: ${{ secrets.KEYSTORE }}
-          alias: ${{ secrets.KEYSTORE_ALIAS }}
-          keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
-          keyPassword: ${{ secrets.KEYSTORE_PASSWORD }}
-        
-      - name: Sign System APK
-        uses: r0adkll/sign-android-release@v1
-        id: sign_system
-        with:
-          releaseDirectory: app/build/outputs/apk/system/release
+          releaseDirectory: app/build/outputs/apk/release
           signingKeyBase64: ${{ secrets.KEYSTORE }}
           alias: ${{ secrets.KEYSTORE_ALIAS }}
           keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
           keyPassword: ${{ secrets.KEYSTORE_PASSWORD }}
           
-      - name: Rename Signed APKs
+      - name: Rename Signed APK
         run: |
-          mv ${{ steps.sign_user.outputs.signedReleaseFile }} app/build/outputs/apk/axe-release.apk
-          mv ${{ steps.sign_system.outputs.signedReleaseFile }} app/build/outputs/apk/axe-system-release.apk
+          mv ${{ steps.sign_app.outputs.signedReleaseFile }} app/build/outputs/apk/axe-release.apk
 
       - name: Extract Release Notes
         id: extract_notes
         run: |
           # Extract first section from CHANGELOG.md (everything until the second #)
           sed -n '/^# /{p;n;:a;n;/^# /q;p;ba}' CHANGELOG.md > release_notes.md
-          
-          # Add System Version Warning
-          echo -e "\n---\n\n### ⚠️ SYSTEM VERSION WARNING\nDo **NOT** download the \`axe-system-release.apk\` unless you have read the [System Version documentation](https://github.com/${{ github.repository }}#system-version). This version is intended for rooted/custom ROM users only." >> release_notes.md
 
-      - name: Upload APK artifacts
+      - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: release-apks
+          name: release-apk
           path: app/build/outputs/apk/*.apk
           
       - name: Get version

@@ -10,16 +10,6 @@ on:
     paths-ignore:
       - 'metadata/**'
   workflow_dispatch:
-    inputs:
-      flavor:
-        description: 'Flavor to build'
-        required: true
-        default: 'both'
-        type: choice
-        options:
-          - user
-          - system
-          - both
 
 jobs:
   build:
@@ -44,14 +34,7 @@ jobs:
         run: chmod +x gradlew
 
       - name: Assemble Debug
-        run: |
-          if [ "${{ github.event.inputs.flavor }}" = "user" ]; then
-            ./gradlew assembleUserDebug
-          elif [ "${{ github.event.inputs.flavor }}" = "system" ]; then
-            ./gradlew assembleSystemDebug
-          else
-            ./gradlew assembleDebug
-          fi
+        run: ./gradlew assembleDebug
         env:
           AXE_APP_SIGNATURE: ${{ secrets.AXE_APP_SIGNATURE }}
 
@@ -59,4 +42,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: apk-debug
-          path: app/build/outputs/apk/*/debug/**.apk
+          path: app/build/outputs/apk/debug/**.apk

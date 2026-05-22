@@ -43,9 +43,6 @@ Check out the Kizzy [QuickStart Guide](https://kizzydocs.vercel.app/quickstart/i
 
 ## Download
 > **Warning**
-> **SYSTEM VERSION NOTICE:** Do NOT download the `axe-system-release.apk` unless you have read and understood the [System Version documentation](#system-version) below. For 99% of users, the standard `axe-release.apk` is the correct choice.
-
-> **Warning**
 > If you're thinking about downloading an Axe/Kizzy clone or app from any third-party service (other than the ones listed in our repository), think again! We can't be held responsible for any issues that may arise with your account as a result. Stay safe and stick to our trusted download links for the genuine app.
 
 > **Warning**
@@ -142,16 +139,6 @@ git clone https://github.com/sudoloser/Axe.git
 See [Terms Of Service](./TERMS_OF_SERVICE.md) for more info
 
 <!-- GitAds-Verify: NL8NC5HUT8U5FABBUO26JCE583GNYS6M -->
-
-## System Version
-The System flavor (`axe-system-release.apk`) is a specialized build intended for installation as a **system application** (e.g., via `/system/priv-app/` on rooted devices or custom ROMs).
-
-### Key Differences:
-- **Persistence:** Set as `android:persistent="true"`. The Android system will automatically restart the application if it is killed, ensuring your Rich Presence stays active 24/7.
-- **Process Isolation:** The Discord Gateway logic is moved to a separate `:gateway` process. This improves stability and prevents the main UI from affecting the connection reliability.
-- **Application ID:** Uses `com.my.axe.system` to allow side-by-side installation with the standard version if necessary (though not recommended).
-
-**Note:** Installing this as a regular user app will NOT enable most of these benefits and may cause higher battery usage due to the persistence flag. Only use this if you know how to integrate it into your system partition.
 
 ## Remote Gateway
 The Remote 24/7 Gateway is a feature that allows your Discord Rich Presence to remain active even when the Axe app is not running on your phone, or when your phone is offline.

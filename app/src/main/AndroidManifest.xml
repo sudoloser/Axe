@@ -41,7 +41,6 @@
 
     <application
         android:name=".App"
-        android:persistent="${persistent}"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:localeConfig="@xml/locales"
@@ -115,12 +114,10 @@
         <service
             android:name="com.my.axe.feature_rpc_base.services.AppDetectionService"
             android:foregroundServiceType="mediaPlayback"
-            android:process="${gatewayProcess}"
             android:exported="false" />
         <service
             android:name="com.my.axe.feature_rpc_base.services.MediaRpcService"
             android:exported="false"
-            android:process="${gatewayProcess}"
             android:foregroundServiceType="mediaPlayback" />
         <service
             android:name="com.my.axe.feature_rpc_base.services.NotificationListener"
@@ -133,7 +130,6 @@
         <service
             android:name="com.my.axe.feature_rpc_base.services.CustomRpcService"
             android:foregroundServiceType="mediaPlayback"
-            android:process="${gatewayProcess}"
             android:exported="false" >
         </service>
 
@@ -148,7 +144,6 @@
 
         <service android:name=".feature_rpc_base.services.ExperimentalRpc"
             android:foregroundServiceType="mediaPlayback"
-            android:process="${gatewayProcess}"
             android:exported="false"/>
 
         <service

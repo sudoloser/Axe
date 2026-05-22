@@ -10,6 +10,7 @@ android {
     namespace = "com.my.axe"
 
     defaultConfig {
+        applicationId = "com.my.axe"
         versionCode = libs.versions.version.code.get().toInt()
         versionName = libs.versions.version.name.get()
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -21,33 +22,6 @@ android {
 
     buildFeatures {
         buildConfig = true
-    }
-
-    flavorDimensions.add("distribution")
-    productFlavors {
-        create("user") {
-            dimension = "distribution"
-            applicationId = "com.my.axe"
-            manifestPlaceholders["persistent"] = "false"
-            manifestPlaceholders["gatewayProcess"] = "" // default process
-        }
-        create("system") {
-            dimension = "distribution"
-            applicationId = "com.my.axe.system"
-            manifestPlaceholders["persistent"] = "true"
-            manifestPlaceholders["gatewayProcess"] = ":gateway"
-        }
-    }
-
-    applicationVariants.all {
-        outputs.all {
-            val output = this as com.android.build.gradle.internal.api.ApkVariantOutputImpl
-            val flavor = productFlavors[0].name
-            val buildType = buildType.name
-            if (buildType == "release") {
-                outputFileName = if (flavor == "system") "axe-system-release.apk" else "axe-release.apk"
-            }
-        }
     }
 
     buildTypes {

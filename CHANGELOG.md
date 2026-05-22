@@ -1,6 +1,5 @@
 # 5/22/2026 [v1.1.2]
 ### Added
-- System apk flavor for better local reliablity
 - External server gateway for 24/7 reliability
 ### Fixed
 - Fields like "Activity platform" being a mix of input and dropdown. (Switched to dropdown only)

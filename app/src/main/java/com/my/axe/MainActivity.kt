@@ -23,15 +23,21 @@ import com.my.axe.ui.theme.LocalDynamicColorSwitch
 import com.my.axe.ui.theme.SettingsProvider
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.runBlocking
+import javax.inject.Inject
+import axe.gateway.DiscordWebSocket
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private lateinit var usageAccessStatus: MutableState<Boolean>
     private lateinit var notificationListenerAccess: MutableState<Boolean>
 
+    @Inject
+    lateinit var discordWebSocket: DiscordWebSocket
+
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        discordWebSocket.refreshSession()
         usageAccessStatus = mutableStateOf(this.hasUsageAccess())
         notificationListenerAccess = mutableStateOf(this.hasNotificationAccess())
         WindowCompat.setDecorFitsSystemWindows(window, false)

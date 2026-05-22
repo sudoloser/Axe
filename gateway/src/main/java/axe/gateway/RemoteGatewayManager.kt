@@ -2,6 +2,7 @@ package axe.gateway
 
 import axe.gateway.entities.presence.Presence
 import com.my.axe.domain.interfaces.Logger
+import com.my.axe.preference.Prefs
 import kotlinx.coroutines.*
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
@@ -24,15 +25,25 @@ class RemoteGatewayManager(
 ) : DiscordWebSocket, WebSocketListener() {
 
     private val wsUrl: String
+    private val statusUrl: String
     private val stopUrl: String
-    private val sessionId = UUID.randomUUID().toString()
+    private val sessionId: String
     
     init {
         val base = serverBaseUrl.trimEnd('/')
         // Convert https:// to wss:// for websocket
         wsUrl = base.replace("http://", "ws://").replace("https://", "wss://") + "/api/"
-        // Keep https:// for stop endpoint
+        // Status and Stop endpoints
+        statusUrl = base.replace("ws://", "http://").replace("wss://", "https://") + "/api/session/"
         stopUrl = base.replace("ws://", "http://").replace("wss://", "https://") + "/api/stop"
+
+        // Use persistent session ID
+        var savedId = Prefs[Prefs.REMOTE_GATEWAY_SESSION_ID, ""]
+        if (savedId.isEmpty()) {
+            savedId = UUID.randomUUID().toString()
+            Prefs[Prefs.REMOTE_GATEWAY_SESSION_ID] = savedId
+        }
+        sessionId = savedId
     }
     
     private val loggingInterceptor = HttpLoggingInterceptor { message ->
@@ -90,6 +101,39 @@ class RemoteGatewayManager(
         webSocket = client.newWebSocket(request, this)
     }
 
+    /**
+     * Refresh existing session on server (pings server via HTTP)
+     */
+    override fun refreshSession() {
+        scope.launch {
+            try {
+                logger.i("RemoteGateway", "Refreshing session $sessionId on server...")
+                val request = Request.Builder()
+                    .url(statusUrl + sessionId)
+                    .addHeader("x-app-signature", appSignature)
+                    .get()
+                    .build()
+                
+                client.newCall(request).enqueue(object : Callback {
+                    override fun onResponse(call: Call, response: Response) {
+                        response.use {
+                            if (it.isSuccessful) {
+                                logger.i("RemoteGateway", "Session refresh successful (HTTP ${it.code})")
+                            } else {
+                                logger.w("RemoteGateway", "Session refresh failed or not found (HTTP ${it.code})")
+                            }
+                        }
+                    }
+                    override fun onFailure(call: Call, e: java.io.IOException) {
+                        logger.e("RemoteGateway", "Failed to reach server for refresh: ${e.message}")
+                    }
+                })
+            } catch (e: Exception) {
+                logger.e("RemoteGateway", "Error during session refresh: ${e.message}")
+            }
+        }
+    }
+
     override fun onOpen(webSocket: WebSocket, response: Response) {
         logger.i("RemoteGateway", "Network connection established (HTTP ${response.code}). Sending AUTH...")
         retryDelay = 2000L 
@@ -107,7 +151,6 @@ class RemoteGatewayManager(
             val jsonAuth = json.encodeToString(authMessage)
             webSocket.send(jsonAuth)
             logger.i("RemoteGateway", "AUTH payload sent to server")
-            // We assume authorized for now. Ideally server sends an ACK.
             isAuthorized = true 
             startHeartbeat()
         } catch (e: Exception) {
@@ -124,7 +167,7 @@ class RemoteGatewayManager(
                 if (msg.message?.contains("signature", ignoreCase = true) == true) {
                     logger.e("RemoteGateway", "Invalid App Signature! Check settings.")
                     isAuthorized = false
-                    retryDelay = maxRetryDelay // Don't spam with invalid signature
+                    retryDelay = maxRetryDelay 
                 }
             }
         } catch (e: Exception) {
