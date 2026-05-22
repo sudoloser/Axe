@@ -20,7 +20,6 @@ class RemoteGatewayManager(
     private val userId: String,
     private val appSignature: String,
     private val serverBaseUrl: String,
-    private val sessionId: String,
     private val logger: Logger
 ) : DiscordWebSocket, WebSocketListener() {
 
@@ -98,9 +97,9 @@ class RemoteGatewayManager(
     override fun refreshSession() {
         scope.launch {
             try {
-                logger.i("RemoteGateway", "Refreshing session $sessionId on server...")
+                logger.i("RemoteGateway", "Refreshing session for user $userId on server...")
                 val request = Request.Builder()
-                    .url(statusUrl + sessionId)
+                    .url(statusUrl + userId)
                     .addHeader("x-app-signature", appSignature)
                     .get()
                     .build()
@@ -134,7 +133,7 @@ class RemoteGatewayManager(
             app_signature = appSignature,
             user_id = userId.ifEmpty { "000000000000000000" },
             token = token,
-            session_id = sessionId,
+            session_id = userId,
             timestamp = System.currentTimeMillis()
         )
         
@@ -194,7 +193,8 @@ class RemoteGatewayManager(
                 if (isAuthorized && webSocket != null) {
                     val heartbeat = HeartbeatMessage(
                         type = "HEARTBEAT",
-                        session_id = sessionId
+                        user_id = userId,
+                        session_id = userId
                     )
                     try {
                         webSocket?.send(json.encodeToString(heartbeat))
@@ -232,7 +232,8 @@ class RemoteGatewayManager(
 
         val message = PresenceUpdateMessage(
             type = "PRESENCE_UPDATE",
-            session_id = sessionId,
+            user_id = userId,
+            session_id = userId,
             presence = presence
         )
         
@@ -261,7 +262,8 @@ class RemoteGatewayManager(
         scope.launch {
             try {
                 val stopRequest = StopRequest(
-                    session_id = sessionId,
+                    user_id = userId,
+                    session_id = userId,
                     app_signature = appSignature
                 )
                 val body = json.encodeToString(stopRequest).toRequestBody("application/json".toMediaType())
@@ -299,18 +301,21 @@ class RemoteGatewayManager(
     @Serializable
     private data class HeartbeatMessage(
         val type: String,
+        val user_id: String,
         val session_id: String
     )
 
     @Serializable
     private data class PresenceUpdateMessage(
         val type: String,
+        val user_id: String,
         val session_id: String,
         val presence: Presence
     )
 
     @Serializable
     private data class StopRequest(
+        val user_id: String,
         val session_id: String,
         val app_signature: String
     )
