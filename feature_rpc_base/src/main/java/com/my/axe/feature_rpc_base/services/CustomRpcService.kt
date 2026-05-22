@@ -119,7 +119,9 @@ class CustomRpcService : Service() {
                         }
                     }
                 } catch (e: Exception) {
-                    com.my.axe.feature_rpc_base.AppUtils.init(this@CustomRpcService) // Ensure initialized
+                    logger.e("CustomRpcService", "Failed to start RPC: ${e.message}")
+                    e.printStackTrace()
+                    com.my.axe.feature_rpc_base.AppUtils.init(this@CustomRpcService)
                     runningType = null
                     stopSelf()
                 }

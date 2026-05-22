@@ -36,21 +36,20 @@ class RemoteGatewayManager(
     }
     
     private val loggingInterceptor = HttpLoggingInterceptor { message ->
-        // Scrub token from logs
         val scrubbed = if (message.contains("\"token\":")) {
             message.replace(Regex("\"token\":\"[^\"]+\""), "\"token\":\"***\"")
         } else message
         logger.d("RemoteGatewayNet", scrubbed)
     }.apply {
-        level = HttpLoggingInterceptor.Level.HEADERS // Body might be too noisy for standard logs
+        level = HttpLoggingInterceptor.Level.BODY
     }
 
     private val client = OkHttpClient.Builder()
         .addInterceptor(loggingInterceptor)
         .pingInterval(30, TimeUnit.SECONDS)
-        .connectTimeout(15, TimeUnit.SECONDS)
-        .readTimeout(15, TimeUnit.SECONDS)
-        .writeTimeout(15, TimeUnit.SECONDS)
+        .connectTimeout(30, TimeUnit.SECONDS)
+        .readTimeout(30, TimeUnit.SECONDS)
+        .writeTimeout(30, TimeUnit.SECONDS)
         .build()
     
     private var webSocket: WebSocket? = null
@@ -69,14 +68,20 @@ class RemoteGatewayManager(
     private val scope = CoroutineScope(coroutineContext)
 
     override suspend fun connect() {
+        if (token.isBlank()) {
+            val err = "Cannot connect to Remote Gateway: Discord Token is empty!"
+            logger.e("RemoteGateway", err)
+            throw IllegalStateException(err)
+        }
+        
         if (webSocket != null) {
             logger.w("RemoteGateway", "Connect called but already connecting/connected")
             return
         }
         
         isAuthorized = false
-        logger.i("RemoteGateway", "Target WS: $wsUrl")
-        logger.i("RemoteGateway", "Target Stop: $stopUrl")
+        logger.i("RemoteGateway", "Initiating Connection...")
+        logger.d("RemoteGateway", "WS URL: $wsUrl")
         
         val request = Request.Builder()
             .url(wsUrl)
@@ -86,13 +91,13 @@ class RemoteGatewayManager(
     }
 
     override fun onOpen(webSocket: WebSocket, response: Response) {
-        logger.i("RemoteGateway", "WebSocket Connection Established. Handshaking...")
-        retryDelay = 2000L // Reset retry delay
+        logger.i("RemoteGateway", "Network connection established (HTTP ${response.code}). Sending AUTH...")
+        retryDelay = 2000L 
         
         val authMessage = AuthMessage(
             type = "AUTH",
             app_signature = appSignature,
-            user_id = userId.ifEmpty { "unknown" },
+            user_id = userId.ifEmpty { "000000000000000000" },
             token = token,
             session_id = sessionId,
             timestamp = System.currentTimeMillis()
