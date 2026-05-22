@@ -21,6 +21,7 @@ import android.os.IBinder
 import android.os.PowerManager
 import android.os.PowerManager.WakeLock
 import com.my.axe.data.utils.toRpcImage
+import com.my.axe.domain.interfaces.Logger
 import com.my.axe.domain.model.rpc.RpcConfig
 import com.my.axe.feature_rpc_base.Constants
 import com.my.axe.feature_rpc_base.setLargeIcon
@@ -39,6 +40,9 @@ class CustomRpcService : Service() {
 
     @Inject
     lateinit var AxeRPC: com.my.axe.data.rpc.AxeRPC
+
+    @Inject
+    lateinit var logger: Logger
 
     @Inject
     lateinit var scope: CoroutineScope
