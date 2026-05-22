@@ -4,6 +4,7 @@ import axe.gateway.entities.presence.Presence
 import com.my.axe.domain.interfaces.Logger
 import kotlinx.coroutines.*
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import okhttp3.*
