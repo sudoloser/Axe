@@ -412,34 +412,36 @@ fun RpcSettings(onBackPressed: () -> Boolean) {
                     RpcField(
                         value = customActivityType,
                         label = R.string.activity_type,
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        readOnly = true,
+                        onClick = {
+                            activityTypeisExpanded = !activityTypeisExpanded
+                        },
                         trailingIcon = {
                             Icon(
                                 imageVector = icon,
-                                contentDescription = null,
-                                modifier = Modifier.clickable {
-                                    activityTypeisExpanded = !activityTypeisExpanded
-                                })
-                        }) {
-                        customActivityType = it
-                    }
-                    DropdownMenu(
-                        expanded = activityTypeisExpanded, onDismissRequest = {
-                            activityTypeisExpanded = !activityTypeisExpanded
-                        }, modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Constants.ACTIVITY_TYPE.forEach { (label, value) ->
-                            DropdownMenuItem(
-                                text = {
-                                    Text(text = label)
-                                },
-                                onClick = {
-                                    customActivityType = value.toString()
-                                    activityTypeisExpanded = false
-                                },
+                                contentDescription = null
                             )
+                        },
+                        content = {
+                            DropdownMenu(
+                                expanded = activityTypeisExpanded, onDismissRequest = {
+                                    activityTypeisExpanded = !activityTypeisExpanded
+                                }, modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Constants.ACTIVITY_TYPE.forEach { (label, value) ->
+                                    DropdownMenuItem(
+                                        text = {
+                                            Text(text = label)
+                                        },
+                                        onClick = {
+                                            customActivityType = value.toString()
+                                            activityTypeisExpanded = false
+                                        },
+                                    )
+                                }
+                            }
                         }
-                    }
+                    )
 
                 },
                 confirmButton = {

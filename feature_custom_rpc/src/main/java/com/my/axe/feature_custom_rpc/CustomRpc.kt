@@ -413,13 +413,15 @@ private fun RpcTextFieldsColumn(
                 RpcField(
                     value = platform,
                     label = R.string.activity_platform,
+                    readOnly = true,
+                    onClick = {
+                        onEvent(UiEvent.TriggerPlatformDropDownMenu)
+                    },
                     trailingIcon = {
                         Icon(
                             imageVector = iconStatus,
-                            contentDescription = null,
-                            modifier = Modifier.clickable {
-                                onEvent(UiEvent.TriggerPlatformDropDownMenu)
-                            })
+                            contentDescription = null
+                        )
                     },
                     content = {
                         DropdownMenu(
@@ -447,22 +449,22 @@ private fun RpcTextFieldsColumn(
                             }
                         }
                     }
-                ) {
-                    onEvent(UiEvent.SetFieldsFromConfig(uiState.rpcConfig.copy(platform = it)))
-                }
+                )
             }
 
             item {
                 RpcField(
                     value = status,
                     label = R.string.activity_status_online_idle_dnd,
+                    readOnly = true,
+                    onClick = {
+                        onEvent(UiEvent.TriggerStatusDropDownMenu)
+                    },
                     trailingIcon = {
                         Icon(
                             imageVector = iconStatus,
-                            contentDescription = null,
-                            modifier = Modifier.clickable {
-                                onEvent(UiEvent.TriggerStatusDropDownMenu)
-                            })
+                            contentDescription = null
+                        )
                     },
                     content = {
                         DropdownMenu(
@@ -490,9 +492,7 @@ private fun RpcTextFieldsColumn(
                             }
                         }
                     }
-                ) {
-                    onEvent(UiEvent.SetFieldsFromConfig(uiState.rpcConfig.copy(status = it)))
-                }
+                )
             }
 
             item {
@@ -634,35 +634,42 @@ private fun RpcTextFieldsColumn(
                 RpcField(
                     value = type,
                     label = R.string.activity_type,
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    readOnly = true,
+                    onClick = {
+                        onEvent(UiEvent.TriggerActivityTypeDropDownMenu)
+                    },
                     trailingIcon = {
                         Icon(
                             imageVector = icon,
-                            contentDescription = null,
-                            modifier = Modifier.clickable {
-                                onEvent(UiEvent.TriggerActivityTypeDropDownMenu)
-                            })
-                    }) {
-                    onEvent(UiEvent.SetFieldsFromConfig(uiState.rpcConfig.copy(type = it)))
-                }
-
-                DropdownMenu(
-                    expanded = uiState.activityTypeIsExpanded, onDismissRequest = {
-                        onEvent(UiEvent.TriggerActivityTypeDropDownMenu)
-                    }, modifier = Modifier.fillMaxWidth()
-                ) {
-                    Constants.ACTIVITY_TYPE.forEach { (label, value) ->
-                        DropdownMenuItem(
-                            text = {
-                                Text(text = label)
-                            },
-                            onClick = {
-                                onEvent(UiEvent.SetFieldsFromConfig(uiState.rpcConfig.copy(type = value.toString())))
-                                onEvent(UiEvent.TriggerActivityTypeDropDownMenu)
-                            },
+                            contentDescription = null
                         )
+                    },
+                    content = {
+                        DropdownMenu(
+                            expanded = uiState.activityTypeIsExpanded, onDismissRequest = {
+                                onEvent(UiEvent.TriggerActivityTypeDropDownMenu)
+                            }, modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Constants.ACTIVITY_TYPE.forEach { (label, value) ->
+                                DropdownMenuItem(
+                                    text = {
+                                        Text(text = label)
+                                    },
+                                    onClick = {
+                                        onEvent(
+                                            UiEvent.SetFieldsFromConfig(
+                                                uiState.rpcConfig.copy(
+                                                    type = value.toString()
+                                                )
+                                            )
+                                        )
+                                        onEvent(UiEvent.TriggerActivityTypeDropDownMenu)
+                                    },
+                                )
+                            }
+                        }
                     }
-                }
+                )
             }
             item {
                 AnimatedVisibility(visible = type == "1") {

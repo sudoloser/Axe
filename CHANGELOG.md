@@ -1,3 +1,11 @@
+# 5/22/2026 [v1.1.2]
+### Added
+- System apk flavor for better local reliablity
+- External server gateway for 24/7 reliability
+### Fixed
+- Fields like "Activity platform" being a mix of input and dropdown. (Switched to dropdown only)
+
+
 # 5/20/2026 [v1.1.1]
 ### Added
 - Custom RPC Memory: Configuration is now automatically saved and restored when reopening the app.

@@ -13,6 +13,8 @@
 package com.my.axe.ui.components
 
 import androidx.annotation.StringRes
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -31,6 +33,8 @@ import androidx.compose.ui.unit.dp
 fun RpcField(
     value: String,
     enabled: Boolean = true,
+    readOnly: Boolean = false,
+    onClick: () -> Unit = {},
     trailingIcon: @Composable (() -> Unit)? = null,
     @StringRes label: Int,
     isError: Boolean = false,
@@ -45,17 +49,24 @@ fun RpcField(
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 8.dp)
     ) {
-        OutlinedTextField(
-            modifier = Modifier.fillMaxWidth(),
-            value = value,
-            onValueChange = onValueChange,
-            enabled = enabled,
-            label = { Text(stringResource(id = label)) },
-            keyboardOptions = keyboardOptions,
-            trailingIcon = trailingIcon,
-            isError = isError,
-            singleLine = true
-        )
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable(enabled = readOnly) { onClick() }
+        ) {
+            OutlinedTextField(
+                modifier = Modifier.fillMaxWidth(),
+                value = value,
+                onValueChange = onValueChange,
+                enabled = enabled,
+                readOnly = readOnly,
+                label = { Text(stringResource(id = label)) },
+                keyboardOptions = keyboardOptions,
+                trailingIcon = trailingIcon,
+                isError = isError,
+                singleLine = true
+            )
+        }
         if (isError) {
             Text(
                 text = errorMessage,
