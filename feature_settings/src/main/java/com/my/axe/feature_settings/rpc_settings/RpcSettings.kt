@@ -203,6 +203,9 @@ fun RpcSettings(onBackPressed: () -> Boolean) {
                 }
             }
             item {
+                Subtitle(text = stringResource(id = R.string.advance_settings))
+            }
+            item {
                 PreferenceSwitch(
                     title = stringResource(id = R.string.remote_gateway),
                     description = stringResource(id = R.string.remote_gateway_desc),
@@ -243,30 +246,6 @@ fun RpcSettings(onBackPressed: () -> Boolean) {
                         )
                     }
                 }
-            }
-            item {
-                PreferenceSwitch(
-                    title = stringResource(id = R.string.allow_external_apps),
-                    description = stringResource(id = R.string.allow_external_apps_desc),
-                    icon = Icons.Default.Bolt,
-                    isChecked = allowExternalApps,
-                ) {
-                    allowExternalApps = !allowExternalApps
-                    Prefs[Prefs.ALLOW_EXTERNAL_APPS] = allowExternalApps
-                }
-            }
-            item {
-                SettingItem(
-                    title = stringResource(id = R.string.custom_application_id),
-                    description = stringResource(id = R.string.custom_application_id_desc),
-                    icon = Icons.Default.Pin
-                ) {
-                    showApplicationIdDialog = true
-                }
-
-            }
-            item {
-                Subtitle(text = stringResource(id = R.string.advance_settings))
             }
             item {
                 PreferenceSwitch(

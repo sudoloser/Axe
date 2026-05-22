@@ -97,7 +97,7 @@ fun AppsItem(
                 )
             }
 
-            if (isChecked) {
+            if (isChecked && customConfigs.isNotEmpty()) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()

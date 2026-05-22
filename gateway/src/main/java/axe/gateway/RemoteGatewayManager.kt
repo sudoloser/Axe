@@ -47,12 +47,12 @@ class RemoteGatewayManager(
     }
     
     private val loggingInterceptor = HttpLoggingInterceptor { message ->
-        val scrubbed = if (message.contains("\"token\":")) {
-            message.replace(Regex("\"token\":\"[^\"]+\""), "\"token\":\"***\"")
-        } else message
+        // More robust scrubbing for body/headers if they ever leak tokens
+        val scrubbed = message.replace(Regex("\"token\":\"[^\"]+\""), "\"token\":\"***\"")
+                              .replace(Regex("x-app-signature: [^\\s]+"), "x-app-signature: ***")
         logger.d("RemoteGatewayNet", scrubbed)
     }.apply {
-        level = HttpLoggingInterceptor.Level.BODY
+        level = HttpLoggingInterceptor.Level.BASIC
     }
 
     private val client = OkHttpClient.Builder()
