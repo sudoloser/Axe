@@ -26,7 +26,7 @@ The gateway will only activate if you manually toggle it on and explicitly confi
     *   **Heartbeat Resets:** The Axe app sends a heartbeat ping every 4 hours, which automatically refreshes the 48-hour session window.
     *   **Automated Purging:** If the app fails to send a heartbeat within its expected window, the gateway automatically and permanently wipes your token and data from its memory.
     *   **Manual Deactivation:** Turning off the RPC feature or toggling the gateway off sends an immediate kill signal, instantly wiping your data from the server's memory.
-*   **Open Source Transparency:** The full source code for the gateway is entirely transparent and open for public audit. You can review the deployment and memory management logic at the official [axe-gateway](https://github.com/sudoloser/axe-gateway) repository.
+*   **Open Source Transparency:** The full source code for the gateway is entirely transparent and open for public audit. You can review the deployment and memory management logic at the official [axe-server](https://github.com/sudoloser/axe-server) repository.
 
 > ⚠️ **Important Security & Liability Disclaimer:** 
 > Providing your Discord User Token carries inherent security risks, and utilizing custom RPC tools may technically violate Discord's Terms of Service. By using the Remote Gateway, you assume full responsibility for the security of your account and agree that the developers of Axe are not liable for any account restrictions, bans, or data compromises.
