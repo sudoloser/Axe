@@ -152,3 +152,18 @@ The System flavor (`axe-system-release.apk`) is a specialized build intended for
 - **Application ID:** Uses `com.my.axe.system` to allow side-by-side installation with the standard version if necessary (though not recommended).
 
 **Note:** Installing this as a regular user app will NOT enable most of these benefits and may cause higher battery usage due to the persistence flag. Only use this if you know how to integrate it into your system partition.
+
+## Remote Gateway
+The Remote 24/7 Gateway is a feature that allows your Discord Rich Presence to remain active even when the Axe app is not running on your phone, or when your phone is offline.
+
+### How it works:
+- **Relay Server:** The app connects to a secure remote Node.js server (hosted on Render).
+- **Token Hand-off:** Your Discord token is securely sent to the server (only in memory) to maintain the connection.
+- **Continuous Presence:** The server handles Discord heartbeats and updates, ensuring your status never drops.
+- **Inactivity Cleanup:** If the app doesn't check in for 48 hours, the server automatically wipes your token and closes the connection.
+
+### Security:
+- **No Persistence:** Tokens are never stored on the server's disk.
+- **Encrypted Connection:** All communication happens over WSS (Secure WebSocket) and HTTPS.
+- **Manual Stop:** You can stop the remote session at any time by disabling the feature in settings or stopping the RPC.
+- **Fully open source:** You can view the servers code [here](https://github.com/sudoloser/axe-server).

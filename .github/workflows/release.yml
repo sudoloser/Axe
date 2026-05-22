@@ -39,6 +39,8 @@ jobs:
         
       - name: Build Release APKs
         run: ./gradlew assembleUserRelease assembleSystemRelease
+        env:
+          AXE_APP_SIGNATURE: ${{ secrets.AXE_APP_SIGNATURE }}
         
       - name: Sign User APK
         uses: r0adkll/sign-android-release@v1

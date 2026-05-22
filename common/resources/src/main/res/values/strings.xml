@@ -245,4 +245,11 @@
     <string name="overlay_status">Status</string>
     <string name="allow_external_apps">Allow external apps</string>
     <string name="allow_external_apps_desc">Allow other apps/games to update your Discord presence via Intents</string>
+    <string name="remote_gateway">Remote 24/7 Gateway</string>
+    <string name="remote_gateway_desc">Keep your RPC active even when app is closed using a remote server</string>
+    <string name="remote_gateway_warning_title">⚠️ Security Warning</string>
+    <string name="remote_gateway_warning_message">Enabling the Remote 24/7 Gateway will send your Discord token to the Axe remote server. This is required to maintain the connection while your phone is offline or the app is restricted. Your token is never stored permanently on the server and is only used to manage your RPC.\n\nType \"I UNDERSTAND THE RISKS\" below to proceed.</string>
+    <string name="remote_gateway_confirm_placeholder">I UNDERSTAND THE RISKS</string>
+    <string name="remote_gateway_url">Server URL</string>
+    <string name="remote_gateway_signature">For testing purposes</string>
 </resources>

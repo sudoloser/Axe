@@ -8,5 +8,6 @@ dependencies {
     implementation (libs.kotlinx.coroutine)
     implementation (libs.bundles.network.ktor)
     implementation (libs.ktor.websockets)
+    implementation (libs.okhttp)
     testImplementation (libs.junit)
 }

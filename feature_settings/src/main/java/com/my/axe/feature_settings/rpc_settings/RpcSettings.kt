@@ -104,6 +104,10 @@ fun RpcSettings(onBackPressed: () -> Boolean) {
         }
     }
     var isLowResIconsEnabled by remember { mutableStateOf(Prefs[Prefs.RPC_USE_LOW_RES_ICON, false]) }
+    var useRemoteGateway by remember { mutableStateOf(Prefs[Prefs.USE_REMOTE_GATEWAY, false]) }
+    var showRemoteGatewayDialog by remember { mutableStateOf(false) }
+    var remoteGatewayConfirmationText by remember { mutableStateOf("") }
+    
     var useImgur by remember { mutableStateOf(Prefs[Prefs.USE_IMGUR, false]) }
     var configsDir by remember { mutableStateOf(Prefs[Prefs.CONFIGS_DIRECTORY, ""]) }
     var showDirConfigDialog by remember { mutableStateOf(false) }
@@ -196,6 +200,47 @@ fun RpcSettings(onBackPressed: () -> Boolean) {
                     icon = Icons.Default.DoNotDisturbOn
                 ) {
                     showActivityStatusDialog = true
+                }
+            }
+            item {
+                PreferenceSwitch(
+                    title = stringResource(id = R.string.remote_gateway),
+                    description = stringResource(id = R.string.remote_gateway_desc),
+                    icon = Icons.Default.Bolt,
+                    isChecked = useRemoteGateway,
+                ) {
+                    if (!useRemoteGateway) {
+                        showRemoteGatewayDialog = true
+                    } else {
+                        useRemoteGateway = false
+                        Prefs[Prefs.USE_REMOTE_GATEWAY] = false
+                        Toast.makeText(context, "Remote Gateway disabled. Restart RPC to apply.", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+            item {
+                AnimatedVisibility(visible = useRemoteGateway) {
+                    Column {
+                        var customUrl by remember { mutableStateOf(Prefs[Prefs.REMOTE_GATEWAY_URL, "https://axe-server.onrender.com/"]) }
+                        var customSignature by remember { mutableStateOf(Prefs[Prefs.REMOTE_GATEWAY_SIGNATURE, ""]) }
+
+                        RpcField(
+                            value = customUrl,
+                            label = R.string.remote_gateway_url,
+                            onValueChange = {
+                                customUrl = it
+                                Prefs[Prefs.REMOTE_GATEWAY_URL] = it
+                            }
+                        )
+                        RpcField(
+                            value = customSignature,
+                            label = R.string.remote_gateway_signature,
+                            onValueChange = {
+                                customSignature = it
+                                Prefs[Prefs.REMOTE_GATEWAY_SIGNATURE] = it
+                            }
+                        )
+                    }
                 }
             }
             item {
@@ -530,7 +575,7 @@ fun RpcSettings(onBackPressed: () -> Boolean) {
                     imgurClientId = Prefs[Prefs.IMGUR_CLIENT_ID, Constants.IMGUR_CLIENT_ID]
                     showImgurClientIdDialog = false
                 },
-                title = { Text(stringResource(R.string.set_imgur_client_id)) },
+                title = { Text(stringResource(id = R.string.set_imgur_client_id)) },
                 text = {
                     Column {
                         Spacer(modifier = Modifier.height(8.dp))
@@ -556,6 +601,49 @@ fun RpcSettings(onBackPressed: () -> Boolean) {
                         Text(stringResource(R.string.save))
                     }
                 },
+            )
+        }
+
+        if (showRemoteGatewayDialog) {
+            AlertDialog(
+                onDismissRequest = { 
+                    showRemoteGatewayDialog = false
+                    remoteGatewayConfirmationText = ""
+                },
+                title = { Text(stringResource(id = R.string.remote_gateway_warning_title)) },
+                text = {
+                    Column {
+                        Text(stringResource(id = R.string.remote_gateway_warning_message))
+                        Spacer(modifier = Modifier.height(16.dp))
+                        RpcField(
+                            value = remoteGatewayConfirmationText,
+                            label = R.string.remote_gateway_confirm_placeholder,
+                            onValueChange = { remoteGatewayConfirmationText = it }
+                        )
+                    }
+                },
+                confirmButton = {
+                    TextButton(
+                        enabled = remoteGatewayConfirmationText == stringResource(id = R.string.remote_gateway_confirm_placeholder),
+                        onClick = {
+                            useRemoteGateway = true
+                            Prefs[Prefs.USE_REMOTE_GATEWAY] = true
+                            showRemoteGatewayDialog = false
+                            remoteGatewayConfirmationText = ""
+                            Toast.makeText(context, "Remote Gateway enabled. Restart RPC to apply.", Toast.LENGTH_SHORT).show()
+                        }
+                    ) {
+                        Text(stringResource(R.string.confirm))
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { 
+                        showRemoteGatewayDialog = false
+                        remoteGatewayConfirmationText = ""
+                    }) {
+                        Text(stringResource(R.string.cancel))
+                    }
+                }
             )
         }
     }

@@ -16,6 +16,11 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+        buildConfigField("String", "AXE_APP_SIGNATURE", "\"${System.getenv("AXE_APP_SIGNATURE") ?: "DEVELOPMENT_SIGNATURE"}\"")
+    }
+
+    buildFeatures {
+        buildConfig = true
     }
 
     flavorDimensions.add("distribution")
