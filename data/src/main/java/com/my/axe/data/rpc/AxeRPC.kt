@@ -349,6 +349,12 @@ class AxeRPC(
                 tag = "axeRPC",
                 event = "Token Seems to be invalid, Please Login if you haven't"
             )
+        
+        if (!::presence.isInitialized) {
+            logger.e("axeRPC", "Cannot connect: Presence is not initialized. Call build() first.")
+            return
+        }
+
         discordWebSocket.connect()
         discordWebSocket.sendActivity(presence)
     }

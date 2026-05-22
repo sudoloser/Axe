@@ -76,12 +76,13 @@ class RemoteGatewayManager(
             throw IllegalStateException(err)
         }
         
+        isDeliberatelyClosed = false
+
         if (webSocket != null) {
             logger.w("RemoteGateway", "Connect called but already connecting/connected")
             return
         }
         
-        isDeliberatelyClosed = false
         isAuthorized = false
         logger.i("RemoteGateway", "Initiating Connection...")
         logger.d("RemoteGateway", "WS URL: $wsUrl")
