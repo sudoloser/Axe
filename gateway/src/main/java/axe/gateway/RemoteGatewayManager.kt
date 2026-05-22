@@ -2,7 +2,6 @@ package axe.gateway
 
 import axe.gateway.entities.presence.Presence
 import com.my.axe.domain.interfaces.Logger
-import com.my.axe.preference.Prefs
 import kotlinx.coroutines.*
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
@@ -21,13 +20,13 @@ class RemoteGatewayManager(
     private val userId: String,
     private val appSignature: String,
     private val serverBaseUrl: String,
+    private val sessionId: String,
     private val logger: Logger
 ) : DiscordWebSocket, WebSocketListener() {
 
     private val wsUrl: String
     private val statusUrl: String
     private val stopUrl: String
-    private val sessionId: String
     
     init {
         val base = serverBaseUrl.trimEnd('/')
@@ -36,14 +35,6 @@ class RemoteGatewayManager(
         // Status and Stop endpoints
         statusUrl = base.replace("ws://", "http://").replace("wss://", "https://") + "/api/session/"
         stopUrl = base.replace("ws://", "http://").replace("wss://", "https://") + "/api/stop"
-
-        // Use persistent session ID
-        var savedId = Prefs[Prefs.REMOTE_GATEWAY_SESSION_ID, ""]
-        if (savedId.isEmpty()) {
-            savedId = UUID.randomUUID().toString()
-            Prefs[Prefs.REMOTE_GATEWAY_SESSION_ID] = savedId
-        }
-        sessionId = savedId
     }
     
     private val loggingInterceptor = HttpLoggingInterceptor { message ->

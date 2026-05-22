@@ -27,6 +27,7 @@ import axe.gateway.DiscordWebSocketImpl
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import java.util.UUID
 
 @Module
 @InstallIn(ServiceComponent::class)
@@ -39,11 +40,19 @@ object ServiceModule {
         return if (useRemoteGateway) {
             val customUrl = Prefs[Prefs.REMOTE_GATEWAY_URL, "https://axe-server.onrender.com/"]
             val customSignature = Prefs[Prefs.REMOTE_GATEWAY_SIGNATURE, ""].ifEmpty { BuildConfig.AXE_APP_SIGNATURE }
+            
+            var savedId = Prefs[Prefs.REMOTE_GATEWAY_SESSION_ID, ""]
+            if (savedId.isEmpty()) {
+                savedId = UUID.randomUUID().toString()
+                Prefs[Prefs.REMOTE_GATEWAY_SESSION_ID] = savedId
+            }
+
             RemoteGatewayManager(
                 token = Prefs[Prefs.TOKEN, ""],
                 userId = Prefs[Prefs.USER_ID, ""],
                 appSignature = customSignature,
                 serverBaseUrl = customUrl,
+                sessionId = savedId,
                 logger = logger
             )
         } else {
