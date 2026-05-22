@@ -86,36 +86,42 @@ class CustomRpcService : Service() {
             wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, WAKELOCK)
             wakeLock?.acquire()
             scope.launch {
-                notificationManager.notify(
-                    Constants.NOTIFICATION_ID,
-                    notificationBuilder
-                        .setLargeIcon(
-                            rpcImage = rpcData?.largeImg?.toRpcImage(),
-                            context = this@CustomRpcService
-                        )
-                        .build()
-                )
+                try {
+                    notificationManager.notify(
+                        Constants.NOTIFICATION_ID,
+                        notificationBuilder
+                            .setLargeIcon(
+                                rpcImage = rpcData?.largeImg?.toRpcImage(),
+                                context = this@CustomRpcService
+                            )
+                            .build()
+                    )
 
-                AxeRPC.apply {
-                    rpcData?.let {
-                        setName(it.name.ifEmpty { "" })
-                        setDetails(it.details.ifEmpty { null })
-                        setState(it.state.ifEmpty { null })
-                        setPartySize(it.partyCurrentSize.toIntOrNull(), it.partyMaxSize.toIntOrNull())
-                        setStatus(it.status.ifEmpty { "online" })
-                        setType(it.type.toIntOrNull() ?: 0)
-                        setPlatform(it.platform.ifEmpty { null })
-                        setStartTimestamps(it.timestampsStart.toLongOrNull())
-                        setStopTimestamps(it.timestampsStop.toLongOrNull())
-                        setButton1(it.button1.ifEmpty { null })
-                        setButton1URL(it.button1link.ifEmpty { null })
-                        setButton2(it.button2.ifEmpty { null })
-                        setButton2URL(it.button2link.ifEmpty { null })
-                        setLargeImage(it.largeImg.toRpcImage(), it.largeText)
-                        setSmallImage(it.smallImg.toRpcImage(), it.smallText)
-                        setStreamUrl(it.url.ifEmpty { null })
-                        build()
+                    AxeRPC.apply {
+                        rpcData?.let {
+                            setName(it.name.ifEmpty { "" })
+                            setDetails(it.details.ifEmpty { null })
+                            setState(it.state.ifEmpty { null })
+                            setPartySize(it.partyCurrentSize.toIntOrNull(), it.partyMaxSize.toIntOrNull())
+                            setStatus(it.status.ifEmpty { "online" })
+                            setType(it.type.toIntOrNull() ?: 0)
+                            setPlatform(it.platform.ifEmpty { null })
+                            setStartTimestamps(it.timestampsStart.toLongOrNull())
+                            setStopTimestamps(it.timestampsStop.toLongOrNull())
+                            setButton1(it.button1.ifEmpty { null })
+                            setButton1URL(it.button1link.ifEmpty { null })
+                            setButton2(it.button2.ifEmpty { null })
+                            setButton2URL(it.button2link.ifEmpty { null })
+                            setLargeImage(it.largeImg.toRpcImage(), it.largeText)
+                            setSmallImage(it.smallImg.toRpcImage(), it.smallText)
+                            setStreamUrl(it.url.ifEmpty { null })
+                            build()
+                        }
                     }
+                } catch (e: Exception) {
+                    com.my.axe.feature_rpc_base.AppUtils.init(this@CustomRpcService) // Ensure initialized
+                    runningType = null
+                    stopSelf()
                 }
             }
         }

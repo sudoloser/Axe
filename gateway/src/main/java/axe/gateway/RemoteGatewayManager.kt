@@ -9,6 +9,7 @@ import kotlinx.serialization.json.Json
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.logging.HttpLoggingInterceptor
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.CoroutineContext
@@ -21,17 +22,42 @@ class RemoteGatewayManager(
     private val logger: Logger
 ) : DiscordWebSocket, WebSocketListener() {
 
-    private val serverUrl = if (serverBaseUrl.endsWith("/")) "${serverBaseUrl}api/" else "$serverBaseUrl/api/"
-    private val stopUrl = if (serverBaseUrl.endsWith("/")) "${serverBaseUrl}api/stop" else "$serverBaseUrl/api/stop"
+    private val wsUrl: String
+    private val stopUrl: String
     private val sessionId = UUID.randomUUID().toString()
+    
+    init {
+        val base = serverBaseUrl.trimEnd('/')
+        // Convert https:// to wss:// for websocket
+        wsUrl = base.replace("http://", "ws://").replace("https://", "wss://") + "/api/"
+        // Keep https:// for stop endpoint
+        stopUrl = base.replace("ws://", "http://").replace("wss://", "https://") + "/api/stop"
+    }
+    
+    private val loggingInterceptor = HttpLoggingInterceptor { message ->
+        // Scrub token from logs
+        val scrubbed = if (message.contains("\"token\":")) {
+            message.replace(Regex("\"token\":\"[^\"]+\""), "\"token\":\"***\"")
+        } else message
+        logger.d("RemoteGatewayNet", scrubbed)
+    }.apply {
+        level = HttpLoggingInterceptor.Level.HEADERS // Body might be too noisy for standard logs
+    }
+
     private val client = OkHttpClient.Builder()
+        .addInterceptor(loggingInterceptor)
         .pingInterval(30, TimeUnit.SECONDS)
+        .connectTimeout(15, TimeUnit.SECONDS)
+        .readTimeout(15, TimeUnit.SECONDS)
+        .writeTimeout(15, TimeUnit.SECONDS)
         .build()
     
     private var webSocket: WebSocket? = null
     private var heartbeatJob: Job? = null
-    private var retryDelay = 1000L
-    private val maxRetryDelay = 64000L
+    private var retryDelay = 2000L
+    private val maxRetryDelay = 60000L
+    
+    private var isAuthorized = false
     
     private val json = Json {
         ignoreUnknownKeys = true
@@ -42,50 +68,78 @@ class RemoteGatewayManager(
     private val scope = CoroutineScope(coroutineContext)
 
     override suspend fun connect() {
-        if (webSocket != null) return
+        if (webSocket != null) {
+            logger.w("RemoteGateway", "Connect called but already connecting/connected")
+            return
+        }
+        
+        isAuthorized = false
+        logger.i("RemoteGateway", "Target WS: $wsUrl")
+        logger.i("RemoteGateway", "Target Stop: $stopUrl")
         
         val request = Request.Builder()
-            .url(serverUrl)
+            .url(wsUrl)
             .build()
         
         webSocket = client.newWebSocket(request, this)
-        logger.i("RemoteGateway", "Connecting to $serverUrl")
     }
 
     override fun onOpen(webSocket: WebSocket, response: Response) {
-        logger.i("RemoteGateway", "WebSocket Opened")
-        retryDelay = 1000L // Reset retry delay
+        logger.i("RemoteGateway", "WebSocket Connection Established. Handshaking...")
+        retryDelay = 2000L // Reset retry delay
         
         val authMessage = AuthMessage(
             type = "AUTH",
             app_signature = appSignature,
-            user_id = userId,
+            user_id = userId.ifEmpty { "unknown" },
             token = token,
             session_id = sessionId,
             timestamp = System.currentTimeMillis()
         )
         
-        webSocket.send(json.encodeToString(authMessage))
-        logger.i("RemoteGateway", "Auth sent")
-        
-        startHeartbeat()
+        try {
+            val jsonAuth = json.encodeToString(authMessage)
+            webSocket.send(jsonAuth)
+            logger.i("RemoteGateway", "AUTH payload sent to server")
+            // We assume authorized for now. Ideally server sends an ACK.
+            isAuthorized = true 
+            startHeartbeat()
+        } catch (e: Exception) {
+            logger.e("RemoteGateway", "Failed to send AUTH: ${e.message}")
+        }
     }
 
     override fun onMessage(webSocket: WebSocket, text: String) {
-        logger.d("RemoteGateway", "Message received: $text")
+        logger.d("RemoteGateway", "Incoming: $text")
+        try {
+            val msg = json.decodeFromString<ServerMessage>(text)
+            if (msg.type == "ERROR") {
+                logger.e("RemoteGateway", "SERVER ERROR: ${msg.message}")
+                if (msg.message?.contains("signature", ignoreCase = true) == true) {
+                    logger.e("RemoteGateway", "Invalid App Signature! Check settings.")
+                    isAuthorized = false
+                    retryDelay = maxRetryDelay // Don't spam with invalid signature
+                }
+            }
+        } catch (e: Exception) {
+            // Ignore non-standard messages
+        }
     }
 
     override fun onClosing(webSocket: WebSocket, code: Int, reason: String) {
-        logger.w("RemoteGateway", "Closing: $code / $reason")
+        logger.w("RemoteGateway", "Server closing connection: $code / $reason")
+        isAuthorized = false
     }
 
     override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
-        logger.e("RemoteGateway", "Failure: ${t.message}")
+        logger.e("RemoteGateway", "WebSocket Failure: ${t.message ?: "Unknown error"}")
         this.webSocket = null
+        isAuthorized = false
         stopHeartbeat()
         
-        // Reconnect with exponential backoff
+        // Reconnect with exponential backoff if not closed deliberately
         scope.launch {
+            logger.i("RemoteGateway", "Retrying connection in ${retryDelay/1000}s...")
             delay(retryDelay)
             retryDelay = (retryDelay * 2).coerceAtMost(maxRetryDelay)
             connect()
@@ -97,12 +151,18 @@ class RemoteGatewayManager(
         heartbeatJob = scope.launch {
             while (isActive) {
                 delay(TimeUnit.HOURS.toMillis(6))
-                val heartbeat = HeartbeatMessage(
-                    type = "HEARTBEAT",
-                    session_id = sessionId
-                )
-                webSocket?.send(json.encodeToString(heartbeat))
-                logger.i("RemoteGateway", "Heartbeat sent")
+                if (isAuthorized && webSocket != null) {
+                    val heartbeat = HeartbeatMessage(
+                        type = "HEARTBEAT",
+                        session_id = sessionId
+                    )
+                    try {
+                        webSocket?.send(json.encodeToString(heartbeat))
+                        logger.i("RemoteGateway", "Relay heartbeat sent")
+                    } catch (e: Exception) {
+                        logger.e("RemoteGateway", "Failed to send heartbeat: ${e.message}")
+                    }
+                }
             }
         }
     }
@@ -113,26 +173,51 @@ class RemoteGatewayManager(
     }
 
     override suspend fun sendActivity(presence: Presence) {
+        logger.d("RemoteGateway", "Presence update requested. Checking authorization...")
+        
+        // Wait for authorization (max 10 seconds)
+        var count = 0
+        while (!isAuthorized && count < 100) {
+            if (webSocket == null) {
+                throw IllegalStateException("Remote Gateway disconnected during authorization wait")
+            }
+            delay(100)
+            count++
+        }
+
+        if (!isAuthorized || webSocket == null) {
+            logger.e("RemoteGateway", "Gave up waiting for auth (timeout 10s). Activity not sent.")
+            throw IllegalStateException("Remote Gateway authorization timeout")
+        }
+
         val message = PresenceUpdateMessage(
             type = "PRESENCE_UPDATE",
             session_id = sessionId,
             presence = presence
         )
-        webSocket?.send(json.encodeToString(message))
-        logger.i("RemoteGateway", "Activity update sent")
+        
+        try {
+            val jsonMsg = json.encodeToString(message)
+            webSocket?.send(jsonMsg)
+            logger.i("RemoteGateway", "Presence update sent to relay: ${presence.activities?.firstOrNull()?.name}")
+        } catch (e: Exception) {
+            logger.e("RemoteGateway", "Failed to send presence over WebSocket: ${e.message}")
+            throw e
+        }
     }
 
     override fun isWebSocketConnected(): Boolean {
-        return webSocket != null
+        return webSocket != null && isAuthorized
     }
 
     override fun close() {
-        logger.i("RemoteGateway", "Closing connection")
+        logger.i("RemoteGateway", "Close called. Cleaning up...")
+        isAuthorized = false
         stopHeartbeat()
         webSocket?.close(1000, "App closed")
         webSocket = null
         
-        // Call stop endpoint
+        // Call stop endpoint via HTTP POST (async)
         scope.launch {
             try {
                 val stopRequest = StopRequest(
@@ -145,11 +230,18 @@ class RemoteGatewayManager(
                     .post(body)
                     .build()
                 
-                client.newCall(request).execute().use { response ->
-                    logger.i("RemoteGateway", "Stop request response: ${response.code}")
-                }
+                client.newCall(request).enqueue(object : Callback {
+                    override fun onResponse(call: Call, response: Response) {
+                        response.use {
+                            logger.i("RemoteGateway", "Purge request response: ${it.code}")
+                        }
+                    }
+                    override fun onFailure(call: Call, e: java.io.IOException) {
+                        logger.e("RemoteGateway", "Purge request failed: ${e.message}")
+                    }
+                })
             } catch (e: Exception) {
-                logger.e("RemoteGateway", "Failed to send stop request: ${e.message}")
+                logger.e("RemoteGateway", "Failed to setup stop request: ${e.message}")
             }
         }
     }
@@ -181,5 +273,11 @@ class RemoteGatewayManager(
     private data class StopRequest(
         val session_id: String,
         val app_signature: String
+    )
+    
+    @Serializable
+    private data class ServerMessage(
+        val type: String? = null,
+        val message: String? = null
     )
 }
