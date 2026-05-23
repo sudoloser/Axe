@@ -62,7 +62,7 @@ object AppUtils {
     fun experimentalRpcRunning(): Boolean {
         return checkForRunningService<ExperimentalRpc>() || isRemoteActive("EXPERIMENTAL")
     }
-...
+
     fun overlayRunning(): Boolean {
         return isServiceRunning("com.my.axe.feature_overlay.OverlayService")
     }
