@@ -17,10 +17,10 @@ class App: Application() {
     lateinit var discordWebSocket: DiscordWebSocket
 
     override fun onCreate() {
+        PreferenceConfig.apply(this)
         super.onCreate()
         DynamicColors.applyToActivitiesIfAvailable(this)
         CrashHandlerConfig.apply()
-        PreferenceConfig.apply(this)
         LoggerProvider.init()
         AppUtils.init(this, discordWebSocket)
     }
