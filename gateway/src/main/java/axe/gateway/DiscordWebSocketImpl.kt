@@ -43,8 +43,9 @@ open class DiscordWebSocketImpl(
         encodeDefaults = true
     }
 
+    override val coroutineContext: CoroutineContext = SupervisorJob() + Dispatchers.Default
     private var connectJob: Job? = null
-    private var scope: CoroutineScope = CoroutineScope(Dispatchers.Default + SupervisorJob())
+    private var scope: CoroutineScope = CoroutineScope(coroutineContext)
 
     override suspend fun connect() {
         if (!scope.isActive) {

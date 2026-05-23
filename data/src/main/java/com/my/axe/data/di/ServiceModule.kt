@@ -34,7 +34,6 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object ServiceModule {
     @Provides
-    @Singleton
     fun providesDiscordWebsocket(
         logger: Logger
     ): DiscordWebSocket {
@@ -56,7 +55,6 @@ object ServiceModule {
     }
 
     @Provides
-    @Singleton
     fun provideAxeRpc(
         axeRepository: AxeRepository,
         discordWebSocket: DiscordWebSocket,
