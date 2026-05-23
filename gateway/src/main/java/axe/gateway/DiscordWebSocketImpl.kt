@@ -44,11 +44,14 @@ open class DiscordWebSocketImpl(
     }
 
     private var connectJob: Job? = null
-    override val coroutineContext: CoroutineContext = SupervisorJob() + Dispatchers.Default
+    private var scope: CoroutineScope = CoroutineScope(Dispatchers.Default + SupervisorJob())
 
     override suspend fun connect() {
+        if (!scope.isActive) {
+            scope = CoroutineScope(Dispatchers.Default + SupervisorJob())
+        }
         connectJob?.cancel()
-        connectJob = launch {
+        connectJob = scope.launch {
             try {
                 logger.i("Gateway","Connect called")
                 val url = resumeGatewayUrl ?: gatewayUrl
@@ -181,7 +184,7 @@ open class DiscordWebSocketImpl(
 
     private fun startHeartbeatJob(interval: Long) {
         heartbeatJob?.cancel()
-        heartbeatJob = launch {
+        heartbeatJob = scope.launch {
             while (isActive) {
                 sendHeartBeat()
                 delay(interval)
