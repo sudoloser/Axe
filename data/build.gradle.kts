@@ -26,6 +26,7 @@ dependencies {
     implementation (projects.common.preference)
     implementation (projects.common.resources)
     implementation (projects.gateway)
+    implementation (libs.mmkv)
     implementation (libs.blankj.utilcodex)
     testImplementation(libs.junit)
 }
