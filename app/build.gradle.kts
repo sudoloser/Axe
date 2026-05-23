@@ -64,6 +64,7 @@ dependencies {
     implementation (projects.featureOverlay)
     implementation (projects.common.preference)
     implementation (projects.common.navigation)
+    implementation (projects.gateway)
 
     // Extras
     implementation (libs.app.compat)

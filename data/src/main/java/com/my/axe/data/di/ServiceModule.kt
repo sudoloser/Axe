@@ -21,18 +21,20 @@ import com.my.axe.preference.Prefs
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ServiceComponent
+import dagger.hilt.components.SingletonComponent
 import axe.gateway.DiscordWebSocket
 import axe.gateway.DiscordWebSocketImpl
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import java.util.UUID
+import javax.inject.Singleton
 
 @Module
-@InstallIn(ServiceComponent::class)
+@InstallIn(SingletonComponent::class)
 object ServiceModule {
     @Provides
+    @Singleton
     fun providesDiscordWebsocket(
         logger: Logger
     ): DiscordWebSocket {
@@ -61,6 +63,7 @@ object ServiceModule {
     }
 
     @Provides
+    @Singleton
     fun provideAxeRpc(
         axeRepository: AxeRepository,
         discordWebSocket: DiscordWebSocket,
