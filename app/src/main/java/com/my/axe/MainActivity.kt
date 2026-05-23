@@ -63,6 +63,7 @@ class MainActivity : AppCompatActivity() {
                     axe(
                         usageAccessStatus = usageAccessStatus,
                         notificationListenerAccess = notificationListenerAccess,
+                        discordWebSocket = discordWebSocket,
                         initialRoute = initialRoute
                     )
                 }

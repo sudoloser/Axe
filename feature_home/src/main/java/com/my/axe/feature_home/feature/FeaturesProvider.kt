@@ -159,7 +159,7 @@ fun homeFeaturesProvider(
             icon = R.drawable.ic_dev_rpc,
             route = Routes.EXPERIMENTAL_RPC,
             onClick = { navigateTo(it) },
-            isChecked = AppUtils.experimentalRpcRunning(),
+            isChecked = AppUtils.experimentalRpcRunning() || (sessionActive && lastRpcType == "EXPERIMENTAL"),
             onCheckedChange = {
                 if (it) {
                     ctx.stopService(Intent(ctx, MediaRpcService::class.java))

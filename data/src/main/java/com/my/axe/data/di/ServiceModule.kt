@@ -43,18 +43,12 @@ object ServiceModule {
             val customUrl = Prefs[Prefs.REMOTE_GATEWAY_URL, "https://axe-server.onrender.com/"]
             val customSignature = Prefs[Prefs.REMOTE_GATEWAY_SIGNATURE, ""].ifEmpty { BuildConfig.AXE_APP_SIGNATURE }
             
-            var savedId = Prefs[Prefs.REMOTE_GATEWAY_SESSION_ID, ""]
-            if (savedId.isEmpty()) {
-                savedId = UUID.randomUUID().toString()
-                Prefs[Prefs.REMOTE_GATEWAY_SESSION_ID] = savedId
-            }
-
             RemoteGatewayManager(
                 token = Prefs[Prefs.TOKEN, ""],
                 userId = Prefs[Prefs.USER_ID, ""],
                 appSignature = customSignature,
                 serverBaseUrl = customUrl,
-                sessionId = savedId,
+                sessionId = "", // No longer used
                 logger = logger
             )
         } else {

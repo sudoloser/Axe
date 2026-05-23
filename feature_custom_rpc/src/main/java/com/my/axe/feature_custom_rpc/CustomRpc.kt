@@ -214,11 +214,13 @@ private fun RpcTextFieldsColumn(
     onEvent: (UiEvent) -> Unit,
     uiState: UiState,
     snackBarHostState: SnackbarHostState,
+    sessionActive: Boolean = false
 ) {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
-    var isCustomRpcEnabled by remember {
-        mutableStateOf(AppUtils.customRpcRunning("CUSTOM"))
+    val lastRpcType = Prefs[Prefs.LAST_RPC_TYPE, ""]
+    var isCustomRpcEnabled by remember(sessionActive, lastRpcType) {
+        mutableStateOf(AppUtils.customRpcRunning("CUSTOM") || (sessionActive && lastRpcType == "CUSTOM"))
     }
     LazyColumn(
         modifier = Modifier.fillMaxSize()

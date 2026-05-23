@@ -89,6 +89,7 @@ class AppDetectionService : Service() {
     }
 
     override fun onDestroy() {
+        Prefs[Prefs.LAST_RPC_TYPE] = ""
         scope.cancel()
         AxeRPC.closeRPC()
         super.onDestroy()
