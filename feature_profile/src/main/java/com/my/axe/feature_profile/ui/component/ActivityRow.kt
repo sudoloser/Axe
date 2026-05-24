@@ -110,7 +110,7 @@ fun ActivityRow(
                     error = painterResource(id = R.drawable.editing_rpc_pencil),
                     placeholder = painterResource(R.drawable.editing_rpc_pencil),
                     contentDescription = null,
-                    contentScale = ContentScale.Fit,
+                    contentScale = ContentScale.Crop,
                     modifier = if (!rpcConfig?.largeImg.isNullOrEmpty())
                         Modifier
                             .size(70.dp)
@@ -130,7 +130,7 @@ fun ActivityRow(
                         error = painterResource(id = R.drawable.ic_rpc_placeholder),
                         placeholder = painterResource(R.drawable.ic_rpc_placeholder),
                         contentDescription = null,
-                        contentScale = ContentScale.Fit,
+                        contentScale = ContentScale.Crop,
                         modifier = Modifier
                             .size(30.dp)
                             .clip(CircleShape)

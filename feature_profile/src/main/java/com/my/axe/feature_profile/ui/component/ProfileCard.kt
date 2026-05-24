@@ -105,7 +105,7 @@ fun ProfileCard(
                         .fillMaxWidth()
                         .height(120.dp),
                     model = user.getBannerImage() ?: USER_BANNER,
-                    contentScale = ContentScale.FillWidth,
+                    contentScale = ContentScale.Crop,
                     placeholder = painterResource(R.drawable.broken_image),
                     error = painterResource(R.drawable.broken_image),
                     contentDescription = "User Avatar"
@@ -116,7 +116,7 @@ fun ProfileCard(
                     placeholder = painterResource(id = R.drawable.error_avatar),
                     error = painterResource(id = R.drawable.error_avatar),
                     contentDescription = null,
-                    contentScale = ContentScale.Fit,
+                    contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .padding(16.dp, 64.dp, 16.dp, 6.dp)
                         .size(110.dp)

@@ -67,6 +67,9 @@ dependencies {
     implementation (projects.gateway)
 
     // Extras
+    implementation (libs.coil)
+    implementation (libs.coil.gif)
+    implementation (libs.coil.svg)
     implementation (libs.app.compat)
     implementation (libs.accompanist.navigation.animation)
     implementation (libs.kotlinx.serialization.json)
