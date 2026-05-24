@@ -14,16 +14,19 @@ package com.my.axe.preference
 
 import com.my.axe.domain.model.release.Release
 import com.my.axe.domain.model.user.User
-import com.my.axe.preference.Prefs.isMediaAppEnabled
-import com.my.axe.preference.Prefs.saveMediaAppToPrefs
 import com.tencent.mmkv.MMKV
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import kotlin.time.Duration.Companion.hours
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 
 object Prefs {
     val kv = MMKV.defaultMMKV()
-    operator fun set(key: String, value: Any?) =
+
+    private val _preferenceChanges = MutableSharedFlow<String>(extraBufferCapacity = 1)
+    val preferenceChanges = _preferenceChanges.asSharedFlow()
+
+    operator fun set(key: String, value: Any?) {
         when (value) {
             is String? -> kv.encode(key, value)
             is Int -> kv.encode(key, value)
@@ -32,6 +35,8 @@ object Prefs {
             is Long -> kv.encode(key, value)
             else -> throw UnsupportedOperationException("Not yet implemented")
         }
+        _preferenceChanges.tryEmit(key)
+    }
 
     inline operator fun <reified T : Any> get(
         key: String,
@@ -47,6 +52,7 @@ object Prefs {
 
     fun remove(key: String) {
         kv.removeValueForKey(key)
+        _preferenceChanges.tryEmit(key)
     }
 
     fun isAppEnabled(packageName: String?): Boolean {

@@ -1,6 +1,5 @@
 package com.my.axe.data.gateway
 
-import android.content.SharedPreferences
 import axe.gateway.DiscordWebSocket
 import axe.gateway.DiscordWebSocketImpl
 import axe.gateway.RemoteGatewayManager
@@ -30,17 +29,16 @@ class DelegatingDiscordWebSocket(
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
     override val coroutineContext: CoroutineContext = scope.coroutineContext
 
-    private val prefListener = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
-        if (key == Prefs.USE_REMOTE_GATEWAY) {
-            logger.i("DelegatingGateway", "Preference changed: $key. Updating implementation.")
-            updateImplementation()
-        }
-    }
-
     init {
         updateImplementation()
-        // Registering listener to MMKV's underlying SharedPreferences
-        Prefs.kv.registerOnSharedPreferenceChangeListener(prefListener)
+        scope.launch {
+            Prefs.preferenceChanges.collect { key ->
+                if (key == Prefs.USE_REMOTE_GATEWAY) {
+                    logger.i("DelegatingGateway", "Preference changed: $key. Updating implementation.")
+                    updateImplementation()
+                }
+            }
+        }
     }
 
     private var sessionActiveSyncJob: Job? = null
@@ -113,7 +111,6 @@ class DelegatingDiscordWebSocket(
     }
 
     override fun close() {
-        Prefs.kv.unregisterOnSharedPreferenceChangeListener(prefListener)
         sessionActiveSyncJob?.cancel()
         currentImplementation?.close()
     }
