@@ -40,7 +40,7 @@ class DelegatingDiscordWebSocket(
     init {
         updateImplementation()
         // Registering listener to MMKV's underlying SharedPreferences
-        Prefs.kv.asSharedPreferences().registerOnSharedPreferenceChangeListener(prefListener)
+        Prefs.kv.registerOnSharedPreferenceChangeListener(prefListener)
     }
 
     private var sessionActiveSyncJob: Job? = null
@@ -113,7 +113,7 @@ class DelegatingDiscordWebSocket(
     }
 
     override fun close() {
-        Prefs.kv.asSharedPreferences().unregisterOnSharedPreferenceChangeListener(prefListener)
+        Prefs.kv.unregisterOnSharedPreferenceChangeListener(prefListener)
         sessionActiveSyncJob?.cancel()
         currentImplementation?.close()
     }
