@@ -62,7 +62,6 @@ class DelegatingDiscordWebSocket(
                     userId = userId,
                     appSignature = appSignature,
                     serverBaseUrl = serverBaseUrl,
-                    sessionId = "",
                     logger = logger
                 )
             } else {
