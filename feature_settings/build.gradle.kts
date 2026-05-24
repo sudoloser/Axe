@@ -8,7 +8,7 @@ android {
     namespace = "com.my.axe.feature_settings"
 
     defaultConfig {
-        buildConfigField("String","VERSION_NAME", "\"${libs.versions.version.name.get()}\"")
+        buildConfigField("String","VERSION_NAME", "\"${libs.versions.versionName.get()}\"")
     }
 }
 

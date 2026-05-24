@@ -1,9 +1,9 @@
 [versions]
 # project level
-gradle = "8.13.2"
-kotlin = "1.9.23"
-version-name = "1.2.0"
-version-code ="4"
+gradle = "8.7.2"
+kotlin = "1.9.25"
+versionName = "1.2.0"
+versionCode ="4"
 
 # app level
 accompanist = "0.31.0-alpha"
@@ -14,7 +14,7 @@ app-compat = "1.7.0"
 blankj-utilcodex = "1.31.0"
 coil = "2.1.0"
 compose = "1.7.6"
-compose-compiler = "1.5.13"
+compose-compiler = "1.5.15"
 compose-navigation = "2.8.3"
 core-ktx = "1.13.1"
 crashx = "v6.0.19"
