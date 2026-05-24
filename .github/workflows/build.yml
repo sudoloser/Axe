@@ -2,7 +2,7 @@ name: Test Build
 
 on:
   push:
-    branches: [ "master", "fa4ed" ]
+    branches: [ "master", "pre" ]
     paths-ignore:
       - 'metadata/**'
   pull_request:
