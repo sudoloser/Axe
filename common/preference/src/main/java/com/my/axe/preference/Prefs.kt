@@ -14,16 +14,20 @@ package com.my.axe.preference
 
 import com.my.axe.domain.model.release.Release
 import com.my.axe.domain.model.user.User
-import com.my.axe.preference.Prefs.isMediaAppEnabled
-import com.my.axe.preference.Prefs.saveMediaAppToPrefs
 import com.tencent.mmkv.MMKV
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlin.time.Duration.Companion.hours
 
 object Prefs {
     val kv = MMKV.defaultMMKV()
-    operator fun set(key: String, value: Any?) =
+
+    private val _preferenceChanges = MutableSharedFlow<String>(extraBufferCapacity = 1)
+    val preferenceChanges = _preferenceChanges.asSharedFlow()
+
+    operator fun set(key: String, value: Any?) {
         when (value) {
             is String? -> kv.encode(key, value)
             is Int -> kv.encode(key, value)
@@ -32,6 +36,8 @@ object Prefs {
             is Long -> kv.encode(key, value)
             else -> throw UnsupportedOperationException("Not yet implemented")
         }
+        _preferenceChanges.tryEmit(key)
+    }
 
     inline operator fun <reified T : Any> get(
         key: String,
@@ -47,6 +53,7 @@ object Prefs {
 
     fun remove(key: String) {
         kv.removeValueForKey(key)
+        _preferenceChanges.tryEmit(key)
     }
 
     fun isAppEnabled(packageName: String?): Boolean {
@@ -138,6 +145,7 @@ object Prefs {
     const val USER_ID = "user-id"
     const val USER_BIO = "user-bio"
     const val USER_NITRO = "user-nitro"
+    const val LAST_RPC_TYPE = "last_rpc_type"
     const val LAST_RUN_CONSOLE_RPC = "last_run_console_rpc"
     const val LAST_RUN_CUSTOM_RPC = "last_run_custom_rpc"
     const val LANGUAGE = "language"

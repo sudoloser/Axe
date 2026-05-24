@@ -14,6 +14,8 @@ import axe.gateway.entities.op.OpCode
 import axe.gateway.entities.op.OpCode.*
 import axe.gateway.entities.presence.Presence
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
@@ -43,9 +45,10 @@ open class DiscordWebSocketImpl(
         encodeDefaults = true
     }
 
-    override val coroutineContext: CoroutineContext = SupervisorJob() + Dispatchers.Default
-    private var connectJob: Job? = null
-    private var scope: CoroutineScope = CoroutineScope(coroutineContext)
+    override val sessionActive = MutableStateFlow(false)
+
+    override val coroutineContext: CoroutineContext
+        get() = SupervisorJob() + Dispatchers.Default
 
     override suspend fun connect() {
         if (!scope.isActive) {
@@ -57,6 +60,7 @@ open class DiscordWebSocketImpl(
                 logger.i("Gateway","Connect called")
                 val url = resumeGatewayUrl ?: gatewayUrl
                 websocket = client.webSocketSession(url)
+                sessionActive.value = true
 
                 // start receiving messages
                 websocket!!.incoming.receiveAsFlow()
@@ -223,6 +227,7 @@ open class DiscordWebSocketImpl(
         sessionId = null
         sequence = 0
         connected = false
+        sessionActive.value = false
         runBlocking {
             websocket?.close()
             websocket = null
@@ -252,5 +257,4 @@ open class DiscordWebSocketImpl(
             d = presence
         )
     }
-
 }

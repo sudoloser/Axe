@@ -36,8 +36,10 @@ fun homeFeaturesProvider(
     hasUsageAccess: MutableState<Boolean>,
     hasNotificationAccess: MutableState<Boolean>,
     userVerified: Boolean,
+    sessionActive: Boolean = false
 ): List<HomeFeature> {
     val ctx = LocalContext.current
+    val lastRpcType = Prefs[Prefs.LAST_RPC_TYPE, ""]
     return listOf(
         HomeFeature(
             title = stringResource(id = R.string.main_floatingOverlay),
@@ -61,7 +63,7 @@ fun homeFeaturesProvider(
             title = stringResource(id = R.string.main_appDetection),
             icon = R.drawable.ic_apps,
             route = Routes.APPS_DETECTION,
-            isChecked = AppUtils.appDetectionRunning(),
+            isChecked = AppUtils.appDetectionRunning() || (sessionActive && lastRpcType == "APPS"),
             showSwitch = hasUsageAccess.value,
             onClick = {
                 navigateTo(it)
@@ -82,7 +84,7 @@ fun homeFeaturesProvider(
             title = stringResource(id = R.string.main_mediaRpc),
             icon = R.drawable.ic_media_rpc,
             route = Routes.MEDIA_RPC,
-            isChecked = AppUtils.mediaRpcRunning(),
+            isChecked = AppUtils.mediaRpcRunning() || (sessionActive && lastRpcType == "MEDIA"),
             showSwitch = hasNotificationAccess.value,
             onClick = {
                 navigateTo(it)
@@ -103,7 +105,7 @@ fun homeFeaturesProvider(
             title = stringResource(id = R.string.main_customRpc),
             icon = R.drawable.ic_rpc_placeholder,
             route = Routes.CUSTOM_RPC,
-            isChecked = AppUtils.customRpcRunning("CUSTOM"),
+            isChecked = AppUtils.customRpcRunning("CUSTOM") || (sessionActive && lastRpcType == "CUSTOM"),
             onClick = {
                 navigateTo(it)
             },
@@ -130,7 +132,7 @@ fun homeFeaturesProvider(
             title = stringResource(id = R.string.main_consoleRpc),
             icon = R.drawable.ic_console_games,
             route = Routes.CONSOLE_RPC,
-            isChecked = AppUtils.customRpcRunning("CONSOLE"),
+            isChecked = AppUtils.customRpcRunning("CONSOLE") || (sessionActive && lastRpcType == "CONSOLE"),
             onClick = {
                 navigateTo(it)
             },
@@ -159,7 +161,7 @@ fun homeFeaturesProvider(
             icon = R.drawable.ic_dev_rpc,
             route = Routes.EXPERIMENTAL_RPC,
             onClick = { navigateTo(it) },
-            isChecked = AppUtils.experimentalRpcRunning(),
+            isChecked = AppUtils.experimentalRpcRunning() || (sessionActive && lastRpcType == "EXPERIMENTAL"),
             onCheckedChange = {
                 if (it) {
                     ctx.stopService(Intent(ctx, MediaRpcService::class.java))

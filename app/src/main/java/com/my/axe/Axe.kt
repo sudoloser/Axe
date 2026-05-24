@@ -65,14 +65,18 @@ import xyz.dead8309.feature_experimental_rpc.ExperimentalRpcScreen
 import xyz.dead8309.feature_experimental_rpc.ExperimentalRpcViewmodel
 import xyz.dead8309.feature_experimental_rpc.apps.ExperimentalRpcAppsScreen
 
+import axe.gateway.DiscordWebSocket
+
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 internal fun ComponentActivity.axe(
     usageAccessStatus: MutableState<Boolean>,
     notificationListenerAccess: MutableState<Boolean>,
+    discordWebSocket: DiscordWebSocket,
     initialRoute: String? = null
 ) {
+    val sessionActive by discordWebSocket.sessionActive.collectAsState()
     Scaffold()
     {
         val navController = rememberAnimatedNavController()
@@ -130,7 +134,8 @@ internal fun ComponentActivity.axe(
                         navigateTo = { navController.navigate(it) },
                         hasUsageAccess = usageAccessStatus,
                         hasNotificationAccess = notificationListenerAccess,
-                        userVerified = user?.verified == true
+                        userVerified = user?.verified == true,
+                        sessionActive = sessionActive
                     ),
                     user = user,
                     componentName = ComponentName(ctx, AxeTileService::class.java),
@@ -168,6 +173,7 @@ internal fun ComponentActivity.axe(
                     updateAppConfig = viewModel::updateAppConfig,
                     showPreview = viewModel::showPreview,
                     dismissPreview = viewModel::dismissPreview,
+                    sessionActive = sessionActive,
                     navigateToCustomRpc = { configName ->
                         val config = com.my.axe.data.utils.ConfigUtils.loadConfig(context, configName)
                         if (config != null) {
@@ -183,6 +189,7 @@ internal fun ComponentActivity.axe(
                 CustomRPC(
                     onBackPressed = { navController.popBackStack() },
                     state = viewModel.uiState.collectAsState().value,
+                    sessionActive = sessionActive,
                     onEvent = viewModel::onEvent
                 )
             }
@@ -192,6 +199,7 @@ internal fun ComponentActivity.axe(
                     onBackPressed = { navController.popBackStack() },
                     state = viewModel.state.collectAsState().value,
                     hasNotificationAccess = notificationListenerAccess.value,
+                    sessionActive = sessionActive,
                     updateMediaAppEnabled = viewModel::updateMediaAppEnabled
                 )
             }
@@ -204,7 +212,7 @@ internal fun ComponentActivity.axe(
                     navController.popBackStack()
                     },
                     onEvent = viewModel::onUiEvent,
-                    serviceEnabled = AppUtils.customRpcRunning("CONSOLE"),
+                    serviceEnabled = AppUtils.customRpcRunning("CONSOLE") || (sessionActive && Prefs[Prefs.LAST_RPC_TYPE, ""] == "CONSOLE"),
                     isSearchBarVisible = viewModel.isSearchBarVisible.value
                     )            }
             animatedComposable(Routes.PROFILE) {
@@ -296,6 +304,7 @@ internal fun ComponentActivity.axe(
                     onBackPressed = { navController.popBackStack() },
                     hasUsageAccess = usageAccessStatus.value,
                     hasNotificationAccess = notificationListenerAccess.value,
+                    sessionActive = sessionActive,
                     navigateToAppSelection = {
                         navController.navigate(Routes.EXPERIMENTAL_RPC_APPS)
                     },

@@ -78,12 +78,16 @@ fun AppsRPC(
     navigateToCustomRpc: (String) -> Unit,
     onBackPressed: () -> Unit,
     hasUsageAccess: Boolean,
+    sessionActive: Boolean = false,
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
         rememberTopAppBarState(),
         canScroll = { true })
     val ctx = LocalContext.current
-    var serviceEnabled by remember { mutableStateOf(AppUtils.appDetectionRunning()) }
+    val lastRpcType = com.my.axe.preference.Prefs[com.my.axe.preference.Prefs.LAST_RPC_TYPE, ""]
+    var serviceEnabled by remember(sessionActive, lastRpcType) { 
+        mutableStateOf(AppUtils.appDetectionRunning() || (sessionActive && lastRpcType == "APPS")) 
+    }
     var searchText by remember { mutableStateOf("") }
     var isSearchBarVisible by remember { mutableStateOf(false) }
 

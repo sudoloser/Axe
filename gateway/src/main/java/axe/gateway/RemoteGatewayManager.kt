@@ -3,6 +3,8 @@ package axe.gateway
 import axe.gateway.entities.presence.Presence
 import com.my.axe.domain.interfaces.Logger
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
@@ -27,6 +29,8 @@ class RemoteGatewayManager(
     private val statusUrl: String
     private val stopUrl: String
     
+    override val sessionActive = MutableStateFlow(false)
+
     init {
         val base = serverBaseUrl.trimEnd('/')
         // Convert https:// to wss:// for websocket
@@ -97,7 +101,7 @@ class RemoteGatewayManager(
     override fun refreshSession() {
         scope.launch {
             try {
-                logger.i("RemoteGateway", "Refreshing session for user $userId on server...")
+                logger.i("RemoteGateway", "Refreshing session $userId on server...")
                 val request = Request.Builder()
                     .url(statusUrl + userId)
                     .addHeader("x-app-signature", appSignature)
@@ -109,13 +113,16 @@ class RemoteGatewayManager(
                         response.use {
                             if (it.isSuccessful) {
                                 logger.i("RemoteGateway", "Session refresh successful (HTTP ${it.code})")
+                                sessionActive.value = true
                             } else {
                                 logger.w("RemoteGateway", "Session refresh failed or not found (HTTP ${it.code})")
+                                sessionActive.value = false
                             }
                         }
                     }
                     override fun onFailure(call: Call, e: java.io.IOException) {
                         logger.e("RemoteGateway", "Failed to reach server for refresh: ${e.message}")
+                        sessionActive.value = false
                     }
                 })
             } catch (e: Exception) {
@@ -193,8 +200,7 @@ class RemoteGatewayManager(
                 if (isAuthorized && webSocket != null) {
                     val heartbeat = HeartbeatMessage(
                         type = "HEARTBEAT",
-                        user_id = userId,
-                        session_id = userId
+                        user_id = userId
                     )
                     try {
                         webSocket?.send(json.encodeToString(heartbeat))
@@ -233,7 +239,6 @@ class RemoteGatewayManager(
         val message = PresenceUpdateMessage(
             type = "PRESENCE_UPDATE",
             user_id = userId,
-            session_id = userId,
             presence = presence
         )
         
@@ -254,6 +259,7 @@ class RemoteGatewayManager(
     override fun close() {
         logger.i("RemoteGateway", "Close called. Cleaning up...")
         isAuthorized = false
+        sessionActive.value = false
         stopHeartbeat()
         webSocket?.close(1000, "App closed")
         webSocket = null
@@ -263,7 +269,6 @@ class RemoteGatewayManager(
             try {
                 val stopRequest = StopRequest(
                     user_id = userId,
-                    session_id = userId,
                     app_signature = appSignature
                 )
                 val body = json.encodeToString(stopRequest).toRequestBody("application/json".toMediaType())
@@ -301,22 +306,19 @@ class RemoteGatewayManager(
     @Serializable
     private data class HeartbeatMessage(
         val type: String,
-        val user_id: String,
-        val session_id: String
+        val user_id: String
     )
 
     @Serializable
     private data class PresenceUpdateMessage(
         val type: String,
         val user_id: String,
-        val session_id: String,
         val presence: Presence
     )
 
     @Serializable
     private data class StopRequest(
         val user_id: String,
-        val session_id: String,
         val app_signature: String
     )
     

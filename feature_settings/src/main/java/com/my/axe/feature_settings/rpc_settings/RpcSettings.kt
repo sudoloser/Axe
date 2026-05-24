@@ -215,11 +215,10 @@ fun RpcSettings(onBackPressed: () -> Boolean) {
                     if (!useRemoteGateway) {
                         showRemoteGatewayDialog = true
                     } else {
-                        useRemoteGateway = false
-                        Prefs[Prefs.USE_REMOTE_GATEWAY] = false
-                        Toast.makeText(context, "Remote Gateway disabled. Restart RPC to apply.", Toast.LENGTH_SHORT).show()
-                    }
-                }
+                       useRemoteGateway = false
+                       Prefs[Prefs.USE_REMOTE_GATEWAY] = false
+                       Toast.makeText(context, "Remote Gateway disabled. Restart RPC to apply.", Toast.LENGTH_SHORT).show()
+                    }                }
             }
             item {
                 AnimatedVisibility(visible = useRemoteGateway) {

@@ -85,10 +85,14 @@ fun ExperimentalRpcScreen(
     hasUsageAccess: Boolean,
     hasNotificationAccess: Boolean,
     navigateToAppSelection: () -> Unit,
+    sessionActive: Boolean = false,
     onEvent: (UiEvent) -> Unit,
 ) {
     val context = LocalContext.current
-    var experimentalRpcRunning by remember { mutableStateOf(AppUtils.experimentalRpcRunning()) }
+    val lastRpcType = com.my.axe.preference.Prefs[com.my.axe.preference.Prefs.LAST_RPC_TYPE, ""]
+    var experimentalRpcRunning by remember(sessionActive, lastRpcType) { 
+        mutableStateOf(AppUtils.experimentalRpcRunning() || (sessionActive && lastRpcType == "EXPERIMENTAL")) 
+    }
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
         rememberTopAppBarState(),
         canScroll = { true }
