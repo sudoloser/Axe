@@ -88,6 +88,7 @@ import kotlinx.serialization.json.Json
 fun CustomRPC(
     state: UiState = UiState(),
     onBackPressed: () -> Unit,
+    sessionActive: Boolean = false,
     onEvent: (UiEvent) -> Unit = {},
 ) {
     val snackBarHostState = remember { SnackbarHostState() }
@@ -96,7 +97,8 @@ fun CustomRPC(
         onBackPressed = onBackPressed,
         onEvent = onEvent,
         snackBarHostState = snackBarHostState,
-        state = state
+        state = state,
+        sessionActive = sessionActive
     )
     if (state.showBottomSheet) {
         BottomSheet(onEvent = onEvent, onDismiss = {
@@ -167,6 +169,7 @@ fun CustomRpcScreen(
     snackBarHostState: SnackbarHostState,
     state: UiState,
     onBackPressed: () -> Unit,
+    sessionActive: Boolean = false,
     onEvent: (UiEvent) -> Unit,
 
     ) {
@@ -203,7 +206,8 @@ fun CustomRpcScreen(
             RpcTextFieldsColumn(
                 snackBarHostState = snackBarHostState,
                 uiState = state,
-                onEvent = onEvent
+                onEvent = onEvent,
+                sessionActive = sessionActive
             )
         }
     }
@@ -214,11 +218,13 @@ private fun RpcTextFieldsColumn(
     onEvent: (UiEvent) -> Unit,
     uiState: UiState,
     snackBarHostState: SnackbarHostState,
+    sessionActive: Boolean = false
 ) {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
-    var isCustomRpcEnabled by remember {
-        mutableStateOf(AppUtils.customRpcRunning("CUSTOM"))
+    val lastRpcType = Prefs[Prefs.LAST_RPC_TYPE, ""]
+    var isCustomRpcEnabled by remember(sessionActive, lastRpcType) {
+        mutableStateOf(AppUtils.customRpcRunning("CUSTOM") || (sessionActive && lastRpcType == "CUSTOM"))
     }
     LazyColumn(
         modifier = Modifier.fillMaxSize()

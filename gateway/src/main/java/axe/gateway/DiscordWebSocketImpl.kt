@@ -14,6 +14,8 @@ import axe.gateway.entities.op.OpCode
 import axe.gateway.entities.op.OpCode.*
 import axe.gateway.entities.presence.Presence
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
@@ -43,6 +45,8 @@ open class DiscordWebSocketImpl(
         encodeDefaults = true
     }
 
+    override val sessionActive = MutableStateFlow(false)
+
     override val coroutineContext: CoroutineContext
         get() = SupervisorJob() + Dispatchers.Default
 
@@ -52,6 +56,7 @@ open class DiscordWebSocketImpl(
                 logger.i("Gateway","Connect called")
                 val url = resumeGatewayUrl ?: gatewayUrl
                 websocket = client.webSocketSession(url)
+                sessionActive.value = true
 
                 // start receiving messages
                 websocket!!.incoming.receiveAsFlow()
@@ -213,6 +218,7 @@ open class DiscordWebSocketImpl(
         resumeGatewayUrl = null
         sessionId = null
         connected = false
+        sessionActive.value = false
         runBlocking {
             websocket?.close()
             logger.e("Gateway","Connection to gateway closed")
@@ -230,5 +236,4 @@ open class DiscordWebSocketImpl(
             d = presence
         )
     }
-
 }

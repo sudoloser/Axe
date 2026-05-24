@@ -58,10 +58,14 @@ class CustomRpcService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if (intent?.action.equals(Constants.ACTION_STOP_SERVICE)) {
             runningType = null
+            com.my.axe.preference.Prefs[com.my.axe.preference.Prefs.LAST_RPC_TYPE] = ""
             stopSelf()
         }
         else {
             runningType = intent?.getStringExtra("TYPE")
+            runningType?.let {
+                com.my.axe.preference.Prefs[com.my.axe.preference.Prefs.LAST_RPC_TYPE] = it
+            }
             val string = intent?.getStringExtra("RPC")
             string?.let {
                 rpcData = Json.decodeFromString(it)
@@ -136,6 +140,7 @@ class CustomRpcService : Service() {
 
     override fun onDestroy() {
         runningType = null
+        com.my.axe.preference.Prefs[com.my.axe.preference.Prefs.LAST_RPC_TYPE] = ""
         scope.cancel()
         AxeRPC.closeRPC()
         wakeLock?.let {

@@ -84,10 +84,14 @@ fun MediaRPC(
     onBackPressed: () -> Unit,
     state: MediaAppsState,
     hasNotificationAccess: Boolean,
+    sessionActive: Boolean = false,
     updateMediaAppEnabled: (String) -> Unit,
 ) {
     val context = LocalContext.current
-    var mediaRpcRunning by remember { mutableStateOf(AppUtils.mediaRpcRunning()) }
+    val lastRpcType = Prefs[Prefs.LAST_RPC_TYPE, ""]
+    var mediaRpcRunning by remember(sessionActive, lastRpcType) { 
+        mutableStateOf(AppUtils.mediaRpcRunning() || (sessionActive && lastRpcType == "MEDIA")) 
+    }
     var isArtistEnabled by remember { mutableStateOf(Prefs[MEDIA_RPC_ARTIST_NAME, false]) }
     var isAlbumEnabled by remember { mutableStateOf(Prefs[MEDIA_RPC_ALBUM_NAME, false]) }
     var isAppIconEnabled by remember { mutableStateOf(Prefs[MEDIA_RPC_APP_ICON, false]) }

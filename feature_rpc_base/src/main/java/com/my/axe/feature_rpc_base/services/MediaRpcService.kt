@@ -235,6 +235,7 @@ class MediaRpcService : Service() {
     }
 
     override fun onDestroy() {
+        Prefs[Prefs.LAST_RPC_TYPE] = ""
         mediaSessionManager.removeOnActiveSessionsChangedListener(::activeSessionsListener)
         currentMediaController?.unregisterCallback(mediaControllerCallback)
         scope.cancel()
