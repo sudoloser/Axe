@@ -10,11 +10,13 @@ plugins {
     alias(libs.plugins.kotlinx.serialization) apply false
 }
 subprojects {
-    tasks.withType<JavaCompile> {
+    tasks.withType<JavaCompile>().configureEach {
         sourceCompatibility = JavaVersion.VERSION_11.toString()
         targetCompatibility = JavaVersion.VERSION_11.toString()
     }
-    tasks.withType<KotlinCompile> {
-        kotlinOptions.jvmTarget = "11"
+    tasks.withType<KotlinCompile>().configureEach {
+        compilerOptions {
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11)
+        }
     }
 }

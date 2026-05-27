@@ -1,0 +1,3 @@
+[submodule "axe-server"]
+	path = axe-server
+	url = https://github.com/sudoloser/axe-server
