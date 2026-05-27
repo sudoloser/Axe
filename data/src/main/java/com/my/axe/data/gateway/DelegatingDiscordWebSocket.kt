@@ -1,5 +1,6 @@
 package com.my.axe.data.gateway
 
+import com.my.axe.data.BuildConfig
 import axe.gateway.DiscordWebSocket
 import axe.gateway.DiscordWebSocketImpl
 import axe.gateway.RemoteGatewayManager
@@ -44,7 +45,7 @@ class DelegatingDiscordWebSocket(
                         token = Prefs[Prefs.TOKEN, ""]
                         userId = Prefs[Prefs.USER_ID, ""]
                         serverBaseUrl = Prefs[Prefs.REMOTE_GATEWAY_URL, "https://axe-server.onrender.com/"]
-                        appSignature = Prefs[Prefs.REMOTE_GATEWAY_SIGNATURE, ""]
+                        appSignature = Prefs[Prefs.REMOTE_GATEWAY_SIGNATURE, ""].ifEmpty { BuildConfig.AXE_APP_SIGNATURE }
                         
                         updateImplementation(forceUpdate = true)
                     }

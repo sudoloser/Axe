@@ -277,25 +277,32 @@ class RemoteGatewayManager(
         webSocket?.close(1000, "App closed")
         webSocket = null
         
-        // Call stop endpoint via HTTP POST (using a new scope to ensure it finishes)
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
-                val stopRequest = StopRequest(
-                    user_id = userId,
-                    app_signature = appSignature
-                )
-                val body = json.encodeToString(stopRequest).toRequestBody("application/json".toMediaType())
-                val request = Request.Builder()
-                    .url(stopUrl)
-                    .post(body)
-                    .build()
-                
-                client.newCall(request).execute().use { response ->
-                    logger.i("RemoteGateway", "Purge request response: ${response.code}")
+        // Call stop endpoint via HTTP POST (async via OkHttp internal threads)
+        try {
+            val stopRequest = StopRequest(
+                user_id = userId,
+                app_signature = appSignature
+            )
+            val jsonMsg = json.encodeToString(stopRequest)
+            val body = jsonMsg.toRequestBody("application/json; charset=utf-8".toMediaType())
+            val request = Request.Builder()
+                .url(stopUrl)
+                .post(body)
+                .build()
+            
+            logger.d("RemoteGateway", "Sending stop request for $userId to $stopUrl")
+            client.newCall(request).enqueue(object : Callback {
+                override fun onResponse(call: Call, response: Response) {
+                    response.use {
+                        logger.i("RemoteGateway", "Purge request successful: ${it.code}")
+                    }
                 }
-            } catch (e: Exception) {
-                logger.e("RemoteGateway", "Purge request failed: ${e.message}")
-            }
+                override fun onFailure(call: Call, e: java.io.IOException) {
+                    logger.e("RemoteGateway", "Purge request failed: ${e.message}")
+                }
+            })
+        } catch (e: Exception) {
+            logger.e("RemoteGateway", "Failed to setup stop request: ${e.message}")
         }
         
         scope.cancel()
