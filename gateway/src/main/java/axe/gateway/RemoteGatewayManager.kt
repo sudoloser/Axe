@@ -279,26 +279,33 @@ class RemoteGatewayManager(
         
         // Call stop endpoint via HTTP POST (async via OkHttp internal threads)
         try {
+            val stopUserId = userId.ifEmpty { "000000000000000000" }
             val stopRequest = StopRequest(
-                user_id = userId,
+                user_id = stopUserId,
+                session_id = userId,
                 app_signature = appSignature
             )
             val jsonMsg = json.encodeToString(stopRequest)
-            val body = jsonMsg.toRequestBody("application/json; charset=utf-8".toMediaType())
+            val body = jsonMsg.toRequestBody("application/json".toMediaType())
             val request = Request.Builder()
                 .url(stopUrl)
+                .addHeader("x-app-signature", appSignature)
                 .post(body)
                 .build()
             
-            logger.d("RemoteGateway", "Sending stop request for $userId to $stopUrl")
+            logger.d("RemoteGateway", "Sending stop request for $stopUserId (session: $userId) to $stopUrl")
             client.newCall(request).enqueue(object : Callback {
                 override fun onResponse(call: Call, response: Response) {
                     response.use {
-                        logger.i("RemoteGateway", "Purge request successful: ${it.code}")
+                        if (it.isSuccessful) {
+                            logger.i("RemoteGateway", "Purge request successful (HTTP ${it.code})")
+                        } else {
+                            logger.w("RemoteGateway", "Purge request returned error (HTTP ${it.code}): ${it.message}")
+                        }
                     }
                 }
                 override fun onFailure(call: Call, e: java.io.IOException) {
-                    logger.e("RemoteGateway", "Purge request failed: ${e.message}")
+                    logger.e("RemoteGateway", "Purge request failed network call: ${e.message}")
                 }
             })
         } catch (e: Exception) {
@@ -334,6 +341,7 @@ class RemoteGatewayManager(
     @Serializable
     private data class StopRequest(
         val user_id: String,
+        val session_id: String,
         val app_signature: String
     )
     
