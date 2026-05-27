@@ -13,10 +13,10 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlin.coroutines.CoroutineContext
 
 class DelegatingDiscordWebSocket(
-    private val token: String,
-    private val userId: String,
-    private val appSignature: String,
-    private val serverBaseUrl: String,
+    private var token: String,
+    private var userId: String,
+    private var appSignature: String,
+    private var serverBaseUrl: String,
     private val logger: Logger
 ) : DiscordWebSocket {
 
@@ -33,9 +33,21 @@ class DelegatingDiscordWebSocket(
         updateImplementation()
         scope.launch {
             Prefs.preferenceChanges.collect { key ->
-                if (key == Prefs.USE_REMOTE_GATEWAY) {
-                    logger.i("DelegatingGateway", "Preference changed: $key. Updating implementation.")
-                    updateImplementation()
+                when (key) {
+                    Prefs.USE_REMOTE_GATEWAY,
+                    Prefs.TOKEN,
+                    Prefs.USER_ID,
+                    Prefs.REMOTE_GATEWAY_URL,
+                    Prefs.REMOTE_GATEWAY_SIGNATURE -> {
+                        logger.i("DelegatingGateway", "Preference changed: $key. Updating state and implementation.")
+                        // Update local state from Prefs
+                        token = Prefs[Prefs.TOKEN, ""]
+                        userId = Prefs[Prefs.USER_ID, ""]
+                        serverBaseUrl = Prefs[Prefs.REMOTE_GATEWAY_URL, "https://axe-server.onrender.com/"]
+                        appSignature = Prefs[Prefs.REMOTE_GATEWAY_SIGNATURE, ""]
+                        
+                        updateImplementation(forceUpdate = true)
+                    }
                 }
             }
         }
@@ -43,10 +55,10 @@ class DelegatingDiscordWebSocket(
 
     private var sessionActiveSyncJob: Job? = null
 
-    private fun updateImplementation() {
+    private fun updateImplementation(forceUpdate: Boolean = false) {
         val newUseRemote = Prefs[Prefs.USE_REMOTE_GATEWAY, false]
-        if (currentImplementation == null || newUseRemote != useRemote) {
-            logger.i("DelegatingGateway", "Switching implementation. Remote: $newUseRemote")
+        if (currentImplementation == null || newUseRemote != useRemote || forceUpdate) {
+            logger.i("DelegatingGateway", "Updating implementation. Remote: $newUseRemote, Forced: $forceUpdate")
             
             // If we are currently connected, we should close the current implementation
             // and potentially reconnect with the new one if the RPC was active.
@@ -75,7 +87,7 @@ class DelegatingDiscordWebSocket(
                 }
             }
 
-            // If switching TO remote, try to refresh immediately to see if a session exists
+            // If switching TO remote or forced update, try to refresh immediately
             if (useRemote) {
                 currentImplementation?.refreshSession()
             }
@@ -110,7 +122,10 @@ class DelegatingDiscordWebSocket(
     }
 
     override fun close() {
+        logger.i("DelegatingGateway", "Close called. Nulling implementation.")
         sessionActiveSyncJob?.cancel()
         currentImplementation?.close()
+        currentImplementation = null
+        _sessionActive.value = false
     }
 }

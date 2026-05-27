@@ -47,13 +47,12 @@ open class DiscordWebSocketImpl(
 
     override val sessionActive = MutableStateFlow(false)
 
-    override val coroutineContext: CoroutineContext
-        get() = SupervisorJob() + Dispatchers.Default
+    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
+    override val coroutineContext: CoroutineContext = scope.coroutineContext
+
+    private var connectJob: Job? = null
 
     override suspend fun connect() {
-        if (!scope.isActive) {
-            scope = CoroutineScope(Dispatchers.Default + SupervisorJob())
-        }
         connectJob?.cancel()
         connectJob = scope.launch {
             try {
@@ -234,6 +233,7 @@ open class DiscordWebSocketImpl(
             client.close()
             logger.e("Gateway","Connection to gateway closed")
         }
+        scope.cancel()
     }
 
     override suspend fun sendActivity(presence: Presence) {

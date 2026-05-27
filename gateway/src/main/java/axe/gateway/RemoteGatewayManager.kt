@@ -64,6 +64,8 @@ class RemoteGatewayManager(
     
     private var isAuthorized = false
     
+    private var isClosed = false
+    
     private val json = Json {
         ignoreUnknownKeys = true
         encodeDefaults = true
@@ -73,6 +75,10 @@ class RemoteGatewayManager(
     private val scope = CoroutineScope(coroutineContext)
 
     override suspend fun connect() {
+        if (isClosed) {
+            logger.w("RemoteGateway", "Connect called on closed manager")
+            return
+        }
         if (token.isBlank()) {
             val err = "Cannot connect to Remote Gateway: Discord Token is empty!"
             logger.e("RemoteGateway", err)
@@ -178,6 +184,8 @@ class RemoteGatewayManager(
     }
 
     override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
+        if (isClosed) return
+        
         logger.e("RemoteGateway", "WebSocket Failure: ${t.message ?: "Unknown error"}")
         this.webSocket = null
         isAuthorized = false
@@ -187,8 +195,10 @@ class RemoteGatewayManager(
         scope.launch {
             logger.i("RemoteGateway", "Retrying connection in ${retryDelay/1000}s...")
             delay(retryDelay)
-            retryDelay = (retryDelay * 2).coerceAtMost(maxRetryDelay)
-            connect()
+            if (!isClosed) {
+                retryDelay = (retryDelay * 2).coerceAtMost(maxRetryDelay)
+                connect()
+            }
         }
     }
 
@@ -257,6 +267,9 @@ class RemoteGatewayManager(
     }
 
     override fun close() {
+        if (isClosed) return
+        isClosed = true
+        
         logger.i("RemoteGateway", "Close called. Cleaning up...")
         isAuthorized = false
         sessionActive.value = false
@@ -264,8 +277,8 @@ class RemoteGatewayManager(
         webSocket?.close(1000, "App closed")
         webSocket = null
         
-        // Call stop endpoint via HTTP POST (async)
-        scope.launch {
+        // Call stop endpoint via HTTP POST (using a new scope to ensure it finishes)
+        CoroutineScope(Dispatchers.IO).launch {
             try {
                 val stopRequest = StopRequest(
                     user_id = userId,
@@ -277,20 +290,15 @@ class RemoteGatewayManager(
                     .post(body)
                     .build()
                 
-                client.newCall(request).enqueue(object : Callback {
-                    override fun onResponse(call: Call, response: Response) {
-                        response.use {
-                            logger.i("RemoteGateway", "Purge request response: ${it.code}")
-                        }
-                    }
-                    override fun onFailure(call: Call, e: java.io.IOException) {
-                        logger.e("RemoteGateway", "Purge request failed: ${e.message}")
-                    }
-                })
+                client.newCall(request).execute().use { response ->
+                    logger.i("RemoteGateway", "Purge request response: ${response.code}")
+                }
             } catch (e: Exception) {
-                logger.e("RemoteGateway", "Failed to setup stop request: ${e.message}")
+                logger.e("RemoteGateway", "Purge request failed: ${e.message}")
             }
         }
+        
+        scope.cancel()
     }
 
     @Serializable
