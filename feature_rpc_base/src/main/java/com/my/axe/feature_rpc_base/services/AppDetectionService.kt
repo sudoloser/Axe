@@ -184,7 +184,11 @@ class AppDetectionService : Service() {
         val customConfig = customConfigName?.let { loadConfig(it) }
 
         if (!AxeRPC.isRpcRunning() || packageName != runningPackage || customConfigName != currentConfigName) {
-            if (AxeRPC.isRpcRunning()) {
+            val isRunning = AxeRPC.isRpcRunning()
+            scope.launch {
+                com.blankj.utilcode.util.LogUtils.i("AppDetectionService", "Package change detected: $packageName (old: $runningPackage). Config: $customConfigName (old: $currentConfigName). isRunning: $isRunning")
+            }
+            if (isRunning) {
                 AxeRPC.closeRPC()
             }
             AxeRPC.apply {
@@ -258,7 +262,9 @@ class AppDetectionService : Service() {
     }
 
     private fun handleDisabledPackage() {
-        if (AxeRPC.isRpcRunning()) {
+        val isRunning = AxeRPC.isRpcRunning()
+        com.blankj.utilcode.util.LogUtils.i("AppDetectionService", "handleDisabledPackage() called. isRunning: $isRunning")
+        if (isRunning) {
             AxeRPC.closeRPC()
         }
         notificationManager.notify(Constants.NOTIFICATION_ID, createDefaultNotification())

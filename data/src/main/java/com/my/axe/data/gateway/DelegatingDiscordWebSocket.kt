@@ -14,10 +14,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlin.coroutines.CoroutineContext
 
 class DelegatingDiscordWebSocket(
-    private var token: String,
-    private var userId: String,
-    private var appSignature: String,
-    private var serverBaseUrl: String,
     private val logger: Logger
 ) : DiscordWebSocket {
 
@@ -31,6 +27,7 @@ class DelegatingDiscordWebSocket(
     override val coroutineContext: CoroutineContext = scope.coroutineContext
 
     init {
+        logger.i("DelegatingGateway", "Initializing with remote: $useRemote")
         updateImplementation()
         scope.launch {
             Prefs.preferenceChanges.collect { key ->
@@ -40,13 +37,7 @@ class DelegatingDiscordWebSocket(
                     Prefs.USER_ID,
                     Prefs.REMOTE_GATEWAY_URL,
                     Prefs.REMOTE_GATEWAY_SIGNATURE -> {
-                        logger.i("DelegatingGateway", "Preference changed: $key. Updating state and implementation.")
-                        // Update local state from Prefs
-                        token = Prefs[Prefs.TOKEN, ""]
-                        userId = Prefs[Prefs.USER_ID, ""]
-                        serverBaseUrl = Prefs[Prefs.REMOTE_GATEWAY_URL, "https://axe-server.onrender.com/"]
-                        appSignature = Prefs[Prefs.REMOTE_GATEWAY_SIGNATURE, ""].ifEmpty { BuildConfig.AXE_APP_SIGNATURE }
-                        
+                        logger.i("DelegatingGateway", "Preference changed: $key. Forcing update.")
                         updateImplementation(forceUpdate = true)
                     }
                 }
@@ -58,6 +49,11 @@ class DelegatingDiscordWebSocket(
 
     private fun updateImplementation(forceUpdate: Boolean = false) {
         val newUseRemote = Prefs[Prefs.USE_REMOTE_GATEWAY, false]
+        val token = Prefs[Prefs.TOKEN, ""]
+        val userId = Prefs[Prefs.USER_ID, ""]
+        val serverBaseUrl = Prefs[Prefs.REMOTE_GATEWAY_URL, "https://axe-server.onrender.com/"]
+        val appSignature = Prefs[Prefs.REMOTE_GATEWAY_SIGNATURE, ""].ifEmpty { BuildConfig.AXE_APP_SIGNATURE }
+
         if (currentImplementation == null || newUseRemote != useRemote || forceUpdate) {
             logger.i("DelegatingGateway", "Updating implementation. Remote: $newUseRemote, Forced: $forceUpdate")
             
@@ -65,11 +61,16 @@ class DelegatingDiscordWebSocket(
             // and potentially reconnect with the new one if the RPC was active.
             val wasConnected = currentImplementation?.isWebSocketConnected() ?: false
             
-            currentImplementation?.close()
+            if (currentImplementation != null) {
+                logger.i("DelegatingGateway", "Closing old implementation (wasConnected: $wasConnected)")
+                currentImplementation?.close()
+            }
+            
             sessionActiveSyncJob?.cancel()
             
             useRemote = newUseRemote
             currentImplementation = if (useRemote) {
+                logger.i("DelegatingGateway", "Creating RemoteGatewayManager at $serverBaseUrl")
                 RemoteGatewayManager(
                     token = token,
                     userId = userId,
@@ -78,6 +79,7 @@ class DelegatingDiscordWebSocket(
                     logger = logger
                 )
             } else {
+                logger.i("DelegatingGateway", "Creating DiscordWebSocketImpl")
                 DiscordWebSocketImpl(token, logger)
             }
             
@@ -95,6 +97,7 @@ class DelegatingDiscordWebSocket(
             
             // If it was connected, attempt to reconnect the new implementation
             if (wasConnected) {
+                logger.i("DelegatingGateway", "Re-connecting new implementation...")
                 scope.launch {
                     currentImplementation?.connect()
                 }
@@ -103,29 +106,38 @@ class DelegatingDiscordWebSocket(
     }
 
     override suspend fun connect() {
+        logger.i("DelegatingGateway", "connect() called")
         updateImplementation()
         currentImplementation?.connect()
     }
 
     override suspend fun sendActivity(presence: Presence) {
+        logger.i("DelegatingGateway", "sendActivity() called")
         updateImplementation()
         currentImplementation?.sendActivity(presence)
     }
 
     override fun isWebSocketConnected(): Boolean {
-        updateImplementation()
-        return currentImplementation?.isWebSocketConnected() ?: false
+        val connected = currentImplementation?.isWebSocketConnected() ?: false
+        logger.d("DelegatingGateway", "isWebSocketConnected(): $connected")
+        return connected
     }
 
     override fun refreshSession() {
+        logger.i("DelegatingGateway", "refreshSession() called")
         updateImplementation()
         currentImplementation?.refreshSession()
     }
 
     override fun close() {
-        logger.i("DelegatingGateway", "Close called. Nulling implementation.")
+        logger.i("DelegatingGateway", "close() called. Nulling implementation.")
         sessionActiveSyncJob?.cancel()
-        currentImplementation?.close()
+        if (currentImplementation != null) {
+            logger.i("DelegatingGateway", "Closing current implementation...")
+            currentImplementation?.close()
+        } else {
+            logger.w("DelegatingGateway", "close() called but currentImplementation is already null")
+        }
         currentImplementation = null
         _sessionActive.value = false
     }
