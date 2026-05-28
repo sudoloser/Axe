@@ -86,13 +86,12 @@ class RemoteGatewayManager(
         }
         
         if (webSocket != null) {
-            logger.w("RemoteGateway", "Connect called but already connecting/connected")
+            logger.w("RemoteGateway", "Connect called but WebSocket instance already exists")
             return
         }
         
         isAuthorized = false
-        logger.i("RemoteGateway", "Initiating Connection...")
-        logger.d("RemoteGateway", "WS URL: $wsUrl")
+        logger.i("RemoteGateway", "Initiating Connection to $wsUrl...")
         
         val request = Request.Builder()
             .url(wsUrl)
@@ -138,7 +137,7 @@ class RemoteGatewayManager(
     }
 
     override fun onOpen(webSocket: WebSocket, response: Response) {
-        logger.i("RemoteGateway", "Network connection established (HTTP ${response.code}). Sending AUTH...")
+        logger.i("RemoteGateway", "WebSocket connection opened (HTTP ${response.code}). Sending AUTH...")
         retryDelay = 2000L 
         
         val authMessage = AuthMessage(
@@ -153,8 +152,9 @@ class RemoteGatewayManager(
         try {
             val jsonAuth = json.encodeToString(authMessage)
             webSocket.send(jsonAuth)
-            logger.i("RemoteGateway", "AUTH payload sent to server")
+            logger.i("RemoteGateway", "AUTH payload sent. Marking as authorized.")
             isAuthorized = true 
+            sessionActive.value = true
             startHeartbeat()
         } catch (e: Exception) {
             logger.e("RemoteGateway", "Failed to send AUTH: ${e.message}")
@@ -179,16 +179,21 @@ class RemoteGatewayManager(
     }
 
     override fun onClosing(webSocket: WebSocket, code: Int, reason: String) {
-        logger.w("RemoteGateway", "Server closing connection: $code / $reason")
+        logger.w("RemoteGateway", "Server requested close: $code / $reason")
         isAuthorized = false
+        sessionActive.value = false
     }
 
     override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
-        if (isClosed) return
+        if (isClosed) {
+            logger.d("RemoteGateway", "Failure ignored because manager is closed: ${t.message}")
+            return
+        }
         
         logger.e("RemoteGateway", "WebSocket Failure: ${t.message ?: "Unknown error"}")
         this.webSocket = null
         isAuthorized = false
+        sessionActive.value = false
         stopHeartbeat()
         
         // Reconnect with exponential backoff if not closed deliberately

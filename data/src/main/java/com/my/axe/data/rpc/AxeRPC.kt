@@ -26,7 +26,6 @@ import axe.gateway.entities.presence.Timestamps
 import kotlinx.coroutines.isActive
 
 class AxeRPC(
-    private val token: String,
     private val axeRepository: AxeRepository,
     private val discordWebSocket: DiscordWebSocket,
     private val logger: Logger
@@ -93,12 +92,7 @@ class AxeRPC(
      * source: [#token-structure](https://gist.github.com/aydynx/5d29e903417354fd25641b98efc9d437#token-structure)
      */
     private fun isUserTokenValid(): Boolean {
-        /*val regex = Regex(
-            "[a-z\\d]{24}\\.[a-z\\d]{6}\\.([\\w-]{107}|[\\w-]{38}|[\\w-]{27})|mfa\\.[\\w-]{84}",
-            RegexOption.IGNORE_CASE
-        )
-        return regex.matches(token)*/
-        return token.isNotBlank()
+        return Prefs[Prefs.TOKEN, ""].isNotBlank()
     }
 
     /**
@@ -296,6 +290,10 @@ class AxeRPC(
     }
 
     suspend fun build() {
+        if (Prefs[Prefs.TOKEN, ""].isBlank()) {
+            logger.e("axeRPC", "Cannot build: Token is blank. Please login.")
+            return
+        }
         val buttonsList = mutableListOf<String>()
         val buttonUrlsList = mutableListOf<String>()
 

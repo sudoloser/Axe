@@ -47,7 +47,7 @@ object ServiceModule {
         axeRepository: AxeRepository,
         discordWebSocket: DiscordWebSocket,
         logger: Logger
-    ) = AxeRPC(Prefs[Prefs.TOKEN, ""], axeRepository, discordWebSocket, logger)
+    ) = AxeRPC(axeRepository, discordWebSocket, logger)
 
     @Provides
     @Singleton
