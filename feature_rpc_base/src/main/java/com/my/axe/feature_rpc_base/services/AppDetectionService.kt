@@ -62,8 +62,7 @@ class AppDetectionService : Service() {
     @Inject
     lateinit var logger: com.my.axe.domain.interfaces.Logger
 
-    @Inject
-    lateinit var scope: CoroutineScope
+    private val serviceScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
     @Inject
     lateinit var notificationBuilder: Notification.Builder
@@ -97,7 +96,7 @@ class AppDetectionService : Service() {
     override fun onDestroy() {
         logger.i("AppDetectionService", "onDestroy() called. Cleaning up.")
         Prefs[Prefs.LAST_RPC_TYPE] = ""
-        scope.cancel()
+        serviceScope.cancel()
         AxeRPC.closeRPC()
         super.onDestroy()
     }
@@ -129,7 +128,7 @@ class AppDetectionService : Service() {
 
         val rpcButtons = getRpcButtons()
 
-        scope.launch {
+        serviceScope.launch {
             logger.i("AppDetectionService", "Detection loop started.")
             while (isActive) {
                 val packageName = getForegroundPackage()

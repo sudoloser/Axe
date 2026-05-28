@@ -44,8 +44,7 @@ class CustomRpcService : Service() {
     @Inject
     lateinit var logger: Logger
 
-    @Inject
-    lateinit var scope: CoroutineScope
+    private val serviceScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
     @Inject
     lateinit var notificationBuilder: Notification.Builder
@@ -141,7 +140,7 @@ class CustomRpcService : Service() {
     override fun onDestroy() {
         runningType = null
         com.my.axe.preference.Prefs[com.my.axe.preference.Prefs.LAST_RPC_TYPE] = ""
-        scope.cancel()
+        serviceScope.cancel()
         AxeRPC.closeRPC()
         wakeLock?.let {
             if (it.isHeld) it.release()
