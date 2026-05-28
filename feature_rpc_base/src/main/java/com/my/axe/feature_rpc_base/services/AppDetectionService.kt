@@ -60,6 +60,9 @@ class AppDetectionService : Service() {
     lateinit var AxeRPC: AxeRPC
 
     @Inject
+    lateinit var logger: com.my.axe.domain.interfaces.Logger
+
+    @Inject
     lateinit var scope: CoroutineScope
 
     @Inject
@@ -78,17 +81,21 @@ class AppDetectionService : Service() {
     override fun onBind(intent: Intent): IBinder? = null
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if (intent?.action == Constants.ACTION_STOP_SERVICE) {
+            logger.i("AppDetectionService", "Stop service action received")
             stopSelf()
         } else if (intent?.action == Constants.ACTION_RESTART_SERVICE) {
+            logger.i("AppDetectionService", "Restart service action received")
             stopSelf()
             startService(Intent(this, AppDetectionService::class.java))
         } else {
+            logger.i("AppDetectionService", "Starting detection...")
             handleAppDetection()
         }
         return super.onStartCommand(intent, flags, startId)
     }
 
     override fun onDestroy() {
+        logger.i("AppDetectionService", "onDestroy() called. Cleaning up.")
         Prefs[Prefs.LAST_RPC_TYPE] = ""
         scope.cancel()
         AxeRPC.closeRPC()
@@ -123,11 +130,14 @@ class AppDetectionService : Service() {
         val rpcButtons = getRpcButtons()
 
         scope.launch {
+            logger.i("AppDetectionService", "Detection loop started.")
             while (isActive) {
                 val packageName = getForegroundPackage()
 
                 if (packageName != null && packageName !in EXCLUDED_APPS) {
                     handleValidPackage(packageName, enabledPackages, rpcButtons)
+                } else if (packageName != null) {
+                    logger.d("AppDetectionService", "Skipping excluded app: $packageName")
                 }
                 delay(5000)
             }
@@ -185,9 +195,7 @@ class AppDetectionService : Service() {
 
         if (!AxeRPC.isRpcRunning() || packageName != runningPackage || customConfigName != currentConfigName) {
             val isRunning = AxeRPC.isRpcRunning()
-            scope.launch {
-                com.blankj.utilcode.util.LogUtils.i("AppDetectionService", "Package change detected: $packageName (old: $runningPackage). Config: $customConfigName (old: $currentConfigName). isRunning: $isRunning")
-            }
+            logger.i("AppDetectionService", "Package change detected: $packageName (old: $runningPackage). Config: $customConfigName (old: $currentConfigName). isRunning: $isRunning")
             if (isRunning) {
                 AxeRPC.closeRPC()
             }
@@ -263,7 +271,7 @@ class AppDetectionService : Service() {
 
     private fun handleDisabledPackage() {
         val isRunning = AxeRPC.isRpcRunning()
-        com.blankj.utilcode.util.LogUtils.i("AppDetectionService", "handleDisabledPackage() called. isRunning: $isRunning")
+        logger.i("AppDetectionService", "handleDisabledPackage() called. isRunning: $isRunning")
         if (isRunning) {
             AxeRPC.closeRPC()
         }

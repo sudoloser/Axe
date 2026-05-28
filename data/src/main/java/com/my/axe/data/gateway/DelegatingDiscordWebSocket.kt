@@ -118,6 +118,7 @@ class DelegatingDiscordWebSocket(
     }
 
     override fun isWebSocketConnected(): Boolean {
+        updateImplementation()
         val connected = currentImplementation?.isWebSocketConnected() ?: false
         logger.d("DelegatingGateway", "isWebSocketConnected(): $connected")
         return connected
