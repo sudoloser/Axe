@@ -165,7 +165,7 @@ class AppDetectionService : Service() {
         rpcButtons: RpcButtons,
     ) {
         val customConfigName = Prefs.getAppCustomConfig(packageName)
-        if (packageName in enabledPackages && (packageName != runningPackage || customConfigName != currentConfigName)) {
+        if (packageName in enabledPackages && (!AxeRPC.isRpcRunning() || packageName != runningPackage || customConfigName != currentConfigName)) {
             handleEnabledPackage(packageName, rpcButtons, customConfigName)
             runningPackage = packageName
             currentConfigName = customConfigName

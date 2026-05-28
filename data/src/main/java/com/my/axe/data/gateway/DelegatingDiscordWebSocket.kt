@@ -57,12 +57,12 @@ class DelegatingDiscordWebSocket(
         if (currentImplementation == null || newUseRemote != useRemote || forceUpdate) {
             logger.i("DelegatingGateway", "Updating implementation. Remote: $newUseRemote, Forced: $forceUpdate")
             
-            // If we are currently connected, we should close the current implementation
-            // and potentially reconnect with the new one if the RPC was active.
+            // Check if it was connected OR active in any way
             val wasConnected = currentImplementation?.isWebSocketConnected() ?: false
+            val wasActive = _sessionActive.value
             
             if (currentImplementation != null) {
-                logger.i("DelegatingGateway", "Closing old implementation (wasConnected: $wasConnected)")
+                logger.i("DelegatingGateway", "Closing old implementation (wasConnected: $wasConnected, wasActive: $wasActive)")
                 currentImplementation?.close()
             }
             
@@ -95,9 +95,9 @@ class DelegatingDiscordWebSocket(
                 currentImplementation?.refreshSession()
             }
             
-            // If it was connected, attempt to reconnect the new implementation
-            if (wasConnected) {
-                logger.i("DelegatingGateway", "Re-connecting new implementation...")
+            // Re-connect if it was previously connected or active
+            if (wasConnected || wasActive) {
+                logger.i("DelegatingGateway", "Re-connecting new implementation (triggered by previous state)")
                 scope.launch {
                     currentImplementation?.connect()
                 }
