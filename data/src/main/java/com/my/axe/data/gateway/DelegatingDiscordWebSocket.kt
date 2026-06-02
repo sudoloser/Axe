@@ -28,7 +28,7 @@ class DelegatingDiscordWebSocket(
 
     init {
         logger.i("DelegatingGateway", "Initializing with remote: $useRemote")
-        updateImplementation()
+        updateImplementation(recreateIfNull = true)
         scope.launch {
             Prefs.preferenceChanges.collect { key ->
                 when (key) {
@@ -47,19 +47,26 @@ class DelegatingDiscordWebSocket(
 
     private var sessionActiveSyncJob: Job? = null
 
-    private fun updateImplementation(forceUpdate: Boolean = false) {
+    private fun updateImplementation(
+        forceUpdate: Boolean = false,
+        recreateIfNull: Boolean = false
+    ) {
         val newUseRemote = Prefs[Prefs.USE_REMOTE_GATEWAY, false]
         val token = Prefs[Prefs.TOKEN, ""]
         val userId = Prefs[Prefs.USER_ID, ""]
         val serverBaseUrl = Prefs[Prefs.REMOTE_GATEWAY_URL, "https://axe-server.onrender.com/"]
         val appSignature = Prefs[Prefs.REMOTE_GATEWAY_SIGNATURE, ""].ifEmpty { BuildConfig.AXE_APP_SIGNATURE }
 
-        if (currentImplementation == null || newUseRemote != useRemote || forceUpdate) {
-            logger.i("DelegatingGateway", "Updating implementation. Remote: $newUseRemote, Forced: $forceUpdate")
+        val shouldUpdate = (currentImplementation == null && recreateIfNull) ||
+                (currentImplementation != null && (newUseRemote != useRemote || forceUpdate))
+
+        if (shouldUpdate) {
+            logger.i("DelegatingGateway", "Updating implementation. Remote: $newUseRemote, Forced: $forceUpdate, RecreateIfNull: $recreateIfNull")
             
             // Check if it was connected OR active in any way
             val wasConnected = currentImplementation?.isWebSocketConnected() ?: false
             val wasActive = _sessionActive.value
+            val wasNull = currentImplementation == null
             
             if (currentImplementation != null) {
                 logger.i("DelegatingGateway", "Closing old implementation (wasConnected: $wasConnected, wasActive: $wasActive)")
@@ -91,7 +98,8 @@ class DelegatingDiscordWebSocket(
             }
 
             // If switching TO remote or forced update, try to refresh immediately
-            if (useRemote) {
+            // But skip if it was previously null to avoid faking sessionActive on pollers
+            if (useRemote && !wasNull) {
                 currentImplementation?.refreshSession()
             }
             
@@ -107,18 +115,18 @@ class DelegatingDiscordWebSocket(
 
     override suspend fun connect() {
         logger.i("DelegatingGateway", "connect() called")
-        updateImplementation()
+        updateImplementation(recreateIfNull = true)
         currentImplementation?.connect()
     }
 
     override suspend fun sendActivity(presence: Presence) {
         logger.i("DelegatingGateway", "sendActivity() called")
-        updateImplementation()
+        updateImplementation(recreateIfNull = true)
         currentImplementation?.sendActivity(presence)
     }
 
     override fun isWebSocketConnected(): Boolean {
-        updateImplementation()
+        updateImplementation(recreateIfNull = false)
         val connected = currentImplementation?.isWebSocketConnected() ?: false
         logger.d("DelegatingGateway", "isWebSocketConnected(): $connected")
         return connected
@@ -126,7 +134,7 @@ class DelegatingDiscordWebSocket(
 
     override fun refreshSession() {
         logger.i("DelegatingGateway", "refreshSession() called")
-        updateImplementation()
+        updateImplementation(recreateIfNull = false)
         currentImplementation?.refreshSession()
     }
 
