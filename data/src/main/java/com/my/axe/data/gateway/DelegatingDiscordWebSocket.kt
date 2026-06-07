@@ -115,6 +115,10 @@ class DelegatingDiscordWebSocket(
 
     override suspend fun connect() {
         logger.i("DelegatingGateway", "connect() called")
+        if (isWebSocketConnected()) {
+            logger.i("DelegatingGateway", "Already connected. Skipping connection attempt.")
+            return
+        }
         updateImplementation(recreateIfNull = true)
         currentImplementation?.connect()
     }
@@ -141,6 +145,7 @@ class DelegatingDiscordWebSocket(
     override fun close() {
         logger.i("DelegatingGateway", "close() called. Nulling implementation.")
         sessionActiveSyncJob?.cancel()
+        sessionActiveSyncJob = null
         if (currentImplementation != null) {
             logger.i("DelegatingGateway", "Closing current implementation...")
             currentImplementation?.close()
@@ -150,4 +155,3 @@ class DelegatingDiscordWebSocket(
         currentImplementation = null
         _sessionActive.value = false
     }
-}
