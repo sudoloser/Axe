@@ -92,7 +92,7 @@ class CustomRpcService : Service() {
             val powerManager = getSystemService(POWER_SERVICE) as PowerManager
             wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, WAKELOCK)
             wakeLock?.acquire()
-            scope.launch {
+            serviceScope.launch {
                 try {
                     notificationManager.notify(
                         Constants.NOTIFICATION_ID,
