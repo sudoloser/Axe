@@ -47,11 +47,14 @@ open class DiscordWebSocketImpl(
 
     override val sessionActive = MutableStateFlow(false)
 
-    override val coroutineContext: CoroutineContext
-        get() = SupervisorJob() + Dispatchers.Default
+    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
+    override val coroutineContext: CoroutineContext = scope.coroutineContext
+
+    private var connectJob: Job? = null
 
     override suspend fun connect() {
-        launch {
+        connectJob?.cancel()
+        connectJob = scope.launch {
             try {
                 logger.i("Gateway","Connect called")
                 val url = resumeGatewayUrl ?: gatewayUrl
@@ -120,6 +123,7 @@ open class DiscordWebSocketImpl(
             }
             "RESUMED" -> {
                 logger.i("Gateway","Session Resumed")
+                connected = true
             }
             else -> {}
         }
@@ -129,6 +133,7 @@ open class DiscordWebSocketImpl(
         logger.i("Gateway","Handling Invalid Session")
         logger.d("Gateway","Sending Identify after 150ms")
         delay(150)
+        sequence = 0
         sendIdentify()
     }
 
@@ -136,6 +141,7 @@ open class DiscordWebSocketImpl(
         if (sequence > 0 && !sessionId.isNullOrBlank()) {
             sendResume()
         } else {
+            sequence = 0
             sendIdentify()
         }
         heartbeatInterval =  json.decodeFromJsonElement<Heartbeat>(this.d!!).heartbeatInterval
@@ -182,7 +188,7 @@ open class DiscordWebSocketImpl(
 
     private fun startHeartbeatJob(interval: Long) {
         heartbeatJob?.cancel()
-        heartbeatJob = launch {
+        heartbeatJob = scope.launch {
             while (isActive) {
                 sendHeartBeat()
                 delay(interval)
@@ -214,21 +220,36 @@ open class DiscordWebSocketImpl(
     override fun close() {
         heartbeatJob?.cancel()
         heartbeatJob = null
-        this.cancel()
+        connectJob?.cancel()
+        connectJob = null
         resumeGatewayUrl = null
         sessionId = null
+        sequence = 0
         connected = false
         sessionActive.value = false
         runBlocking {
             websocket?.close()
+            websocket = null
+            client.close()
             logger.e("Gateway","Connection to gateway closed")
         }
+        scope.cancel()
     }
 
     override suspend fun sendActivity(presence: Presence) {
         // TODO : Figure out a better way to wait for socket to be connected to account
-        while (!isSocketConnectedToAccount()){
+        var timeout = 0
+        while (!isSocketConnectedToAccount() && timeout < 1000){
             delay(10.milliseconds)
+            timeout++
+            if (connectJob?.isActive != true && !connected) {
+                 logger.e("Gateway", "sendActivity failed: Connection job is not active and not connected")
+                 return
+            }
+        }
+        if (timeout >= 1000) {
+            logger.e("Gateway", "sendActivity timed out waiting for connection")
+            return
         }
         logger.i("Gateway","Sending $PRESENCE_UPDATE")
         send(

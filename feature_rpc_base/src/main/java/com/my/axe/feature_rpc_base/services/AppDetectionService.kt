@@ -42,6 +42,8 @@ import com.my.axe.resources.R
 import com.blankj.utilcode.util.FileIOUtils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
@@ -60,7 +62,9 @@ class AppDetectionService : Service() {
     lateinit var AxeRPC: AxeRPC
 
     @Inject
-    lateinit var scope: CoroutineScope
+    lateinit var logger: com.my.axe.domain.interfaces.Logger
+
+    private val serviceScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
     @Inject
     lateinit var notificationBuilder: Notification.Builder
@@ -78,19 +82,23 @@ class AppDetectionService : Service() {
     override fun onBind(intent: Intent): IBinder? = null
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if (intent?.action == Constants.ACTION_STOP_SERVICE) {
+            logger.i("AppDetectionService", "Stop service action received")
             stopSelf()
         } else if (intent?.action == Constants.ACTION_RESTART_SERVICE) {
+            logger.i("AppDetectionService", "Restart service action received")
             stopSelf()
             startService(Intent(this, AppDetectionService::class.java))
         } else {
+            logger.i("AppDetectionService", "Starting detection...")
             handleAppDetection()
         }
         return super.onStartCommand(intent, flags, startId)
     }
 
     override fun onDestroy() {
+        logger.i("AppDetectionService", "onDestroy() called. Cleaning up.")
         Prefs[Prefs.LAST_RPC_TYPE] = ""
-        scope.cancel()
+        serviceScope.cancel()
         AxeRPC.closeRPC()
         super.onDestroy()
     }
@@ -122,12 +130,15 @@ class AppDetectionService : Service() {
 
         val rpcButtons = getRpcButtons()
 
-        scope.launch {
+        serviceScope.launch {
+            logger.i("AppDetectionService", "Detection loop started.")
             while (isActive) {
                 val packageName = getForegroundPackage()
 
                 if (packageName != null && packageName !in EXCLUDED_APPS) {
                     handleValidPackage(packageName, enabledPackages, rpcButtons)
+                } else if (packageName != null) {
+                    logger.d("AppDetectionService", "Skipping excluded app: $packageName")
                 }
                 delay(5000)
             }
@@ -165,7 +176,7 @@ class AppDetectionService : Service() {
         rpcButtons: RpcButtons,
     ) {
         val customConfigName = Prefs.getAppCustomConfig(packageName)
-        if (packageName in enabledPackages && (packageName != runningPackage || customConfigName != currentConfigName)) {
+        if (packageName in enabledPackages && (!AxeRPC.isRpcRunning() || packageName != runningPackage || customConfigName != currentConfigName)) {
             handleEnabledPackage(packageName, rpcButtons, customConfigName)
             runningPackage = packageName
             currentConfigName = customConfigName
@@ -184,7 +195,9 @@ class AppDetectionService : Service() {
         val customConfig = customConfigName?.let { loadConfig(it) }
 
         if (!AxeRPC.isRpcRunning() || packageName != runningPackage || customConfigName != currentConfigName) {
-            if (AxeRPC.isRpcRunning()) {
+            val isRunning = AxeRPC.isRpcRunning()
+            logger.i("AppDetectionService", "Package change detected: $packageName (old: $runningPackage). Config: $customConfigName (old: $currentConfigName). isRunning: $isRunning")
+            if (isRunning) {
                 AxeRPC.closeRPC()
             }
             AxeRPC.apply {
@@ -258,7 +271,9 @@ class AppDetectionService : Service() {
     }
 
     private fun handleDisabledPackage() {
-        if (AxeRPC.isRpcRunning()) {
+        val isRunning = AxeRPC.isRpcRunning()
+        logger.i("AppDetectionService", "handleDisabledPackage() called. isRunning: $isRunning")
+        if (isRunning) {
             AxeRPC.closeRPC()
         }
         notificationManager.notify(Constants.NOTIFICATION_ID, createDefaultNotification())

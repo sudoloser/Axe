@@ -36,14 +36,7 @@ object ServiceModule {
     fun providesDiscordWebsocket(
         logger: Logger
     ): DiscordWebSocket {
-        val customUrl = Prefs[Prefs.REMOTE_GATEWAY_URL, "https://axe-server.onrender.com/"]
-        val customSignature = Prefs[Prefs.REMOTE_GATEWAY_SIGNATURE, ""].ifEmpty { BuildConfig.AXE_APP_SIGNATURE }
-
         return DelegatingDiscordWebSocket(
-            token = Prefs[Prefs.TOKEN, ""],
-            userId = Prefs[Prefs.USER_ID, ""],
-            appSignature = customSignature,
-            serverBaseUrl = customUrl,
             logger = logger
         )
     }
@@ -54,7 +47,7 @@ object ServiceModule {
         axeRepository: AxeRepository,
         discordWebSocket: DiscordWebSocket,
         logger: Logger
-    ) = AxeRPC(Prefs[Prefs.TOKEN, ""], axeRepository, discordWebSocket, logger)
+    ) = AxeRPC(axeRepository, discordWebSocket, logger)
 
     @Provides
     @Singleton

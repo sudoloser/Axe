@@ -28,6 +28,8 @@ import com.my.axe.feature_rpc_base.setLargeIcon
 import com.my.axe.resources.R
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
@@ -44,8 +46,7 @@ class CustomRpcService : Service() {
     @Inject
     lateinit var logger: Logger
 
-    @Inject
-    lateinit var scope: CoroutineScope
+    private val serviceScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
     @Inject
     lateinit var notificationBuilder: Notification.Builder
@@ -93,7 +94,7 @@ class CustomRpcService : Service() {
             val powerManager = getSystemService(POWER_SERVICE) as PowerManager
             wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, WAKELOCK)
             wakeLock?.acquire()
-            scope.launch {
+            serviceScope.launch {
                 try {
                     notificationManager.notify(
                         Constants.NOTIFICATION_ID,
@@ -141,11 +142,12 @@ class CustomRpcService : Service() {
     override fun onDestroy() {
         runningType = null
         com.my.axe.preference.Prefs[com.my.axe.preference.Prefs.LAST_RPC_TYPE] = ""
-        scope.cancel()
+        serviceScope.cancel()
         AxeRPC.closeRPC()
         wakeLock?.let {
             if (it.isHeld) it.release()
         }
+        notificationManager.cancel(Constants.NOTIFICATION_ID)
         super.onDestroy()
     }
 

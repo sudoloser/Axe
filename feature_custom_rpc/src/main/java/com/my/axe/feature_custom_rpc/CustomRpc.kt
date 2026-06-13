@@ -234,21 +234,32 @@ private fun RpcTextFieldsColumn(
                 title = stringResource(id = R.string.enable_customRpc),
                 isChecked = isCustomRpcEnabled
             ) {
+                // Update local state first to be responsive
+                val wasEnabled = isCustomRpcEnabled
                 isCustomRpcEnabled = !isCustomRpcEnabled
+                
                 when (isCustomRpcEnabled) {
                     true -> {
                         context.stopService(Intent(context, AppDetectionService::class.java))
                         context.stopService(Intent(context, MediaRpcService::class.java))
                         context.stopService(Intent(context, ExperimentalRpc::class.java))
+                        
                         val intent = Intent(context, CustomRpcService::class.java)
                         val string = uiState.rpcConfig.dataToString()
                         intent.putExtra("RPC", string)
                         intent.putExtra("TYPE", "CUSTOM")
                         Prefs[Prefs.LAST_RUN_CUSTOM_RPC] = string
-                        context.startService(intent)
+                        
+                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                            context.startForegroundService(intent)
+                        } else {
+                            context.startService(intent)
+                        }
                     }
 
-                    false -> context.stopService(Intent(context, CustomRpcService::class.java))
+                    false -> {
+                        context.stopService(Intent(context, CustomRpcService::class.java))
+                    }
                 }
             }
         }

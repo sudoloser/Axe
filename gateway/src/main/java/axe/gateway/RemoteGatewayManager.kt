@@ -64,6 +64,8 @@ class RemoteGatewayManager(
     
     private var isAuthorized = false
     
+    private var isClosed = false
+    
     private val json = Json {
         ignoreUnknownKeys = true
         encodeDefaults = true
@@ -73,6 +75,10 @@ class RemoteGatewayManager(
     private val scope = CoroutineScope(coroutineContext)
 
     override suspend fun connect() {
+        if (isClosed) {
+            logger.w("RemoteGateway", "Connect called on closed manager")
+            return
+        }
         if (token.isBlank()) {
             val err = "Cannot connect to Remote Gateway: Discord Token is empty!"
             logger.e("RemoteGateway", err)
@@ -80,13 +86,12 @@ class RemoteGatewayManager(
         }
         
         if (webSocket != null) {
-            logger.w("RemoteGateway", "Connect called but already connecting/connected")
+            logger.w("RemoteGateway", "Connect called but WebSocket instance already exists")
             return
         }
         
         isAuthorized = false
-        logger.i("RemoteGateway", "Initiating Connection...")
-        logger.d("RemoteGateway", "WS URL: $wsUrl")
+        logger.i("RemoteGateway", "Initiating Connection to $wsUrl...")
         
         val request = Request.Builder()
             .url(wsUrl)
@@ -132,7 +137,7 @@ class RemoteGatewayManager(
     }
 
     override fun onOpen(webSocket: WebSocket, response: Response) {
-        logger.i("RemoteGateway", "Network connection established (HTTP ${response.code}). Sending AUTH...")
+        logger.i("RemoteGateway", "WebSocket connection opened (HTTP ${response.code}). Sending AUTH...")
         retryDelay = 2000L 
         
         val authMessage = AuthMessage(
@@ -147,8 +152,9 @@ class RemoteGatewayManager(
         try {
             val jsonAuth = json.encodeToString(authMessage)
             webSocket.send(jsonAuth)
-            logger.i("RemoteGateway", "AUTH payload sent to server")
+            logger.i("RemoteGateway", "AUTH payload sent. Marking as authorized.")
             isAuthorized = true 
+            sessionActive.value = true
             startHeartbeat()
         } catch (e: Exception) {
             logger.e("RemoteGateway", "Failed to send AUTH: ${e.message}")
@@ -173,22 +179,31 @@ class RemoteGatewayManager(
     }
 
     override fun onClosing(webSocket: WebSocket, code: Int, reason: String) {
-        logger.w("RemoteGateway", "Server closing connection: $code / $reason")
+        logger.w("RemoteGateway", "Server requested close: $code / $reason")
         isAuthorized = false
+        sessionActive.value = false
     }
 
     override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
+        if (isClosed) {
+            logger.d("RemoteGateway", "Failure ignored because manager is closed: ${t.message}")
+            return
+        }
+        
         logger.e("RemoteGateway", "WebSocket Failure: ${t.message ?: "Unknown error"}")
         this.webSocket = null
         isAuthorized = false
+        sessionActive.value = false
         stopHeartbeat()
         
         // Reconnect with exponential backoff if not closed deliberately
         scope.launch {
             logger.i("RemoteGateway", "Retrying connection in ${retryDelay/1000}s...")
             delay(retryDelay)
-            retryDelay = (retryDelay * 2).coerceAtMost(maxRetryDelay)
-            connect()
+            if (!isClosed) {
+                retryDelay = (retryDelay * 2).coerceAtMost(maxRetryDelay)
+                connect()
+            }
         }
     }
 
@@ -257,6 +272,9 @@ class RemoteGatewayManager(
     }
 
     override fun close() {
+        if (isClosed) return
+        isClosed = true
+        
         logger.i("RemoteGateway", "Close called. Cleaning up...")
         isAuthorized = false
         sessionActive.value = false
@@ -264,33 +282,42 @@ class RemoteGatewayManager(
         webSocket?.close(1000, "App closed")
         webSocket = null
         
-        // Call stop endpoint via HTTP POST (async)
-        scope.launch {
-            try {
-                val stopRequest = StopRequest(
-                    user_id = userId,
-                    app_signature = appSignature
-                )
-                val body = json.encodeToString(stopRequest).toRequestBody("application/json".toMediaType())
-                val request = Request.Builder()
-                    .url(stopUrl)
-                    .post(body)
-                    .build()
-                
-                client.newCall(request).enqueue(object : Callback {
-                    override fun onResponse(call: Call, response: Response) {
-                        response.use {
-                            logger.i("RemoteGateway", "Purge request response: ${it.code}")
+        // Call stop endpoint via HTTP POST (async via OkHttp internal threads)
+        try {
+            val stopUserId = userId.ifEmpty { "000000000000000000" }
+            val stopRequest = StopRequest(
+                user_id = stopUserId,
+                session_id = userId,
+                app_signature = appSignature
+            )
+            val jsonMsg = json.encodeToString(stopRequest)
+            val body = jsonMsg.toRequestBody("application/json".toMediaType())
+            val request = Request.Builder()
+                .url(stopUrl)
+                .addHeader("x-app-signature", appSignature)
+                .post(body)
+                .build()
+            
+            logger.d("RemoteGateway", "Sending stop request for $stopUserId (session: $userId) to $stopUrl")
+            client.newCall(request).enqueue(object : Callback {
+                override fun onResponse(call: Call, response: Response) {
+                    response.use {
+                        if (it.isSuccessful) {
+                            logger.i("RemoteGateway", "Purge request successful (HTTP ${it.code})")
+                        } else {
+                            logger.w("RemoteGateway", "Purge request returned error (HTTP ${it.code}): ${it.message}")
                         }
                     }
-                    override fun onFailure(call: Call, e: java.io.IOException) {
-                        logger.e("RemoteGateway", "Purge request failed: ${e.message}")
-                    }
-                })
-            } catch (e: Exception) {
-                logger.e("RemoteGateway", "Failed to setup stop request: ${e.message}")
-            }
+                }
+                override fun onFailure(call: Call, e: java.io.IOException) {
+                    logger.e("RemoteGateway", "Purge request failed network call: ${e.message}")
+                }
+            })
+        } catch (e: Exception) {
+            logger.e("RemoteGateway", "Failed to setup stop request: ${e.message}")
         }
+        
+        scope.cancel()
     }
 
     @Serializable
@@ -319,6 +346,7 @@ class RemoteGatewayManager(
     @Serializable
     private data class StopRequest(
         val user_id: String,
+        val session_id: String,
         val app_signature: String
     )
     

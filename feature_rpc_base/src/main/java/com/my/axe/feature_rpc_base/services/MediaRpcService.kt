@@ -47,8 +47,7 @@ class MediaRpcService : Service() {
     @Inject
     lateinit var AxeRPC: AxeRPC
 
-    @Inject
-    lateinit var scope: CoroutineScope
+    private val serviceScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
     @Inject
     lateinit var getCurrentPlayingMedia: GetCurrentPlayingMedia
@@ -181,8 +180,8 @@ class MediaRpcService : Service() {
             currentMediaController = null
         }
 
-        scope.coroutineContext.cancelChildren()
-        scope.launch { updatePresence() }
+        serviceScope.coroutineContext.cancelChildren()
+        serviceScope.launch { updatePresence() }
     }
 
     private inner class MediaControllerCallback: MediaController.Callback() {
@@ -190,8 +189,8 @@ class MediaRpcService : Service() {
             super.onPlaybackStateChanged(state)
 
             // Cancel all previous jobs and start new job to prevent conflict/spam
-            scope.coroutineContext.cancelChildren()
-            scope.launch {
+            serviceScope.coroutineContext.cancelChildren()
+            serviceScope.launch {
                 delay(1000)
                 updatePresence()
             }
@@ -199,8 +198,8 @@ class MediaRpcService : Service() {
         override fun onMetadataChanged(metadata: MediaMetadata?) {
             super.onMetadataChanged(metadata)
 
-            scope.coroutineContext.cancelChildren()
-            scope.launch {
+            serviceScope.coroutineContext.cancelChildren()
+            serviceScope.launch {
                 delay(1000)
                 updatePresence()
             }
@@ -208,8 +207,8 @@ class MediaRpcService : Service() {
         override fun onSessionDestroyed() {
             super.onSessionDestroyed()
 
-            scope.coroutineContext.cancelChildren()
-            scope.launch { updatePresence() }
+            serviceScope.coroutineContext.cancelChildren()
+            serviceScope.launch { updatePresence() }
         }
     }
 
@@ -238,7 +237,7 @@ class MediaRpcService : Service() {
         Prefs[Prefs.LAST_RPC_TYPE] = ""
         mediaSessionManager.removeOnActiveSessionsChangedListener(::activeSessionsListener)
         currentMediaController?.unregisterCallback(mediaControllerCallback)
-        scope.cancel()
+        serviceScope.cancel()
         AxeRPC.closeRPC()
         wakeLock?.let {
             if (it.isHeld) it.release()

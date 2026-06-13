@@ -42,6 +42,8 @@ import com.my.axe.preference.Prefs
 import com.my.axe.resources.R
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.delay
@@ -57,8 +59,7 @@ private const val TAG = "ExperimentalRPC"
 @AndroidEntryPoint
 class ExperimentalRpc : Service() {
 
-    @Inject
-    lateinit var scope: CoroutineScope
+    private val serviceScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
     @Inject
     lateinit var AxeRPC: AxeRPC
@@ -187,7 +188,7 @@ class ExperimentalRpc : Service() {
         var currentPackageName = ""
         val startTimestamps = Timestamps(start = System.currentTimeMillis())
 
-        scope.launch {
+        serviceScope.launch {
             while (isActive) {
                 val currentApp = getCurrentlyRunningApp()
 
@@ -399,10 +400,10 @@ class ExperimentalRpc : Service() {
         if (!useMediaRpc) {
             logger.i(TAG, "Media part of Experimental RPC is disabled.")
             if (useAppsRpc && !isMediaSessionActive) {
-                scope.coroutineContext.cancelChildren()
+                serviceScope.coroutineContext.cancelChildren()
                 startAppDetectionCoroutine()
             } else if (!useAppsRpc) {
-                scope.launch {
+                serviceScope.launch {
                     updatePresence(
                         appInfo = null,
                         richMediaInfo = null,
@@ -425,8 +426,8 @@ class ExperimentalRpc : Service() {
             currentMediaController?.registerCallback(mediaControllerCallback)
         }
 
-        scope.coroutineContext.cancelChildren()
-        scope.launch {
+        serviceScope.coroutineContext.cancelChildren()
+        serviceScope.launch {
             val richMediaData = getCurrentPlayingMediaAll()
             isMediaSessionActive = richMediaData.appName != null && currentMediaController != null
 
@@ -449,8 +450,8 @@ class ExperimentalRpc : Service() {
         private fun handleMediaUpdate() {
             if (!useMediaRpc) return
 
-            scope.coroutineContext.cancelChildren()
-            scope.launch {
+            serviceScope.coroutineContext.cancelChildren()
+            serviceScope.launch {
                 delay(1000)
                 val richMediaData = getCurrentPlayingMediaAll()
                 isMediaSessionActive =
@@ -494,8 +495,8 @@ class ExperimentalRpc : Service() {
             currentMediaController = null
             isMediaSessionActive = false
 
-            scope.coroutineContext.cancelChildren()
-            scope.launch {
+            serviceScope.coroutineContext.cancelChildren()
+            serviceScope.launch {
                 if (useAppsRpc) {
                     startAppDetectionCoroutine()
                 } else {
@@ -509,7 +510,7 @@ class ExperimentalRpc : Service() {
         Prefs[Prefs.LAST_RPC_TYPE] = ""
         mediaSessionManager.removeOnActiveSessionsChangedListener(::activeSessionsListener)
         currentMediaController?.unregisterCallback(mediaControllerCallback)
-        scope.cancel()
+        serviceScope.cancel()
         AxeRPC.closeRPC()
         super.onDestroy()
     }
