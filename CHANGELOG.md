@@ -1,10 +1,10 @@
-# 5/23/2026 [v1.2.0]
+# 6/13/2026 [v1.2.0]
 ### Added
 - External server gateway for 24/7 reliability
 ### Fixed
 - Fields like "Activity platform" being a mix of input and dropdown. (Switched to dropdown only)
 - Images not filling properly in rpc preview. 
-- Gifs not animating
+- Gifs not animating in rpc preview
 
 # 5/20/2026 [v1.1.1]
 ### Added
