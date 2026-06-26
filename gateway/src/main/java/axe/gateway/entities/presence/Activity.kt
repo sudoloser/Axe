@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Activity(
     @SerialName("name")
-    val name: String?,
+    val name: String = "",
     @SerialName("state")
     val state: String? = null,
     @SerialName("details")

@@ -1,3 +1,10 @@
+# 6/26/2026 [v1.2.1]
+### Fixed
+- JSON parsing memory issue causing lag/blank screen on token login [dead8309, 67503ca](https://github.com/dead8309/Kizzy/commit/67503ca)
+- Cover art cache key now includes title for proper deduplication [dead8309, 9668e05](https://github.com/dead8309/Kizzy/commit/9668e05)
+- Placeholder regex in template processor [dead8309, faf7c85](https://github.com/dead8309/Kizzy/commit/faf7c85)
+- RPC activity name not being set correctly
+
 # 6/13/2026 [v1.2.0]
 ### Added
 - External server gateway for 24/7 reliability
