@@ -313,7 +313,7 @@ class AxeRPC(
         presence = Presence(
             activities = listOf(
                 Activity(
-                    name = activityName,
+                    name = activityName.orEmpty(),
                     state = state?.sanitize(),
                     details = details?.sanitize(),
                     party = party.takeIf { party != null },

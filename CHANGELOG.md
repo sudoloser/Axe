@@ -5,6 +5,12 @@
 - Placeholder regex in template processor [dead8309, faf7c85](https://github.com/dead8309/Kizzy/commit/faf7c85)
 - RPC activity name not being set correctly
 
+### Credits
+- [dead8309](https://github.com/dead8309)
+> Original commits from upstream
+- [OpenCode](https://github.com/opencode-ai/opencode)
+> For helping to merge these commits
+
 # 6/13/2026 [v1.2.0]
 ### Added
 - External server gateway for 24/7 reliability
