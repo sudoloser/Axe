@@ -23,7 +23,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.my.axe.resources.R
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.net.URL
 
@@ -121,15 +120,13 @@ fun ChangelogSheet(
     if (!visible) return
 
     val context = LocalContext.current
-    val scope = rememberCoroutineScope()
     var changelogHtml by remember { mutableStateOf<String?>(null) }
     var isLoading by remember { mutableStateOf(true) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
-    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = false)
+    val sheetState = rememberModalBottomSheetState()
 
     LaunchedEffect(visible) {
         if (visible) {
-            sheetState.show()
             isLoading = true
             errorMessage = null
             try {
@@ -146,16 +143,8 @@ fun ChangelogSheet(
         }
     }
 
-    LaunchedEffect(sheetState.isVisible) {
-        if (!sheetState.isVisible && visible) {
-            onDismiss()
-        }
-    }
-
     ModalBottomSheet(
-        onDismissRequest = {
-            scope.launch { sheetState.hide() }
-        },
+        onDismissRequest = onDismiss,
         sheetState = sheetState,
     ) {
         Column(
