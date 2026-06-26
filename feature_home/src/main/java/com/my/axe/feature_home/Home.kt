@@ -79,6 +79,7 @@ import com.my.axe.feature_settings.SettingsDrawer
 import com.my.axe.preference.AppSettingsStateFlow
 import com.my.axe.resources.R
 import com.my.axe.ui.components.ChipSection
+import com.my.axe.ui.components.ChangelogSheet
 import com.my.axe.ui.components.UpdateDialog
 import kotlinx.coroutines.launch
 
@@ -107,6 +108,9 @@ fun Home(
         })
     }
     var showUpdateDialog by remember {
+        mutableStateOf(false)
+    }
+    var showChangelogSheet by remember {
         mutableStateOf(false)
     }
     val drawerState = rememberDrawerState(DrawerValue.Closed)
@@ -172,6 +176,13 @@ fun Home(
                         }
                     },
                     actions = {
+                        IconButton(onClick = { showChangelogSheet = true }) {
+                            Icon(
+                                painter = painterResource(R.drawable.ic_newspaper),
+                                contentDescription = "Changelog",
+                                tint = MaterialTheme.colorScheme.onSurface
+                            )
+                        }
                         if (showBadge) {
                             BadgedBox(
                                 badge = {
@@ -299,6 +310,10 @@ fun Home(
 
                 else -> {}
             }
+            ChangelogSheet(
+                visible = showChangelogSheet,
+                onDismiss = { showChangelogSheet = false }
+            )
         }
     }
 }

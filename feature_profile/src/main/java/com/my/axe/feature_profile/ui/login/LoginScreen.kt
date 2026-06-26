@@ -16,11 +16,15 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -32,6 +36,7 @@ import com.my.axe.preference.Prefs.TOKEN
 import com.my.axe.resources.R
 import com.my.axe.ui.components.BackButton
 import com.my.axe.ui.components.dialog.TextFieldDialog
+import com.my.axe.ui.theme.DISCORD_GREY
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -121,10 +126,20 @@ fun LoginScreen(
                     enabled = buttonEnabledState
                 )
                 if (buttonEnabledState) {
-                    TextButton(
+                    ElevatedButton(
                         onClick = { showTokenDialog = true },
-                        modifier = Modifier.padding(top = 8.dp)
+                        colors = ButtonDefaults.elevatedButtonColors(
+                            containerColor = DISCORD_GREY,
+                            contentColor = Color.White.copy(alpha = 0.8f)
+                        ),
+                        shape = RoundedCornerShape(12.dp)
                     ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_ticket),
+                            tint = Color.Unspecified,
+                            contentDescription = "token_login",
+                            modifier = Modifier.padding(end = 5.dp)
+                        )
                         Text(text = stringResource(R.string.login_with_token))
                     }
                     Text(

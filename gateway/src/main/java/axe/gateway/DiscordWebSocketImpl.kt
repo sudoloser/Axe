@@ -7,7 +7,9 @@ import io.ktor.client.plugins.websocket.*
 import io.ktor.websocket.*
 import axe.gateway.entities.Heartbeat
 import axe.gateway.entities.Identify.Companion.toIdentifyPayload
+import axe.gateway.entities.OutgoingPayload
 import axe.gateway.entities.Payload
+import axe.gateway.entities.PayloadData
 import axe.gateway.entities.Ready
 import axe.gateway.entities.Resume
 import axe.gateway.entities.op.OpCode
@@ -20,8 +22,6 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.decodeFromJsonElement
-import kotlinx.serialization.json.encodeToJsonElement
 import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -67,7 +67,7 @@ open class DiscordWebSocketImpl(
                         when (it) {
                             is Frame.Text -> {
                                 val jsonString = it.readText()
-                                onMessage(json.decodeFromString(jsonString))
+                                onMessage(jsonString)
                             }
                             else -> {}
                         }
@@ -94,26 +94,27 @@ open class DiscordWebSocketImpl(
             close()
     }
 
-    private suspend fun onMessage(payload: Payload) {
+    private suspend fun onMessage(jsonString: String) {
+        val payload = json.decodeFromString<Payload>(jsonString)
         logger.d("Gateway","Received op:${payload.op}, seq:${payload.s}, event :${payload.t}")
 
         payload.s?.let {
             sequence = it
         }
         when (payload.op) {
-            DISPATCH -> payload.handleDispatch()
+            DISPATCH -> payload.handleDispatch(jsonString)
             HEARTBEAT -> sendHeartBeat()
             RECONNECT -> reconnectWebSocket()
             INVALID_SESSION -> handleInvalidSession()
-            HELLO -> payload.handleHello()
+            HELLO -> payload.handleHello(jsonString)
             else -> {}
         }
     }
 
-    open fun Payload.handleDispatch() {
+    open fun Payload.handleDispatch(jsonString: String) {
         when (this.t.toString()) {
             "READY" -> {
-                val ready = json.decodeFromJsonElement<Ready>(this.d!!)
+                val ready = decodePayloadData<Ready>(jsonString) ?: return
                 sessionId = ready.sessionId
                 resumeGatewayUrl = ready.resumeGatewayUrl + "/?v=10&encoding=json"
                 logger.i("Gateway","resume_gateway_url updated to $resumeGatewayUrl")
@@ -137,16 +138,24 @@ open class DiscordWebSocketImpl(
         sendIdentify()
     }
 
-    private suspend inline fun Payload.handleHello() {
+    private suspend inline fun Payload.handleHello(jsonString: String) {
         if (sequence > 0 && !sessionId.isNullOrBlank()) {
             sendResume()
         } else {
             sequence = 0
             sendIdentify()
         }
-        heartbeatInterval =  json.decodeFromJsonElement<Heartbeat>(this.d!!).heartbeatInterval
+        heartbeatInterval = decodePayloadData<Heartbeat>(jsonString)?.heartbeatInterval ?: return
         logger.i("Gateway","Setting heartbeatInterval= $heartbeatInterval")
         startHeartbeatJob(heartbeatInterval)
+    }
+
+    protected fun decodeReady(jsonString: String): Ready? {
+        return decodePayloadData(jsonString)
+    }
+
+    private inline fun <reified T> decodePayloadData(jsonString: String): T? {
+        return json.decodeFromString<PayloadData<T>>(jsonString).d
     }
 
     private suspend fun sendHeartBeat() {
@@ -208,9 +217,9 @@ open class DiscordWebSocketImpl(
     private suspend inline fun <reified T> send(op: OpCode, d: T?) {
         if (websocket?.isActive == true) {
             val payload = json.encodeToString(
-                Payload(
+                OutgoingPayload(
                     op = op,
-                    d= json.encodeToJsonElement(d),
+                    d = d,
                 )
             )
             websocket?.send(Frame.Text(payload))
