@@ -128,7 +128,6 @@ fun LoginScreen(
                 if (buttonEnabledState) {
                     ElevatedButton(
                         onClick = { showTokenDialog = true },
-                        modifier = Modifier.fillMaxWidth(),
                         colors = ButtonDefaults.elevatedButtonColors(
                             containerColor = DISCORD_GREY,
                             contentColor = Color.White.copy(alpha = 0.8f)
