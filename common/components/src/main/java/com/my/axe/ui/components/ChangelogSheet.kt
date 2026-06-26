@@ -1,5 +1,7 @@
 package com.my.axe.ui.components
 
+import android.content.Intent
+import android.net.Uri
 import android.view.ViewGroup
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -9,15 +11,19 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.my.axe.resources.R
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.net.URL
 
@@ -40,6 +46,7 @@ private object MarkdownParser {
         html = html.replace(Regex("""(?m)^\s*[-*+]\s+(.*?)$""")) { "<li>${it.groupValues[1]}</li>" }
         html = html.replace(Regex("""(?m)^\s*\d+\.\s+(.*?)$""")) { "<li>${it.groupValues[1]}</li>" }
         html = html.replace(Regex("""\[([^\]]+)\]\(([^)]+)\)""")) { "<a href=\"${it.groupValues[2]}\">${it.groupValues[1]}</a>" }
+        html = html.replace(Regex("""https?://[^\s<]+""")) { "<a href=\"${it.value}\">${it.value}</a>" }
         html = html.replace(Regex("""(?m)^---+\s*$"""), "<hr>")
         html = html.replace(Regex("""\*\*(.*?)\*\*""")) { "<b>${it.groupValues[1]}</b>" }
         html = html.replace(Regex("""\*(.*?)\*""")) { "<i>${it.groupValues[1]}</i>" }
@@ -92,6 +99,19 @@ ${html.trim()}
     }
 }
 
+private fun extractLatestSection(markdown: String): String {
+    val lines = markdown.lines()
+    val firstHeaderIndex = lines.indexOfFirst { it.startsWith("# ") }
+    if (firstHeaderIndex == -1) return markdown
+
+    val secondHeaderIndex = lines.indexOfFirst { it.startsWith("# ") && lines.indexOf(it) > firstHeaderIndex }
+    return if (secondHeaderIndex == -1) {
+        lines.subList(firstHeaderIndex, lines.size).joinToString("\n")
+    } else {
+        lines.subList(firstHeaderIndex, secondHeaderIndex).joinToString("\n")
+    }
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChangelogSheet(
@@ -100,28 +120,42 @@ fun ChangelogSheet(
 ) {
     if (!visible) return
 
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
     var changelogHtml by remember { mutableStateOf<String?>(null) }
     var isLoading by remember { mutableStateOf(true) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
-    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = false)
 
     LaunchedEffect(visible) {
-        isLoading = true
-        errorMessage = null
-        try {
-            val raw = withContext(Dispatchers.IO) {
-                URL(CHANGELOG_URL).readText()
+        if (visible) {
+            sheetState.show()
+            isLoading = true
+            errorMessage = null
+            try {
+                val raw = withContext(Dispatchers.IO) {
+                    URL(CHANGELOG_URL).readText()
+                }
+                val latest = extractLatestSection(raw)
+                changelogHtml = MarkdownParser.toHtml(latest)
+            } catch (e: Exception) {
+                errorMessage = e.message ?: "Failed to load changelog"
+            } finally {
+                isLoading = false
             }
-            changelogHtml = MarkdownParser.toHtml(raw)
-        } catch (e: Exception) {
-            errorMessage = e.message ?: "Failed to load changelog"
-        } finally {
-            isLoading = false
+        }
+    }
+
+    LaunchedEffect(sheetState.isVisible) {
+        if (!sheetState.isVisible && visible) {
+            onDismiss()
         }
     }
 
     ModalBottomSheet(
-        onDismissRequest = onDismiss,
+        onDismissRequest = {
+            scope.launch { sheetState.hide() }
+        },
         sheetState = sheetState,
     ) {
         Column(
@@ -156,13 +190,18 @@ fun ChangelogSheet(
                 }
                 changelogHtml != null -> {
                     AndroidView(
-                        factory = { context ->
-                            WebView(context).apply {
+                        factory = { ctx ->
+                            WebView(ctx).apply {
                                 layoutParams = ViewGroup.LayoutParams(
                                     ViewGroup.LayoutParams.MATCH_PARENT,
                                     ViewGroup.LayoutParams.WRAP_CONTENT
                                 )
-                                webViewClient = WebViewClient()
+                                webViewClient = object : WebViewClient() {
+                                    override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
+                                        context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+                                        return true
+                                    }
+                                }
                                 setBackgroundColor(android.graphics.Color.TRANSPARENT)
                                 loadDataWithBaseURL(
                                     null,
