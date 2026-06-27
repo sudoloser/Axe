@@ -240,7 +240,8 @@ class RemoteGatewayManager(
         var count = 0
         while (!isAuthorized && count < 100) {
             if (webSocket == null) {
-                throw IllegalStateException("Remote Gateway disconnected during authorization wait")
+                logger.w("RemoteGateway", "WebSocket disconnected while waiting for auth. Skipping activity send.")
+                return
             }
             delay(100)
             count++
@@ -248,7 +249,7 @@ class RemoteGatewayManager(
 
         if (!isAuthorized || webSocket == null) {
             logger.e("RemoteGateway", "Gave up waiting for auth (timeout 10s). Activity not sent.")
-            throw IllegalStateException("Remote Gateway authorization timeout")
+            return
         }
 
         val message = PresenceUpdateMessage(

@@ -1,5 +1,6 @@
 package com.my.axe.ui.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.selection.SelectionContainer
@@ -19,7 +21,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -134,80 +135,83 @@ private fun AnnotatedString.Builder.appendRun(run: TextRun) {
     }
 }
 
-private fun markdownToAnnotatedString(markdown: String): AnnotatedString = buildAnnotatedString {
-    val lines = markdown.lines()
-    var i = 0
-    while (i < lines.size) {
-        val line = lines[i]
-        when {
-            line.isBlank() -> { append("\n"); i++; continue }
+private fun markdownToAnnotatedString(markdown: String, defaultColor: Color): AnnotatedString = buildAnnotatedString {
+    withStyle(SpanStyle(color = defaultColor)) {
+        val lines = markdown.lines()
+        var i = 0
+        while (i < lines.size) {
+            val line = lines[i]
+            when {
+                line.isBlank() -> { append("\n"); i++; continue }
 
-            line.trimStart().startsWith("```") -> {
-                val code = mutableListOf<String>()
-                i++
-                while (i < lines.size && !lines[i].trimStart().startsWith("```")) {
-                    code.add(lines[i])
+                line.trimStart().startsWith("```") -> {
+                    val code = mutableListOf<String>()
                     i++
+                    while (i < lines.size && !lines[i].trimStart().startsWith("```")) {
+                        code.add(lines[i])
+                        i++
+                    }
+                    i++
+                    withStyle(
+                        SpanStyle(
+                            fontFamily = FontFamily.Monospace,
+                            fontSize = 14.sp,
+                            color = Color(0xFFE0E0E0),
+                            background = Color(0xFF2D2D2D),
+                        )
+                    ) { append(code.joinToString("\n")) }
+                    append("\n"); continue
                 }
-                i++
-                withStyle(
-                    SpanStyle(
-                        fontFamily = FontFamily.Monospace,
-                        fontSize = 14.sp,
-                        color = Color(0xFFE0E0E0),
-                        background = Color(0xFF2D2D2D),
-                    )
-                ) { append(code.joinToString("\n")) }
-                append("\n"); continue
-            }
 
-            line.matches(Regex("""---+\s*""")) -> {
-                append("\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n"); i++; continue
-            }
-
-            line.startsWith("### ") -> {
-                withStyle(SpanStyle(fontSize = 15.sp, fontWeight = FontWeight.Bold, color = Color.White)) {
-                    append(line.removePrefix("### "))
+                line.matches(Regex("""---+\s*""")) -> {
+                    append("\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n"); i++; continue
                 }
-                append("\n"); i++; continue
-            }
 
-            line.startsWith("## ") -> {
-                withStyle(SpanStyle(fontSize = 17.sp, fontWeight = FontWeight.Bold, color = Color.White)) {
-                    append(line.removePrefix("## "))
+                line.startsWith("### ") -> {
+                    withStyle(SpanStyle(fontSize = 15.sp, fontWeight = FontWeight.Bold, color = Color.White)) {
+                        append(line.removePrefix("### "))
+                    }
+                    append("\n"); i++; continue
                 }
-                append("\n"); i++; continue
-            }
 
-            line.startsWith("# ") -> {
-                withStyle(SpanStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold, color = Color.White)) {
-                    append(line.removePrefix("# "))
+                line.startsWith("## ") -> {
+                    withStyle(SpanStyle(fontSize = 17.sp, fontWeight = FontWeight.Bold, color = Color.White)) {
+                        append(line.removePrefix("## "))
+                    }
+                    append("\n"); i++; continue
                 }
-                append("\n"); i++; continue
-            }
 
-            line.matches(Regex("""^\s*[-*+]\s+.*""")) -> {
-                append("  \u2022 ")
-                parseInline(line.trimStart().substringAfter(" ").trim()).forEach { appendRun(it) }
-                append("\n"); i++; continue
-            }
-
-            line.matches(Regex("""^\s*\d+\.\s+.*""")) -> {
-                append("  \u2022 ")
-                parseInline(line.trimStart().substringAfter(".").trim()).forEach { appendRun(it) }
-                append("\n"); i++; continue
-            }
-
-            line.startsWith("> ") -> {
-                withStyle(SpanStyle(fontStyle = FontStyle.Italic, color = Color(0xFFBBBBBB))) {
-                    append(line.removePrefix("> "))
+                line.startsWith("# ") -> {
+                    withStyle(SpanStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold, color = Color.White)) {
+                        append(line.removePrefix("# "))
+                    }
+                    append("\n"); i++; continue
                 }
-                append("\n"); i++; continue
-            }
 
-            else -> {
-                parseInline(line).forEach { appendRun(it) }
-                append("\n"); i++; continue
+                line.matches(Regex("""^\s*[-*+]\s+.*""")) -> {
+                    append("  \u2022 ")
+                    parseInline(line.trimStart().substringAfter(" ").trim()).forEach { appendRun(it) }
+                    append("\n"); i++; continue
+                }
+
+                line.matches(Regex("""^\s*\d+\.\s+.*""")) -> {
+                    append("  \u2022 ")
+                    parseInline(line.trimStart().substringAfter(".").trim()).forEach { appendRun(it) }
+                    append("\n"); i++; continue
+                }
+
+                line.startsWith("> ") -> {
+                    withStyle(SpanStyle(fontStyle = FontStyle.Italic, color = Color(0xFF9E9E9E))) {
+                        append("  \u2502 ")
+                        append(line.removePrefix("> "))
+                    }
+                    append("\n"); i++; continue
+                }
+
+                else -> {
+                    parseInline(line).forEach { appendRun(it) }
+                    append("\n"); i++; continue
+                }
             }
         }
     }
@@ -268,11 +272,18 @@ fun ChangelogSheet(
                 if (sections.size > 1) {
                     var expanded by remember { mutableStateOf(false) }
                     Box {
-                        TextButton(onClick = { expanded = true }) {
+                        Row(
+                            modifier = Modifier.clickable { expanded = true },
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
                             Text(
                                 text = sections.getOrNull(selectedIndex)?.displayName ?: "",
                                 style = MaterialTheme.typography.bodySmall,
-                                maxLines = 1,
+                            )
+                            Spacer(Modifier.width(2.dp))
+                            Text(
+                                text = "\u25BC",
+                                style = MaterialTheme.typography.bodySmall,
                             )
                         }
                         DropdownMenu(
@@ -311,9 +322,10 @@ fun ChangelogSheet(
                     )
                 }
                 sections.isNotEmpty() -> {
-                    val annotated = remember(sections, selectedIndex) {
+                    val contentColor = MaterialTheme.colorScheme.onSurface
+                    val annotated = remember(sections, selectedIndex, contentColor) {
                         val section = sections[selectedIndex]
-                        markdownToAnnotatedString(section.header + "\n" + section.body)
+                        markdownToAnnotatedString(section.header + "\n" + section.body, contentColor)
                     }
                     SelectionContainer {
                         ClickableText(
