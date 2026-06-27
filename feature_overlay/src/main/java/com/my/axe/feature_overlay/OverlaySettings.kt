@@ -10,6 +10,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Opacity
 import androidx.compose.material.icons.filled.Scale
+import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -22,6 +23,7 @@ import com.my.axe.preference.Prefs
 import com.my.axe.resources.R
 import com.my.axe.ui.components.AppsItem
 import com.my.axe.ui.components.BackButton
+import com.my.axe.ui.components.SearchBar
 import com.my.axe.ui.components.Subtitle
 import com.my.axe.ui.components.preference.PreferenceSwitch
 
@@ -46,6 +48,8 @@ fun OverlaySettings(
         getInstalledApps(context, Prefs::isOverlayWhitelisted).sortedBy { !it.isChecked }
     }
     var whitelistedApps by remember { mutableStateOf(apps.associate { it.pkg to it.isChecked }) }
+    var searchText by remember { mutableStateOf("") }
+    var isSearchBarVisible by remember { mutableStateOf(false) }
 
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -53,6 +57,24 @@ fun OverlaySettings(
             LargeTopAppBar(
                 title = { Text(stringResource(R.string.overlay_settings)) },
                 navigationIcon = { BackButton { onBackPressed() } },
+                actions = {
+                    if (isSearchBarVisible) {
+                        Column(
+                            modifier = Modifier.padding(10.dp)
+                        ) {
+                            SearchBar(
+                                text = searchText,
+                                onTextChanged = { searchText = it },
+                                onClose = { isSearchBarVisible = false },
+                                placeholder = stringResource(id = R.string.search_placeholder)
+                            )
+                        }
+                    } else {
+                        IconButton(onClick = { isSearchBarVisible = !isSearchBarVisible }) {
+                            Icon(imageVector = Icons.Outlined.Search, contentDescription = "Search")
+                        }
+                    }
+                },
                 scrollBehavior = scrollBehavior
             )
         }
@@ -140,18 +162,23 @@ fun OverlaySettings(
                 item {
                     Subtitle(text = stringResource(R.string.overlay_whitelist_apps))
                 }
-                items(apps) { app ->
-                    AppsItem(
-                        name = app.name,
-                        pkg = app.pkg,
-                        isChecked = whitelistedApps[app.pkg] ?: false,
-                        onClick = {
-                            Prefs.saveOverlayWhitelist(app.pkg)
-                            whitelistedApps = whitelistedApps.toMutableMap().apply {
-                                this[app.pkg] = !this[app.pkg]!!
+                items(apps.size, key = { idx -> apps[idx].pkg }) { idx ->
+                    val app = apps[idx]
+                    if (searchText.isEmpty() || app.name.contains(searchText, ignoreCase = true) || app.pkg.contains(searchText, ignoreCase = true)) {
+                        AppsItem(
+                            name = app.name,
+                            pkg = app.pkg,
+                            isChecked = whitelistedApps[app.pkg] ?: false,
+                            onClick = {
+                                Prefs.saveOverlayWhitelist(app.pkg)
+                                whitelistedApps = whitelistedApps.toMutableMap().apply {
+                                    this[app.pkg] = !this[app.pkg]!!
+                                }
                             }
-                        }
-                    )
+                        )
+                    } else {
+                        Spacer(modifier = Modifier.height(0.dp))
+                    }
                 }
             }
         }
