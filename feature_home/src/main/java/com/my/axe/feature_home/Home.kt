@@ -135,7 +135,10 @@ fun Home(
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
-            ModalDrawerSheet(modifier = Modifier.width(260.dp)) {
+            ModalDrawerSheet(
+                modifier = Modifier.width(260.dp),
+                containerColor = MaterialTheme.colorScheme.surface,
+            ) {
                 if (componentName != null) {
                     SettingsDrawer(
                         user = user,
@@ -157,6 +160,10 @@ fun Home(
                 .nestedScroll(scrollBehavior.nestedScrollConnection),
             topBar = {
                 LargeTopAppBar(
+                    colors = TopAppBarDefaults.largeTopAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.surface,
+                        scrolledContainerColor = MaterialTheme.colorScheme.surface,
+                    ),
                     title = {
                         Text(
                             text = stringResource(id = R.string.welcome) + ", ${user?.globalName ?: user?.username ?: ""}",
