@@ -139,12 +139,10 @@ fun RpcSettings(onBackPressed: () -> Boolean) {
     var imgurClientId by remember { mutableStateOf(Prefs[Prefs.IMGUR_CLIENT_ID, Constants.IMGUR_CLIENT_ID]) }
 
     Scaffold(modifier = Modifier.fillMaxSize(), topBar = {
-        LargeTopAppBar(title = {
-            Text(
-                text = stringResource(id = R.string.settings),
-                style = MaterialTheme.typography.headlineLarge,
-            )
-        }, navigationIcon = { BackButton { onBackPressed() } })
+        TopAppBar(
+            title = { Text(stringResource(id = R.string.settings)) },
+            navigationIcon = { BackButton { onBackPressed() } }
+        )
     }) { paddingValues ->
         LazyColumn(modifier = Modifier.padding(paddingValues)) {
             item {

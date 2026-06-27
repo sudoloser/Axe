@@ -5,6 +5,7 @@
 - Replaced WebView-based changelog rendering with native Compose text for improved performance
 ### Added
 - Version selector dropdown to browse changelog history across releases
+- Search button to Overlay Settings
 
 # 6/26/2026 [v1.2.1]
 ### Fixed
