@@ -1,3 +1,11 @@
+# 6/27/2026 [v1.2.2]
+### Fixed
+- Hyperlinks in changelog rendering as garbled HTML instead of clickable links
+### Changed
+- Replaced WebView-based changelog rendering with native Compose text for improved performance
+### Added
+- Version selector dropdown to browse changelog history across releases
+
 # 6/26/2026 [v1.2.1]
 ### Fixed
 - JSON parsing memory issue [dead8309, 67503ca](https://github.com/dead8309/Kizzy/commit/67503ca)
