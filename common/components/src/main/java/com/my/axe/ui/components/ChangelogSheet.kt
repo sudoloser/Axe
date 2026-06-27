@@ -16,7 +16,7 @@ import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.DropdownMenu
@@ -295,7 +295,7 @@ fun ChangelogSheet(
                             )
                             Spacer(Modifier.width(2.dp))
                             Icon(
-                                imageVector = Icons.Default.KeyboardArrowDown,
+                                imageVector = Icons.Default.ArrowDropDown,
                                 contentDescription = "Select version",
                                 modifier = Modifier.size(18.dp),
                             )
