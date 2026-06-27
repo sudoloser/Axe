@@ -157,6 +157,10 @@ fun Home(
                 .nestedScroll(scrollBehavior.nestedScrollConnection),
             topBar = {
                 LargeTopAppBar(
+                    colors = TopAppBarDefaults.largeTopAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.surface,
+                        scrolledContainerColor = MaterialTheme.colorScheme.surface,
+                    ),
                     title = {
                         Text(
                             text = stringResource(id = R.string.welcome) + ", ${user?.globalName ?: user?.username ?: ""}",

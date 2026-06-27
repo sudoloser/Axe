@@ -148,7 +148,11 @@ class DelegatingDiscordWebSocket(
         logger.i("DelegatingGateway", "sendActivity() called")
         lastPresence = presence
         updateImplementation(recreateIfNull = true)
-        currentImplementation?.sendActivity(presence)
+        try {
+            currentImplementation?.sendActivity(presence)
+        } catch (e: Exception) {
+            logger.e("DelegatingGateway", "Failed to send activity: ${e.message}")
+        }
     }
 
     override fun isWebSocketConnected(): Boolean {

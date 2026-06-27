@@ -1,18 +1,7 @@
-/*
- *
- *  ******************************************************************
- *  *  * Copyright (C) 2022
- *  *  * AnimatedShimmer.kt is part of Kizzy
- *  *  *  and can not be copied and/or distributed without the express
- *  *  * permission of yzziK(Vaibhav)
- *  *  *****************************************************************
- *
- *
- */
-
 package com.my.axe.ui.components.shimmer
 
 import androidx.compose.animation.core.*
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
@@ -22,10 +11,11 @@ import androidx.compose.ui.graphics.Color
 fun AnimatedShimmer(
     content: @Composable ((Brush) -> Unit)
 ) {
+    val variant = MaterialTheme.colorScheme.surfaceVariant
     val shimmerColors = listOf(
-        Color.LightGray.copy(alpha = 0.6f),
-        Color.LightGray.copy(alpha = 0.2f),
-        Color.LightGray.copy(alpha = 0.6f),
+        variant.copy(alpha = 0.6f),
+        variant.copy(alpha = 0.2f),
+        variant.copy(alpha = 0.6f),
     )
 
     val transition = rememberInfiniteTransition()

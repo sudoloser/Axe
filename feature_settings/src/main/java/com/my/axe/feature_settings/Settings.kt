@@ -122,6 +122,7 @@ fun SettingsDrawer(
                         modifier = Modifier
                     )
                 }
+                /* TODO: Unhide when FAQ website is ready
                 item {
                     SettingsItemCard(
                         title = stringResource(id = R.string.drawer_faq),
@@ -130,6 +131,7 @@ fun SettingsDrawer(
                         uriHandler.openUri("https://kizzy.vercel.app/#FAQ")
                     }
                 }
+                */
                 /* TODO: Make this visible again when the Axe discord is created
                 item {
                     SettingsItemCard(
