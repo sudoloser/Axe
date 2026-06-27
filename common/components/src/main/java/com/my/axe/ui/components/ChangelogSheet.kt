@@ -58,6 +58,14 @@ private data class ChangelogSection(
     val displayName: String get() = header.removePrefix("# ").trim()
 }
 
+private data class MarkdownStyle(
+    val text: Color,
+    val link: Color,
+    val codeText: Color,
+    val codeBg: Color,
+    val quote: Color,
+)
+
 private fun parseSections(markdown: String): List<ChangelogSection> {
     val lines = markdown.lines()
     val sections = mutableListOf<ChangelogSection>()
@@ -113,30 +121,30 @@ private fun parseInline(markdown: String): List<TextRun> {
     return runs
 }
 
-private fun AnnotatedString.Builder.appendRun(run: TextRun) {
-    val style = SpanStyle(
+private fun AnnotatedString.Builder.appendRun(run: TextRun, style: MarkdownStyle) {
+    val span = SpanStyle(
         fontFamily = if (run.code) FontFamily.Monospace else null,
         fontWeight = if (run.bold) FontWeight.Bold else null,
         fontStyle = if (run.italic) FontStyle.Italic else null,
         color = when {
-            run.link != null -> Color(0xFF82B1FF)
-            run.code -> Color(0xFFE0E0E0)
+            run.link != null -> style.link
+            run.code -> style.codeText
             else -> Color.Unspecified
         },
-        background = if (run.code) Color(0xFF2D2D2D) else Color.Unspecified,
+        background = if (run.code) style.codeBg else Color.Unspecified,
         textDecoration = if (run.link != null) TextDecoration.Underline else null,
     )
     if (run.link != null) {
         pushStringAnnotation("URL", run.link)
-        withStyle(style) { append(run.text) }
+        withStyle(span) { append(run.text) }
         pop()
     } else {
-        withStyle(style) { append(run.text) }
+        withStyle(span) { append(run.text) }
     }
 }
 
-private fun markdownToAnnotatedString(markdown: String, defaultColor: Color): AnnotatedString = buildAnnotatedString {
-    withStyle(SpanStyle(color = defaultColor)) {
+private fun markdownToAnnotatedString(markdown: String, style: MarkdownStyle): AnnotatedString = buildAnnotatedString {
+    withStyle(SpanStyle(color = style.text)) {
         val lines = markdown.lines()
         var i = 0
         while (i < lines.size) {
@@ -156,8 +164,8 @@ private fun markdownToAnnotatedString(markdown: String, defaultColor: Color): An
                         SpanStyle(
                             fontFamily = FontFamily.Monospace,
                             fontSize = 14.sp,
-                            color = Color(0xFFE0E0E0),
-                            background = Color(0xFF2D2D2D),
+                            color = style.codeText,
+                            background = style.codeBg,
                         )
                     ) { append(code.joinToString("\n")) }
                     append("\n"); continue
@@ -168,21 +176,21 @@ private fun markdownToAnnotatedString(markdown: String, defaultColor: Color): An
                 }
 
                 line.startsWith("### ") -> {
-                    withStyle(SpanStyle(fontSize = 15.sp, fontWeight = FontWeight.Bold, color = Color.White)) {
+                    withStyle(SpanStyle(fontSize = 15.sp, fontWeight = FontWeight.Bold)) {
                         append(line.removePrefix("### "))
                     }
                     append("\n"); i++; continue
                 }
 
                 line.startsWith("## ") -> {
-                    withStyle(SpanStyle(fontSize = 17.sp, fontWeight = FontWeight.Bold, color = Color.White)) {
+                    withStyle(SpanStyle(fontSize = 17.sp, fontWeight = FontWeight.Bold)) {
                         append(line.removePrefix("## "))
                     }
                     append("\n"); i++; continue
                 }
 
                 line.startsWith("# ") -> {
-                    withStyle(SpanStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold, color = Color.White)) {
+                    withStyle(SpanStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold)) {
                         append(line.removePrefix("# "))
                     }
                     append("\n"); i++; continue
@@ -190,18 +198,18 @@ private fun markdownToAnnotatedString(markdown: String, defaultColor: Color): An
 
                 line.matches(Regex("""^\s*[-*+]\s+.*""")) -> {
                     append("  \u2022 ")
-                    parseInline(line.trimStart().substringAfter(" ").trim()).forEach { appendRun(it) }
+                    parseInline(line.trimStart().substringAfter(" ").trim()).forEach { appendRun(it, style) }
                     append("\n"); i++; continue
                 }
 
                 line.matches(Regex("""^\s*\d+\.\s+.*""")) -> {
                     append("  \u2022 ")
-                    parseInline(line.trimStart().substringAfter(".").trim()).forEach { appendRun(it) }
+                    parseInline(line.trimStart().substringAfter(".").trim()).forEach { appendRun(it, style) }
                     append("\n"); i++; continue
                 }
 
                 line.startsWith("> ") -> {
-                    withStyle(SpanStyle(fontStyle = FontStyle.Italic, color = Color(0xFF9E9E9E))) {
+                    withStyle(SpanStyle(fontStyle = FontStyle.Italic, color = style.quote)) {
                         append("  \u2502 ")
                         append(line.removePrefix("> "))
                     }
@@ -209,7 +217,7 @@ private fun markdownToAnnotatedString(markdown: String, defaultColor: Color): An
                 }
 
                 else -> {
-                    parseInline(line).forEach { appendRun(it) }
+                    parseInline(line).forEach { appendRun(it, style) }
                     append("\n"); i++; continue
                 }
             }
@@ -322,10 +330,19 @@ fun ChangelogSheet(
                     )
                 }
                 sections.isNotEmpty() -> {
-                    val contentColor = MaterialTheme.colorScheme.onSurface
-                    val annotated = remember(sections, selectedIndex, contentColor) {
+                    val colors = MaterialTheme.colorScheme
+                    val mdStyle = remember(colors) {
+                        MarkdownStyle(
+                            text = colors.onSurface,
+                            link = colors.primary,
+                            codeText = colors.onSurfaceVariant,
+                            codeBg = colors.surfaceVariant,
+                            quote = colors.onSurfaceVariant,
+                        )
+                    }
+                    val annotated = remember(sections, selectedIndex) {
                         val section = sections[selectedIndex]
-                        markdownToAnnotatedString(section.header + "\n" + section.body, contentColor)
+                        markdownToAnnotatedString(section.header + "\n" + section.body, mdStyle)
                     }
                     SelectionContainer {
                         ClickableText(
