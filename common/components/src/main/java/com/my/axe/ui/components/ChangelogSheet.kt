@@ -120,9 +120,9 @@ private fun AnnotatedString.Builder.appendRun(run: TextRun) {
         color = when {
             run.link != null -> Color(0xFF82B1FF)
             run.code -> Color(0xFFE0E0E0)
-            else -> null
+            else -> Color.Unspecified
         },
-        background = if (run.code) Color(0xFF2D2D2D) else null,
+        background = if (run.code) Color(0xFF2D2D2D) else Color.Unspecified,
         textDecoration = if (run.link != null) TextDecoration.Underline else null,
     )
     if (run.link != null) {
