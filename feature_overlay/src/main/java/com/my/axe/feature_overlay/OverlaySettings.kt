@@ -55,6 +55,10 @@ fun OverlaySettings(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             LargeTopAppBar(
+                colors = TopAppBarDefaults.largeTopAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    scrolledContainerColor = MaterialTheme.colorScheme.surface,
+                ),
                 title = { Text(stringResource(R.string.overlay_settings)) },
                 navigationIcon = { BackButton { onBackPressed() } },
                 actions = {

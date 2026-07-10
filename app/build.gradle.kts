@@ -44,7 +44,6 @@ android {
     }
 }
 dependencies {
-    implementation (libs.shizuku.provider)
     implementation (projects.data)
     implementation (projects.domain)
     implementation (projects.theme)

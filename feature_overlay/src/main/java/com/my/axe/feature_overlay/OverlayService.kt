@@ -40,7 +40,6 @@ import androidx.savedstate.SavedStateRegistryController
 import androidx.savedstate.SavedStateRegistryOwner
 import androidx.savedstate.setViewTreeSavedStateRegistryOwner
 import com.my.axe.feature_rpc_base.Constants
-import com.my.axe.feature_rpc_base.detection.ShizukuDetectionStrategy
 import com.my.axe.feature_rpc_base.detection.UsageStatsDetectionStrategy
 import com.my.axe.preference.Prefs
 import dagger.hilt.android.AndroidEntryPoint
@@ -259,12 +258,7 @@ class OverlayService : Service(), LifecycleOwner, ViewModelStoreOwner, SavedStat
     }
 
     private fun getForegroundPackage(): String? {
-        val useShizuku = Prefs[Prefs.USE_SHIZUKU, false]
-        return if (useShizuku) {
-            ShizukuDetectionStrategy().getForegroundApp()
-        } else {
-            UsageStatsDetectionStrategy(this).getForegroundApp()
-        }
+        return UsageStatsDetectionStrategy(this).getForegroundApp()
     }
 
     private fun createNotification(): Notification {

@@ -52,7 +52,6 @@
 ### Added
 - Floating Axe Overlay: Quick access to RPC controls (toggle service, switch presets, configure) while in other apps.
 - Per-App Custom RPC Configuration: Assign specific custom configs to individual apps.
-- Shizuku-Based App Detection: Faster and more accurate foreground detection (optional).
 - New release workflow for automated building, signing, and uploading artifacts.
 - Preview button for per-app custom RPC configurations.
 - Long-press to edit assigned custom RPC configs directly from the app list.

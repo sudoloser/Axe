@@ -228,10 +228,6 @@
     <string name="show_artist_as_title">Show Artist as Title</string>
     <string name="none_default">None (Use Default)</string>
     <string name="custom_rpc_config">Custom RPC Config</string>
-    <string name="shizuku_detection">Use Shizuku for better app detection</string>
-    <string name="shizuku_not_running">Shizuku is not running</string>
-    <string name="shizuku_connected">Shizuku: Connected</string>
-    <string name="shizuku_open">Open Shizuku</string>
     <string name="main_floatingOverlay">Floating Overlay</string>
     <string name="main_floatingOverlay_details">Floating controls for quick RPC management</string>
     <string name="overlay_settings">Overlay Settings</string>

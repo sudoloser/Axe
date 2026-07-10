@@ -253,7 +253,6 @@ object Prefs {
     const val EXPERIMENTAL_RPC_SHOW_ALBUM_TITLE = "experimental_rpc_show_album_title"
     const val EXPERIMENTAL_RPC_ENABLE_TIMESTAMPS = "experimental_rpc_enable_timestamps"
     const val EXPERIMENTAL_RPC_HIDE_ON_PAUSE = "experimental_rpc_hide_on_pause"
-    const val USE_SHIZUKU = "use_shizuku"
     const val USE_REMOTE_GATEWAY = "use_remote_gateway"
     const val REMOTE_GATEWAY_URL = "remote_gateway_url"
     const val REMOTE_GATEWAY_SIGNATURE = "remote_gateway_signature"
