@@ -89,7 +89,7 @@ fun Appearance(
             BackButton {
                 onBackPressed()
             }
-        })
+        }, scrolledContainerColor = MaterialTheme.colorScheme.surface)
     }) {
         Column(
             Modifier.padding(it),

@@ -38,7 +38,8 @@ fun Language(
                     BackButton {
                         onBackPressed()
                     }
-                }
+                },
+                scrolledContainerColor = MaterialTheme.colorScheme.surface
             )
         }
     ) {

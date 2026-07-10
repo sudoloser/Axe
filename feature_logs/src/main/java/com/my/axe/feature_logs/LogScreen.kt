@@ -79,7 +79,9 @@ import com.my.axe.ui.components.KSwitch
 import com.my.axe.ui.components.SearchBar
 import com.my.axe.ui.theme.LogColors.color
 import java.text.DateFormat
+import java.text.SimpleDateFormat
 import java.util.Date
+import java.util.Locale
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -217,6 +219,26 @@ fun ToolBar(viewModel: LogsViewModel) {
                                 )
                             }
                         })
+                    DropdownMenuItem(
+                        text = {
+                            Text(
+                                text = stringResource(R.string.copy_logs),
+                                style = MaterialTheme.typography.bodyLarge
+                            )
+                        },
+                        onClick = {
+                            val clipboardManager = LocalClipboardManager.current
+                            val ctx = LocalContext.current
+                            val logs = viewModel.filter()
+                            val dateFormat = SimpleDateFormat("h:mm:ssa", Locale.US)
+                            val text = logs.joinToString("\n") { event ->
+                                "[${event.level.name.first()}] ${dateFormat.format(Date(event.createdAt))} ${event.tag}: ${event.text}"
+                            }
+                            clipboardManager.setText(AnnotatedString(text))
+                            Toast.makeText(ctx, R.string.copied_to_clipboard, Toast.LENGTH_SHORT).show()
+                            menuClicked = false
+                        }
+                    )
                     DropdownMenuItem(
                         text = {
                             Text(

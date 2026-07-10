@@ -58,7 +58,8 @@ fun About(
                         style = MaterialTheme.typography.headlineLarge,
                     )
                 },
-                navigationIcon = { BackButton{ onBackPressed() } }
+                navigationIcon = { BackButton{ onBackPressed() } },
+                scrolledContainerColor = MaterialTheme.colorScheme.surface
             )
         }
     ) {

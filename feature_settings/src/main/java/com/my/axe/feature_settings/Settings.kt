@@ -3,6 +3,9 @@ package com.my.axe.feature_settings
 import android.app.StatusBarManager
 import android.content.ComponentName
 import android.os.Build
+import android.widget.Toast
+import coil.Coil
+import coil.imageLoader
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeOut
@@ -159,6 +162,18 @@ fun SettingsDrawer(
                         icon = Icons.Outlined.BugReport,
                     ) {
                         onReportBug()
+                    }
+                }
+                item {
+                    val context = LocalContext.current
+                    SettingsItemCard(
+                        title = stringResource(id = R.string.clear_cache),
+                        icon = Icons.Outlined.DeleteSweep,
+                    ) {
+                        Coil.imageLoader(context).memoryCache?.clear()
+                        Coil.imageLoader(context).diskCache?.clear()
+                        context.cacheDir.deleteRecursively()
+                        Toast.makeText(context, R.string.cache_cleared, Toast.LENGTH_SHORT).show()
                     }
                 }
                 item {

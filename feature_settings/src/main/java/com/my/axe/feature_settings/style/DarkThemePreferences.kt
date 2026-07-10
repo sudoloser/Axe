@@ -58,7 +58,8 @@ fun DarkThemePreferences(onBackPressed: () -> Unit) {
                     BackButton(modifier = Modifier.padding(start = 8.dp)) {
                         onBackPressed()
                     }
-                }, scrollBehavior = scrollBehavior
+                }, scrollBehavior = scrollBehavior,
+                scrolledContainerColor = MaterialTheme.colorScheme.surface
             )
         }, content = {
             LazyColumn(modifier = Modifier.padding(it)) {
