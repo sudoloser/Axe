@@ -178,7 +178,7 @@ fun BugReportSheet(
                             },
                             modifier = Modifier
                                 .align(Alignment.TopEnd)
-                                .size(24.dp)
+                                .size(18.dp)
                                 .background(
                                     Color.Black.copy(alpha = 0.6f),
                                     CircleShape,
@@ -189,7 +189,7 @@ fun BugReportSheet(
                                 Icons.Filled.Close,
                                 contentDescription = "Remove",
                                 tint = Color.White,
-                                modifier = Modifier.size(16.dp),
+                                modifier = Modifier.size(10.dp),
                             )
                         }
                     }

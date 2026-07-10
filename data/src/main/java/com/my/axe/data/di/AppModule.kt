@@ -96,10 +96,8 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideCdnService(
-        client: HttpClient
-    ): CdnService {
-        return CdnService(client)
+    fun provideCdnService(): CdnService {
+        return CdnService()
     }
 
     @Provides

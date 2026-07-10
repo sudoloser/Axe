@@ -13,7 +13,6 @@ import com.my.axe.data.remote.WebhookPayload
 import com.my.axe.data.remote.WebhookService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
-import io.ktor.client.statement.bodyAsText
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -87,8 +86,7 @@ class BugReportViewModel @Inject constructor(
                 }
 
                 response.fold(
-                    onSuccess = { httpResponse ->
-                        val body = withContext(Dispatchers.IO) { httpResponse.bodyAsText() }
+                    onSuccess = { body ->
                         val parsed = json.decodeFromString<CdnUploadResponse>(body)
                         if (parsed.success && parsed.url != null) {
                             imageUrls.add("https://cdn.qzz.io${parsed.url}")
