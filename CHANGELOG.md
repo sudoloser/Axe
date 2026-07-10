@@ -1,3 +1,15 @@
+# 7/10/2026 [v1.3.0]
+### Added
+- Bug Report Form: In-app bottom sheet to submit bug reports with screenshots via Discord webhook
+- Image Upload: Images are now uploaded through Imgur CDN using OkHttp engine for reliable TLS support
+### Fixed
+- App list flickering: Fixed constant placeholder flashing in Floating Overlay and App Detection app lists by caching app icon references
+- Inconsistent top bar styling: Custom RPC, Media RPC, Experimental RPC, App Detection, Floating Overlay, and Credits screens now use consistent `surface` color matching the Home screen
+- Changelog dropdown arrow icon for proper theming support
+- Smooth changelog height animation: Loading-to-content transition now animates smoothly via `animateContentSize`
+### Removed
+- Shizuku: Removed all Shizuku-based app detection code, including the detection strategy, permissions, provider, settings UI, preferences key, and dependencies
+
 # 6/27/2026 [v1.2.2]
 ### Fixed
 - Hyperlinks in changelog rendering as garbled HTML instead of clickable links

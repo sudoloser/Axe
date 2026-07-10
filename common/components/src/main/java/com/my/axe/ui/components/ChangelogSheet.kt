@@ -1,5 +1,6 @@
 package com.my.axe.ui.components
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -270,6 +271,7 @@ fun ChangelogSheet(
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)
                 .padding(bottom = 32.dp)
+                .animateContentSize(),
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -322,7 +324,7 @@ fun ChangelogSheet(
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(300.dp),
+                            .height(200.dp),
                         contentAlignment = Alignment.Center,
                     ) {
                         CircularProgressIndicator()
