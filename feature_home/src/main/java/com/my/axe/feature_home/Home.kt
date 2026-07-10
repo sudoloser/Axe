@@ -370,9 +370,9 @@ fun HomeScreenPreview() {
         navigateToLanguages = { },
         navigateToAbout = { },
         navigateToRpcSettings = { },
-        navigateToLogsScreen = { }) {
-
-    }
+        navigateToLogsScreen = {},
+        bugReportViewModel = null,
+    )
 }
 
 val fakeFeatures = listOf(
