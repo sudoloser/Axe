@@ -217,4 +217,14 @@
     <string name="set_imgur_client_id">Set Imgur Client ID</string>
     <string name="set_imgur_client_id_desc">If images aren\'t showing using Imgur, you can try setting your own Client ID</string>
     <string name="show_song_as_title">Show Song as Title</string>
+    <string name="clear_cache">캐시 지우기</string>
+    <string name="clear_cache_desc">이미지 및 앱 캐시 지우기</string>
+    <string name="share_logs">로그 공유</string>
+    <string name="cache_cleared">캐시가 지워졌습니다</string>
+    <string name="general">일반</string>
+    <string name="advanced">고급</string>
+    <string name="back">뒤로</string>
+    <string name="submit_bug_report">버그 신고 제출</string>
+    <string name="submitting">제출 중…</string>
+    <string name="report_a_bug">버그 신고</string>
 </resources>

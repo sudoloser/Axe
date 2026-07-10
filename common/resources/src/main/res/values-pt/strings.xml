@@ -216,4 +216,14 @@
     <string name="set_imgur_client_id">Set Imgur Client ID</string>
     <string name="set_imgur_client_id_desc">If images aren\'t showing using Imgur, you can try setting your own Client ID</string>
     <string name="show_song_as_title">Show Song as Title</string>
+    <string name="clear_cache">Limpar cache</string>
+    <string name="clear_cache_desc">Limpar cache de imagens e aplicativos</string>
+    <string name="share_logs">Compartilhar logs</string>
+    <string name="cache_cleared">Cache limpo</string>
+    <string name="general">Geral</string>
+    <string name="advanced">Avançado</string>
+    <string name="back">Voltar</string>
+    <string name="submit_bug_report">Enviar relatório de bug</string>
+    <string name="submitting">Enviando…</string>
+    <string name="report_a_bug">Relatar um bug</string>
 </resources>

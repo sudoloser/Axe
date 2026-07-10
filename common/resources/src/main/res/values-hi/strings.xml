@@ -217,4 +217,14 @@
     <string name="set_imgur_client_id">Imgur Client ID सेट करे</string>
     <string name="set_imgur_client_id_desc">अगर  पिक्चर नहीं दिख रहे है तो आप अपने Imgur Client ID सेट कर सकते है</string>
     <string name="show_song_as_title">Show Song as Title</string>
+    <string name="clear_cache">कैश साफ़ करें</string>
+    <string name="clear_cache_desc">इमेज और ऐप कैश साफ़ करें</string>
+    <string name="share_logs">लॉग साझा करें</string>
+    <string name="cache_cleared">कैश साफ़ हो गया</string>
+    <string name="general">सामान्य</string>
+    <string name="advanced">उन्नत</string>
+    <string name="back">वापस</string>
+    <string name="submit_bug_report">बग रिपोर्ट सबमिट करें</string>
+    <string name="submitting">सबमिट किया जा रहा है…</string>
+    <string name="report_a_bug">बग रिपोर्ट करें</string>
 </resources>

@@ -216,4 +216,14 @@
     <string name="set_imgur_client_id">Set Imgur Client ID</string>
     <string name="set_imgur_client_id_desc">If images aren\'t showing using Imgur, you can try setting your own Client ID</string>
     <string name="show_song_as_title">Show Song as Title</string>
+    <string name="clear_cache">キャッシュをクリア</string>
+    <string name="clear_cache_desc">画像とアプリのキャッシュをクリア</string>
+    <string name="share_logs">ログを共有</string>
+    <string name="cache_cleared">キャッシュをクリアしました</string>
+    <string name="general">一般</string>
+    <string name="advanced">高度</string>
+    <string name="back">戻る</string>
+    <string name="submit_bug_report">バグ報告を送信</string>
+    <string name="submitting">送信中…</string>
+    <string name="report_a_bug">バグを報告する</string>
 </resources>

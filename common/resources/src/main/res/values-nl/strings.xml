@@ -216,4 +216,14 @@
     <string name="set_imgur_client_id">Set Imgur Client ID</string>
     <string name="set_imgur_client_id_desc">If images aren\'t showing using Imgur, you can try setting your own Client ID</string>
     <string name="show_song_as_title">Show Song as Title</string>
+    <string name="clear_cache">Cache wissen</string>
+    <string name="clear_cache_desc">Afbeeldingen en app-cache wissen</string>
+    <string name="share_logs">Logs delen</string>
+    <string name="cache_cleared">Cache gewist</string>
+    <string name="general">Algemeen</string>
+    <string name="advanced">Geavanceerd</string>
+    <string name="back">Terug</string>
+    <string name="submit_bug_report">Bugrapport indienen</string>
+    <string name="submitting">Bezig met verzenden…</string>
+    <string name="report_a_bug">Meld een bug</string>
 </resources>

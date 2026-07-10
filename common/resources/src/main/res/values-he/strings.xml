@@ -217,5 +217,14 @@
     <string name="set_imgur_client_id">Set Imgur Client ID</string>
     <string name="set_imgur_client_id_desc">If images aren\'t showing using Imgur, you can try setting your own Client ID</string>
     <string name="show_song_as_title">Show Song as Title</string>
-
+    <string name="clear_cache">נקה מטמון</string>
+    <string name="clear_cache_desc">נקה מטמון תמונות ואפליקציה</string>
+    <string name="share_logs">שתף יומנים</string>
+    <string name="cache_cleared">המטמון נוקה</string>
+    <string name="general">כללי</string>
+    <string name="advanced">מתקדם</string>
+    <string name="back">חזור</string>
+    <string name="submit_bug_report">שלח דוח באג</string>
+    <string name="submitting">שולח…</string>
+    <string name="report_a_bug">דווח על באג</string>
 </resources>

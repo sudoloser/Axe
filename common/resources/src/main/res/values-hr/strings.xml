@@ -217,4 +217,14 @@
     <string name="set_imgur_client_id">Set Imgur Client ID</string>
     <string name="set_imgur_client_id_desc">If images aren\'t showing using Imgur, you can try setting your own Client ID</string>
     <string name="show_song_as_title">Show Song as Title</string>
+    <string name="clear_cache">Očisti predmemoriju</string>
+    <string name="clear_cache_desc">Očisti predmemoriju slika i aplikacije</string>
+    <string name="share_logs">Podijeli dnevnike</string>
+    <string name="cache_cleared">Predmemorija očišćena</string>
+    <string name="general">Općenito</string>
+    <string name="advanced">Napredno</string>
+    <string name="back">Natrag</string>
+    <string name="submit_bug_report">Pošalji prijavu greške</string>
+    <string name="submitting">Slanje…</string>
+    <string name="report_a_bug">Prijavi grešku</string>
 </resources>

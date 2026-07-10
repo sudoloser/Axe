@@ -155,7 +155,7 @@ fun SettingsDrawer(
                 }
                 item {
                     SettingsItemCard(
-                        title = "Report a Bug",
+                        title = stringResource(id = R.string.report_a_bug),
                         icon = Icons.Outlined.BugReport,
                     ) {
                         onReportBug()

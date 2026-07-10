@@ -255,4 +255,7 @@
     <string name="remote_gateway_confirm_placeholder">I UNDERSTAND THE RISKS</string>
     <string name="remote_gateway_url">Server URL</string>
     <string name="remote_gateway_signature">App Signature</string>
+    <string name="submit_bug_report">Submit Bug Report</string>
+    <string name="submitting">Submitting…</string>
+    <string name="report_a_bug">Report a Bug</string>
 </resources>

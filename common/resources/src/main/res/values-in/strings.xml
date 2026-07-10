@@ -217,4 +217,14 @@
     <string name="set_imgur_client_id">Set Imgur Client ID</string>
     <string name="set_imgur_client_id_desc">If images aren\'t showing using Imgur, you can try setting your own Client ID</string>
     <string name="show_song_as_title">Show Song as Title</string>
+    <string name="clear_cache">Bersihkan Cache</string>
+    <string name="clear_cache_desc">Bersihkan cache gambar dan aplikasi</string>
+    <string name="share_logs">Bagikan Log</string>
+    <string name="cache_cleared">Cache dibersihkan</string>
+    <string name="general">Umum</string>
+    <string name="advanced">Lanjutan</string>
+    <string name="back">Kembali</string>
+    <string name="submit_bug_report">Kirim Laporan Bug</string>
+    <string name="submitting">Mengirim…</string>
+    <string name="report_a_bug">Laporkan Bug</string>
 </resources>
