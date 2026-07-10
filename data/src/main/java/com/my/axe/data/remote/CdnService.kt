@@ -8,6 +8,8 @@ import io.ktor.client.request.setBody
 import io.ktor.client.request.url
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.HttpHeaders
+import okhttp3.Protocol
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class CdnService @Inject constructor() {
@@ -15,9 +17,10 @@ class CdnService @Inject constructor() {
     private val client = HttpClient(OkHttp) {
         engine {
             config {
-                connectTimeout(30, java.util.concurrent.TimeUnit.SECONDS)
-                readTimeout(30, java.util.concurrent.TimeUnit.SECONDS)
-                writeTimeout(30, java.util.concurrent.TimeUnit.SECONDS)
+                connectTimeout(30, TimeUnit.SECONDS)
+                readTimeout(30, TimeUnit.SECONDS)
+                writeTimeout(30, TimeUnit.SECONDS)
+                protocols(listOf(Protocol.HTTP_1_1))
             }
         }
     }
