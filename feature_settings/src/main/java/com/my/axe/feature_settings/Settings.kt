@@ -56,7 +56,8 @@ fun SettingsDrawer(
     Surface(
         modifier = Modifier
             .fillMaxHeight()
-            .width(260.dp)
+            .width(260.dp),
+        color = MaterialTheme.colorScheme.surface,
     ) {
         Column(
             modifier = Modifier.padding(15.dp)
@@ -118,14 +119,6 @@ fun SettingsDrawer(
                     HorizontalDivider()
                 }
                 item {
-                    SettingsItemCard(
-                        title = "Report a Bug",
-                        icon = Icons.Outlined.BugReport,
-                    ) {
-                        onReportBug()
-                    }
-                }
-                item {
                     Subtitle(
                         text = stringResource(id = R.string.drawer_subtitle_help),
                         modifier = Modifier
@@ -158,6 +151,14 @@ fun SettingsDrawer(
                         icon = Icons.Outlined.Info
                     ) {
                         navigateToAbout()
+                    }
+                }
+                item {
+                    SettingsItemCard(
+                        title = "Report a Bug",
+                        icon = Icons.Outlined.BugReport,
+                    ) {
+                        onReportBug()
                     }
                 }
                 item {

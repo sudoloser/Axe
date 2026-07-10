@@ -140,7 +140,10 @@ fun Home(
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
-            ModalDrawerSheet(modifier = Modifier.width(260.dp)) {
+            ModalDrawerSheet(
+                modifier = Modifier.width(260.dp),
+                drawerContainerColor = MaterialTheme.colorScheme.surface,
+            ) {
                 if (componentName != null) {
                     SettingsDrawer(
                         user = user,
