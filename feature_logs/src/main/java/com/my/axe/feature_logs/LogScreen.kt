@@ -147,6 +147,8 @@ fun ToolBar(viewModel: LogsViewModel) {
     var menuClicked by remember {
         mutableStateOf(false)
     }
+    val clipboardManager = LocalClipboardManager.current
+    val ctx = LocalContext.current
     TopAppBar(
         title = {
             if (viewModel.isSearchBarVisible.value) {
@@ -227,8 +229,6 @@ fun ToolBar(viewModel: LogsViewModel) {
                             )
                         },
                         onClick = {
-                            val clipboardManager = LocalClipboardManager.current
-                            val ctx = LocalContext.current
                             val logs = viewModel.filter()
                             val dateFormat = SimpleDateFormat("h:mm:ssa", Locale.US)
                             val text = logs.joinToString("\n") { event ->
