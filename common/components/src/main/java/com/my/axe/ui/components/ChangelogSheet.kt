@@ -1,6 +1,6 @@
 package com.my.axe.ui.components
 
-import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -270,8 +270,7 @@ fun ChangelogSheet(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)
-                .padding(bottom = 32.dp)
-                .animateContentSize(),
+                .padding(bottom = 32.dp),
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -319,50 +318,58 @@ fun ChangelogSheet(
 
             Spacer(Modifier.height(16.dp))
 
-            when {
-                isLoading -> {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(200.dp),
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        CircularProgressIndicator()
-                    }
-                }
-                errorMessage != null -> {
-                    Text(
-                        text = errorMessage ?: "",
-                        color = MaterialTheme.colorScheme.error,
-                        modifier = Modifier.padding(vertical = 16.dp),
-                    )
-                }
-                sections.isNotEmpty() -> {
-                    val colors = MaterialTheme.colorScheme
-                    val mdStyle = remember(colors) {
-                        MarkdownStyle(
-                            text = colors.onSurface,
-                            link = colors.primary,
-                            codeText = colors.onSurfaceVariant,
-                            codeBg = colors.surfaceVariant,
-                            quote = colors.onSurfaceVariant,
-                        )
-                    }
-                    val annotated = remember(sections, selectedIndex) {
-                        val section = sections[selectedIndex]
-                        markdownToAnnotatedString(section.header + "\n" + section.body, mdStyle)
-                    }
-                    SelectionContainer {
-                        ClickableText(
-                            text = annotated,
-                            onClick = { offset ->
-                                annotated.getStringAnnotations("URL", offset, offset)
-                                    .firstOrNull()?.let { uriHandler.openUri(it.item) }
-                            },
+            val contentKey = when {
+                isLoading -> "loading"
+                errorMessage != null -> "error"
+                else -> "content"
+            }
+
+            Crossfade(targetState = contentKey) {
+                when (it) {
+                    "loading" -> {
+                        Box(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .verticalScroll(scrollState),
+                                .height(200.dp),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            CircularProgressIndicator()
+                        }
+                    }
+                    "error" -> {
+                        Text(
+                            text = errorMessage ?: "",
+                            color = MaterialTheme.colorScheme.error,
+                            modifier = Modifier.padding(vertical = 16.dp),
                         )
+                    }
+                    else -> {
+                        val colors = MaterialTheme.colorScheme
+                        val mdStyle = remember(colors) {
+                            MarkdownStyle(
+                                text = colors.onSurface,
+                                link = colors.primary,
+                                codeText = colors.onSurfaceVariant,
+                                codeBg = colors.surfaceVariant,
+                                quote = colors.onSurfaceVariant,
+                            )
+                        }
+                        val annotated = remember(sections, selectedIndex) {
+                            val section = sections[selectedIndex]
+                            markdownToAnnotatedString(section.header + "\n" + section.body, mdStyle)
+                        }
+                        SelectionContainer {
+                            ClickableText(
+                                text = annotated,
+                                onClick = { offset ->
+                                    annotated.getStringAnnotations("URL", offset, offset)
+                                        .firstOrNull()?.let { uriHandler.openUri(it.item) }
+                                },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .verticalScroll(scrollState),
+                            )
+                        }
                     }
                 }
             }
