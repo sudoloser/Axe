@@ -13,6 +13,7 @@
 package com.my.axe.feature_logs
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.icu.text.SimpleDateFormat
 import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -147,7 +148,6 @@ fun ToolBar(viewModel: LogsViewModel) {
     var menuClicked by remember {
         mutableStateOf(false)
     }
-    val clipboardManager = LocalClipboardManager.current
     val ctx = LocalContext.current
     TopAppBar(
         title = {
@@ -224,7 +224,7 @@ fun ToolBar(viewModel: LogsViewModel) {
                     DropdownMenuItem(
                         text = {
                             Text(
-                                text = stringResource(R.string.copy_logs),
+                                text = stringResource(R.string.share_logs),
                                 style = MaterialTheme.typography.bodyLarge
                             )
                         },
@@ -234,8 +234,11 @@ fun ToolBar(viewModel: LogsViewModel) {
                             val text = logs.joinToString("\n") { event ->
                                 "[${event.level.name.first()}] ${dateFormat.format(Date(event.createdAt))} ${event.tag}: ${event.text}"
                             }
-                            clipboardManager.setText(AnnotatedString(text))
-                            Toast.makeText(ctx, R.string.copied_to_clipboard, Toast.LENGTH_SHORT).show()
+                            val intent = Intent(Intent.ACTION_SEND).apply {
+                                type = "text/plain"
+                                putExtra(Intent.EXTRA_TEXT, text)
+                            }
+                            ctx.startActivity(Intent.createChooser(intent, null))
                             menuClicked = false
                         }
                     )

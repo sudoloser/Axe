@@ -1,7 +1,7 @@
 # 7/10/2026 [v1.3.1]
 ### Added
-- Copy Logs: Copy all logs to clipboard from the logs screen dropdown menu
-- Clear Cache: Clear image and app cache from the settings drawer
+- Share Logs: Share all logs from the logs screen dropdown menu
+- Clear Cache: Clear image and app cache from advanced settings
 - Default progress bars: Timestamps now enabled by default on Media RPC
 ### Credits
 - [UnpackedX](https://codeberg.org/UnpackedX/Kizzey)

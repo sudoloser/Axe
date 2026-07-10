@@ -128,7 +128,7 @@
     <string name="request_for_notification_access">Notification Access is needed for app to extract media information.</string>
     <string name="clear_cache">Clear Cache</string>
     <string name="clear_cache_desc">Clear image and app cache</string>
-    <string name="copy_logs">Copy Logs</string>
+    <string name="share_logs">Share Logs</string>
     <string name="cache_cleared">Cache cleared</string>
     <string name="general">General</string>
     <string name="advanced">Advanced</string>
