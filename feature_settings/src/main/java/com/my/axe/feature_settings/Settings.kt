@@ -50,6 +50,7 @@ fun SettingsDrawer(
     navigateToAbout: () -> Unit,
     navigateToRpcSettings: () -> Unit,
     navigateToLogsScreen: () -> Unit,
+    onReportBug: () -> Unit = {},
 ) {
     val uriHandler = LocalUriHandler.current
     Surface(
@@ -115,6 +116,14 @@ fun SettingsDrawer(
                 }
                 item {
                     HorizontalDivider()
+                }
+                item {
+                    SettingsItemCard(
+                        title = "Report a Bug",
+                        icon = Icons.Outlined.BugReport,
+                    ) {
+                        onReportBug()
+                    }
                 }
                 item {
                     Subtitle(
