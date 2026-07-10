@@ -41,7 +41,7 @@ import com.my.axe.resources.R
 import com.my.axe.ui.components.Subtitle
 import com.my.axe.ui.components.chips
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, coil.annotation.ExperimentalCoilApi::class)
 @Composable
 fun SettingsDrawer(
     user: User?,
@@ -168,7 +168,7 @@ fun SettingsDrawer(
                     val context = LocalContext.current
                     SettingsItemCard(
                         title = stringResource(id = R.string.clear_cache),
-                        icon = Icons.Outlined.DeleteSweep,
+                        icon = Icons.Outlined.Delete,
                     ) {
                         Coil.imageLoader(context).memoryCache?.clear()
                         Coil.imageLoader(context).diskCache?.clear()

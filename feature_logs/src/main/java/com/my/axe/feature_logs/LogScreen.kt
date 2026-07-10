@@ -79,7 +79,7 @@ import com.my.axe.ui.components.KSwitch
 import com.my.axe.ui.components.SearchBar
 import com.my.axe.ui.theme.LogColors.color
 import java.text.DateFormat
-import java.text.SimpleDateFormat
+
 import java.util.Date
 import java.util.Locale
 
