@@ -172,24 +172,22 @@ fun BugReportSheet(
                                 ),
                             contentScale = ContentScale.Crop,
                         )
-                        IconButton(
-                            onClick = {
-                                selectedImageUris.remove(uri)
-                            },
+                        Box(
                             modifier = Modifier
                                 .align(Alignment.TopEnd)
-                                .size(18.dp)
-                                .background(
-                                    Color.Black.copy(alpha = 0.6f),
-                                    CircleShape,
-                                ),
-                            enabled = !state.isSubmitting,
+                                .size(20.dp)
+                                .clip(CircleShape)
+                                .background(Color.Black.copy(alpha = 0.6f))
+                                .clickable(enabled = !state.isSubmitting) {
+                                    selectedImageUris.remove(uri)
+                                },
+                            contentAlignment = Alignment.Center,
                         ) {
                             Icon(
                                 Icons.Filled.Close,
                                 contentDescription = "Remove",
                                 tint = Color.White,
-                                modifier = Modifier.size(10.dp),
+                                modifier = Modifier.size(12.dp),
                             )
                         }
                     }

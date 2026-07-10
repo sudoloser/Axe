@@ -28,6 +28,7 @@ dependencies {
     implementation (projects.gateway)
     implementation (libs.mmkv)
     implementation (libs.blankj.utilcodex)
+    implementation (libs.okhttp)
     testImplementation(libs.junit)
 }
 
