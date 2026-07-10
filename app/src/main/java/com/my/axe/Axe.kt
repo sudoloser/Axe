@@ -112,26 +112,21 @@ internal fun ComponentActivity.axe(
                     })
             }
             animatedComposable(Routes.HOME) {
-                val release = Prefs.getSavedLatestRelease()
                 val user = Prefs.getUser()
                 val ctx = LocalContext.current
                 val viewModel by viewModels<HomeScreenViewModel>()
                 val bugReportViewModel by viewModels<BugReportViewModel>()
                 val state = viewModel.aboutScreenState.collectAsState().value
-                val showBadge = release
-                    ?.toVersion()
-                    ?.whetherNeedUpdate(BuildConfig.VERSION_NAME.toVersion())
-                    ?: false
+                val release = Prefs.getSavedLatestRelease()
+                LaunchedEffect(Unit) {
+                    if (release != null && release.toVersion() > BuildConfig.VERSION_NAME.toVersion()) {
+                        viewModel.setReleaseFromPrefs(release)
+                    } else {
+                        viewModel.getLatestUpdate()
+                    }
+                }
                 Home(
                     state = state,
-                    checkForUpdates = {
-                        if (release != null && release.toVersion() > BuildConfig.VERSION_NAME.toVersion()) {
-                            viewModel.setReleaseFromPrefs(release)
-                        } else {
-                            viewModel.getLatestUpdate()
-                        }
-                    },
-                    showBadge = showBadge,
                     features = homeFeaturesProvider(
                         navigateTo = { navController.navigate(it) },
                         hasUsageAccess = usageAccessStatus,

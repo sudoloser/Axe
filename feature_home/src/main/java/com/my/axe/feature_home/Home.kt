@@ -14,13 +14,10 @@ package com.my.axe.feature_home
 
 import android.content.ComponentName
 import android.os.Build
-import android.widget.Toast
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -31,9 +28,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.outlined.Menu
 import androidx.compose.material.icons.outlined.Person
-import androidx.compose.material.icons.outlined.Update
-import androidx.compose.material3.Badge
-import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -68,7 +62,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.compose.LocalLifecycleOwner
-import androidx.compose.runtime.collectAsState
 import coil.compose.AsyncImage
 import com.my.axe.domain.model.toVersion
 import com.my.axe.domain.model.user.User
@@ -77,7 +70,6 @@ import com.my.axe.feature_home.feature.HomeFeature
 import com.my.axe.feature_home.feature.ToolTipContent
 import com.my.axe.feature_rpc_base.services.AxeTileService
 import com.my.axe.feature_settings.SettingsDrawer
-import com.my.axe.preference.AppSettingsStateFlow
 import com.my.axe.resources.R
 import com.my.axe.ui.components.ChipSection
 import com.my.axe.ui.components.ChangelogSheet
@@ -88,8 +80,6 @@ import kotlinx.coroutines.launch
 @Composable
 fun Home(
     state: HomeScreenState,
-    checkForUpdates: () -> Unit,
-    showBadge: Boolean,
     features: List<HomeFeature>,
     user: User?,
     componentName: ComponentName? = null,
@@ -101,21 +91,19 @@ fun Home(
     navigateToLogsScreen: () -> Unit,
     bugReportViewModel: BugReportViewModel? = null,
 ) {
-    val ctx = LocalContext.current
-
     var timestamp by remember { mutableLongStateOf(System.currentTimeMillis()) }
     var homeItems by remember(timestamp) {
         mutableStateOf(features.map { feature ->
             feature.copy(shape = RoundedCornerShape(24.dp))
         })
     }
-    var showUpdateDialog by remember {
-        mutableStateOf(false)
-    }
     var showChangelogSheet by remember {
         mutableStateOf(false)
     }
     var showBugReportSheet by remember {
+        mutableStateOf(false)
+    }
+    var hasShownUpdateDialog by remember {
         mutableStateOf(false)
     }
     val drawerState = rememberDrawerState(DrawerValue.Closed)
@@ -196,48 +184,6 @@ fun Home(
                                 tint = MaterialTheme.colorScheme.onSurface
                             )
                         }
-                        if (showBadge) {
-                            BadgedBox(
-                                badge = {
-                                    Badge(
-                                        modifier = Modifier
-                                            .offset(8.dp, (-14).dp)
-                                            .size(8.dp)
-                                            .clip(CircleShape),
-                                        containerColor = MaterialTheme.colorScheme.error,
-                                        contentColor = MaterialTheme.colorScheme.onError,
-                                    )
-                                }
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Outlined.Update,
-                                    contentDescription = "Update",
-                                    modifier = Modifier.clickable {
-                                        Toast.makeText(
-                                            ctx,
-                                            ctx.getString(R.string.update_check_for_update),
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                        checkForUpdates()
-                                        showUpdateDialog = true
-                                    }
-                                )
-                            }
-                        } else {
-                            Icon(
-                                imageVector = Icons.Outlined.Update,
-                                contentDescription = "Update",
-                                modifier = Modifier.clickable {
-                                    Toast.makeText(
-                                        ctx,
-                                        ctx.getString(R.string.update_check_for_update),
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                    checkForUpdates()
-                                    showUpdateDialog = true
-                                }
-                            )
-                        }
                         Spacer(modifier = Modifier.width(8.dp))
                         IconButton(onClick = { navigateToProfile() }) {
                             if (user != null) {
@@ -294,34 +240,20 @@ fun Home(
                     }
                 }
             }
-            when (state) {
-                is HomeScreenState.LoadingCompleted -> {
-                    if (showUpdateDialog) {
-                        if (state.release.toVersion()
-                                .whetherNeedUpdate(BuildConfig.VERSION_NAME.toVersion())
-                        ) {
-                            with(state.release) {
-                                UpdateDialog(
-                                    newVersionPublishDate = publishedAt ?: "",
-                                    newVersionSize = assets?.getOrNull(0)?.size ?: 0,
-                                    newVersionLog = body ?: "",
-                                    onDismissRequest = {
-                                        showUpdateDialog = false
-                                    },
-                                )
-                            }
-                        } else {
-                            Toast.makeText(
-                                ctx,
-                                ctx.getString(R.string.update_no_updates_available),
-                                Toast.LENGTH_SHORT
-                            ).show()
-                            showUpdateDialog = false
-                        }
-                    }
+            if (state is HomeScreenState.LoadingCompleted &&
+                !hasShownUpdateDialog &&
+                state.release.toVersion().whetherNeedUpdate(BuildConfig.VERSION_NAME.toVersion())
+            ) {
+                hasShownUpdateDialog = true
+                with(state.release) {
+                    UpdateDialog(
+                        newVersionPublishDate = publishedAt ?: "",
+                        newVersionSize = assets?.getOrNull(0)?.size ?: 0,
+                        newVersionLog = body ?: "",
+                        downloadUrl = assets?.getOrNull(0)?.browserDownloadUrl,
+                        onDismissRequest = { }
+                    )
                 }
-
-                else -> {}
             }
             ChangelogSheet(
                 visible = showChangelogSheet,
@@ -364,8 +296,6 @@ fun OnLifecycleEvent(onEvent: (owner: LifecycleOwner, event: Lifecycle.Event) ->
 fun HomeScreenPreview() {
     Home(
         state = HomeScreenState.Loading,
-        checkForUpdates = {},
-        showBadge = true,
         features = fakeFeatures,
         user = fakeUser,
         navigateToProfile = { },

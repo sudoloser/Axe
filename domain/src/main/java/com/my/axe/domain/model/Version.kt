@@ -45,6 +45,6 @@ class Version(numbers: List<String>) {
     fun whetherNeedUpdate(current: Version): Boolean = this > current
 }
 
-fun String?.toVersion(): Version = Version(this)
+fun String?.toVersion(): Version = Version(this?.trimStart('v'))
 
 fun Release.toVersion(): Version = Version(tagName)

@@ -1,63 +1,21 @@
 <div align="center">
 <img src="https://img.shields.io/badge/Minimum%20SDK-27-%23?&style=flat-square&color=5b5ef7">
-
-
 <img src="https://img.shields.io/github/downloads/sudoloser/axe/total?&style=flat-square&color=5b5ef7">
-
-
 <a href="https://github.com/sudoloser/axe/releases/latest">
 <img alt="Release" src="https://img.shields.io/github/v/release/sudoloser/axe?&style=flat-square&color=5b5ef7&display_name=release">
 </a>
-
-
 <img src="https://img.shields.io/github/actions/workflow/status/sudoloser/axe/build.yml?branch=master?&style=flat-square&color=5b5ef7">
-
-
 <img src="https://img.shields.io/badge/kotlin-5b5ef7.svg?logo=kotlin&logoColor=white&style=flat-square">
-
-
 <img src="https://img.shields.io/badge/Android_Studio-5b5ef7?logo=android-studio&logoColor=white&style=flat-square">
-
 </div>
-
 
 <div align="center">
 <h1>Axe</h1>
-<h4>A fork of Kizzy, a Discord Rich Presence manager for Android fully written in Kotlin.
-</h4>
+<h4>A fork of Kizzy, a Discord Rich Presence manager for Android fully written in Kotlin.</h4>
 <p>
 <img src="./axe-1.png" width=60%/>
 </p>
 </div>
-
-## System Requirements
-- OS: Android 8.1 through 14 *(note: Android 14 may have some bugs with experimental features.)* <br />
-- RAM: 3GB minimum <br />
-*(please keep in mind all systems are different and may have their own bugs. create an [issue](https://github.com/sudoloser/axe/issues/new/choose) if you find a bug.)*
-
-## Quickstart
-Check out the Kizzy [QuickStart Guide](https://kizzydocs.vercel.app/quickstart/install)
-
-
-
-
-## Download
-> **Warning**
-> If you're thinking about downloading an Axe/Kizzy clone or app from any third-party service (other than the ones listed in our repository), think again! We can't be held responsible for any issues that may arise with your account as a result. Stay safe and stick to our trusted download links for the genuine app.
-
-> **Warning**
-> This app uses the Discord Gateway connection. Use this at your own risk.
-However people have been using custom rich presence for past 4-5 years and there's is still no case of account getting terminated.
-
-
-<a href="https://github.com/sudoloser/axe/releases/latest">
-<img src="https://img.shields.io/badge/GitHub-181717?logo=github&logoColor=white"
-     alt="Download from GitHub"
-     height="60">
-</a>
-
-
-
 
 ## Screenshots
 <div>
@@ -69,12 +27,7 @@ However people have been using custom rich presence for past 4-5 years and there
 <img width="30%" alt="Slice 6" src="https://user-images.githubusercontent.com/68665948/207301334-f923ac6e-9d75-4280-a820-e5397fcf0d5a.png">
 </div>
 
-
-
-
 ## Features
-
-
 - [x] Clickable buttons
 - [x] Detects current Running app
 - [x] Detects Current Playing media
@@ -83,7 +36,7 @@ However people have been using custom rich presence for past 4-5 years and there
 - [x] Save/Load presence configs
 - [x] Material You theme
 - [x] Translations
-- [x] Easy [Setup](https://axedocs.vercel.app/quickstart/post_install) 
+- [x] Easy [Setup](https://kizzydocs.vercel.app/quickstart/post_install)
 - [x] 300+ Predefined presets
 - [x] Create custom configs with your own images and links
 - [x] Preview RPC in the app itself
@@ -92,16 +45,37 @@ However people have been using custom rich presence for past 4-5 years and there
 - [x] External Url support (meaning you can give a url which points to an image on the web and discord will show it!)
 - [x] Use Images from Gallery
 - [x] Per app RPC configs for app detection
-- [x] Remote server for a gateway proxy. (More reliable than locally)
-## Getting Started
-Read the Setup Guide from
-[![DOCS](https://kizzydocs.vercel.app/api/og?title=kizzy+Docs)](https://kizzydocs.vercel.app)
+- [x] Remote server for a gateway proxy (More reliable than locally)
 
+## System Requirements
+- OS: Android 8.1 through 14 *(note: Android 14 may have some bugs with experimental features.)*
+- RAM: 3GB minimum
 
+*(please keep in mind all systems are different and may have their own bugs. create an [issue](https://github.com/sudoloser/axe/issues/new/choose) if you find a bug.)*
 
+## Download
+> **Warning**
+> If you're thinking about downloading an Axe/Kizzy clone or app from any third-party service (other than the ones listed in our repository), think again! We can't be held responsible for any issues that may arise with your account as a result. Stay safe and stick to our trusted download links for the genuine app.
+
+> **Warning**
+> This app uses the Discord Gateway connection. Use this at your own risk.
+> However people have been using custom rich presence for past 4-5 years and there's is still no case of account getting terminated.
+
+<a href="https://github.com/sudoloser/axe/releases/latest">
+<img src="https://img.shields.io/badge/GitHub-181717?logo=github&logoColor=white"
+     alt="Download from GitHub"
+     height="60">
+</a>
+
+## Quickstart
+Check out the Kizzy [QuickStart Guide](https://kizzydocs.vercel.app/quickstart/install)
+
+> **IMPORTANT**
+> This is **not** a guide for Axe, so the information will not be 100% correct. Forgive me while I procrastinate making documentation.
 
 ## Build
-For building the app locally
+For building the app locally:
+
 > Prerequisites:
 - Android Studio
 - Familiarity with Gradle, Kotlin, Jetpack Compose
@@ -115,42 +89,35 @@ git clone https://github.com/sudoloser/Axe.git
 - Import the project
 - Click on Build and Run
 
-
-## Credits
-✨ [Kizzy](https://github.com/dead8309/Kizzy) for the original Kizzy project.
-
----
-
-✨ [Read You](https://github.com/Ashinch/ReadYou) and [Seal](https://github.com/JunkFood02/Seal) for Ui Components
-
-✨ [Material Color Utilities](https://github.com/material-foundation/material-color-utilities)
-
-✨ [Rich-Presence-U](https://github.com/ninstar/Rich-Presence-U) for Nintendo and Wii U games data
-
-✨ [Logra](https://github.com/wingio/Logra) for logs ui
-
-✨ [Xbox-Rich-Presence-Discord](https://github.com/MrCoolAndroid/Xbox-Rich-Presence-Discord) for Xbox games data
-
-✨ [Monet](https://github.com/Kyant0/Monet) for Material3 palettes
-
-## Licence 
-**Axe** is an open source project under the GNU GPL 3.0 Open Source License ①, which allows you to use, reference, and modify the source code of **Axe** for free, but does not allow the modified and derived code to be distributed and sold as closed-source commercial software. For details, please see the full GNU GPL 3.0 Open Source License ②.
-
-See [Terms Of Service](./TERMS_OF_SERVICE.md) for more info
-
-<!-- GitAds-Verify: NL8NC5HUT8U5FABBUO26JCE583GNYS6M -->
-
 ## Remote Gateway
 The Remote 24/7 Gateway is a feature that allows your Discord Rich Presence to remain active even when the Axe app is not running on your phone, or when your phone is offline.
 
-### How it works:
+### How it works
 - **Relay Server:** The app connects to a secure remote Node.js server (hosted on Render).
 - **Token Hand-off:** Your Discord token is securely sent to the server (only in memory) to maintain the connection.
 - **Continuous Presence:** The server handles Discord heartbeats and updates, ensuring your status never drops.
 - **Inactivity Cleanup:** If the app doesn't check in for 48 hours, the server automatically wipes your token and closes the connection.
 
-### Security:
+### Security
 - **No Persistence:** Tokens are never stored on the server's disk.
 - **Encrypted Connection:** All communication happens over WSS (Secure WebSocket) and HTTPS.
 - **Manual Stop:** You can stop the remote session at any time by disabling the feature in settings or stopping the RPC.
-- **Fully open source:** You can view the servers code [here](https://github.com/sudoloser/axe-server).
+- **Fully open source:** You can view the server code [here](https://github.com/sudoloser/axe-server).
+
+## Credits
+- [Kizzy](https://github.com/dead8309/Kizzy) for the original Kizzy project.
+- [Read You](https://github.com/Ashinch/ReadYou) and [Seal](https://github.com/JunkFood02/Seal) for UI Components
+- [Material Color Utilities](https://github.com/material-foundation/material-color-utilities)
+- [Rich-Presence-U](https://github.com/ninstar/Rich-Presence-U) for Nintendo and Wii U games data
+- [Logra](https://github.com/wingio/Logra) for logs ui
+- [Xbox-Rich-Presence-Discord](https://github.com/MrCoolAndroid/Xbox-Rich-Presence-Discord) for Xbox games data
+- [Monet](https://github.com/Kyant0/Monet) for Material3 palettes
+
+## License
+Kizzy is copyrighted by [dead8309](https://github.com/dead0309).
+
+Like Kizzy, **Axe** is an open source project under the GNU GPL 3.0 Open Source License, which allows you to use, reference, and modify the source code of **Axe** for free, but does not allow the modified and derived code to be distributed and sold as closed-source commercial software. For details, please see the full GNU GPL 3.0 Open Source License.
+
+See [Terms Of Service](./TERMS_OF_SERVICE.md) for more info
+
+<!-- GitAds-Verify: NL8NC5HUT8U5FABBUO26JCE583GNYS6M -->
