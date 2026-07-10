@@ -216,4 +216,14 @@
     <string name="set_imgur_client_id">Установить Imgur Client ID</string>
     <string name="set_imgur_client_id_desc">Если изображения с Imgur не показываются, вы можете попробовать установить свой Client ID</string>
     <string name="show_song_as_title">Показать песню в заголовке</string>
+    <string name="clear_cache">Очистить кэш</string>
+    <string name="clear_cache_desc">Очистить кэш изображений и приложения</string>
+    <string name="share_logs">Поделиться журналами</string>
+    <string name="cache_cleared">Кэш очищен</string>
+    <string name="general">Общие</string>
+    <string name="advanced">Расширенные</string>
+    <string name="back">Назад</string>
+    <string name="submit_bug_report">Отправить отчёт об ошибке</string>
+    <string name="submitting">Отправка…</string>
+    <string name="report_a_bug">Сообщить об ошибке</string>
 </resources>

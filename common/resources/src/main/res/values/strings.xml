@@ -126,6 +126,13 @@
     <string name="version">Version</string>
     <string name="try_again">Retry</string>
     <string name="request_for_notification_access">Notification Access is needed for app to extract media information.</string>
+    <string name="clear_cache">Clear Cache</string>
+    <string name="clear_cache_desc">Clear image and app cache</string>
+    <string name="share_logs">Share Logs</string>
+    <string name="cache_cleared">Cache cleared</string>
+    <string name="general">General</string>
+    <string name="advanced">Advanced</string>
+    <string name="back">Back</string>
     <string name="update_check_for_update">Checking for update…</string>
     <string name="update_no_updates_available">No updates available</string>
     <string name="compact_mode">Compact Mode</string>
@@ -248,4 +255,7 @@
     <string name="remote_gateway_confirm_placeholder">I UNDERSTAND THE RISKS</string>
     <string name="remote_gateway_url">Server URL</string>
     <string name="remote_gateway_signature">App Signature</string>
+    <string name="submit_bug_report">Submit Bug Report</string>
+    <string name="submitting">Submitting…</string>
+    <string name="report_a_bug">Report a Bug</string>
 </resources>

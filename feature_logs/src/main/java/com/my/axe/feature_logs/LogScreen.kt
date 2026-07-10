@@ -13,6 +13,7 @@
 package com.my.axe.feature_logs
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.icu.text.SimpleDateFormat
 import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -79,7 +80,9 @@ import com.my.axe.ui.components.KSwitch
 import com.my.axe.ui.components.SearchBar
 import com.my.axe.ui.theme.LogColors.color
 import java.text.DateFormat
+
 import java.util.Date
+import java.util.Locale
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -145,6 +148,7 @@ fun ToolBar(viewModel: LogsViewModel) {
     var menuClicked by remember {
         mutableStateOf(false)
     }
+    val ctx = LocalContext.current
     TopAppBar(
         title = {
             if (viewModel.isSearchBarVisible.value) {
@@ -217,6 +221,27 @@ fun ToolBar(viewModel: LogsViewModel) {
                                 )
                             }
                         })
+                    DropdownMenuItem(
+                        text = {
+                            Text(
+                                text = stringResource(R.string.share_logs),
+                                style = MaterialTheme.typography.bodyLarge
+                            )
+                        },
+                        onClick = {
+                            val logs = viewModel.filter()
+                            val dateFormat = SimpleDateFormat("h:mm:ssa", Locale.US)
+                            val text = logs.joinToString("\n") { event ->
+                                "[${event.level.name.first()}] ${dateFormat.format(Date(event.createdAt))} ${event.tag}: ${event.text}"
+                            }
+                            val intent = Intent(Intent.ACTION_SEND).apply {
+                                type = "text/plain"
+                                putExtra(Intent.EXTRA_TEXT, text)
+                            }
+                            ctx.startActivity(Intent.createChooser(intent, null))
+                            menuClicked = false
+                        }
+                    )
                     DropdownMenuItem(
                         text = {
                             Text(

@@ -216,4 +216,14 @@
     <string name="set_imgur_client_id">Set Imgur Client ID</string>
     <string name="set_imgur_client_id_desc">If images aren\'t showing using Imgur, you can try setting your own Client ID</string>
     <string name="show_song_as_title">Show Song as Title</string>
+    <string name="clear_cache">I-clear ang Cache</string>
+    <string name="clear_cache_desc">I-clear ang image at app cache</string>
+    <string name="share_logs">Ibahagi ang Logs</string>
+    <string name="cache_cleared">Na-clear ang cache</string>
+    <string name="general">Pangkalahatan</string>
+    <string name="advanced">Advanced</string>
+    <string name="back">Bumalik</string>
+    <string name="submit_bug_report">Magsumite ng Ulat ng Bug</string>
+    <string name="submitting">Nag susumite…</string>
+    <string name="report_a_bug">Mag-ulat ng Bug</string>
 </resources>

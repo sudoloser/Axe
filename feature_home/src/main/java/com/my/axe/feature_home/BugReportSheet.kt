@@ -43,6 +43,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.ui.res.stringResource
+import com.my.axe.resources.R
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -287,11 +289,11 @@ fun BugReportSheet(
                             color = MaterialTheme.colorScheme.onPrimary,
                         )
                         Spacer(Modifier.width(8.dp))
-                        Text("Submitting...")
+                        Text(stringResource(R.string.submitting))
                     } else {
                         Icon(Icons.Filled.Send, contentDescription = null, modifier = Modifier.size(18.dp))
                         Spacer(Modifier.width(6.dp))
-                        Text("Submit Bug Report")
+                        Text(stringResource(R.string.submit_bug_report))
                     }
                 }
             } else {

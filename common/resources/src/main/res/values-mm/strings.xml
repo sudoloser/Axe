@@ -216,4 +216,14 @@
     <string name="set_imgur_client_id">Set Imgur Client ID</string>
     <string name="set_imgur_client_id_desc">If images aren\'t showing using Imgur, you can try setting your own Client ID</string>
     <string name="show_song_as_title">Show Song as Title</string>
+    <string name="clear_cache">Cache ရှင်းလင်းပါ</string>
+    <string name="clear_cache_desc">ပုံနှင့် App cache ရှင်းလင်းပါ</string>
+    <string name="share_logs">Logs များကိုမျှဝေပါ</string>
+    <string name="cache_cleared">Cache ရှင်းလင်းပြီးပါပြီ</string>
+    <string name="general">ယေဘုယျ</string>
+    <string name="advanced">အဆင့်မြင့်</string>
+    <string name="back">နောက်သို့</string>
+    <string name="submit_bug_report">Bug အစီရင်ခံစာ တင်သွင်းပါ</string>
+    <string name="submitting">တင်သွင်းနေသည်…</string>
+    <string name="report_a_bug">Bug တစ်ခုကို အစီရင်ခံပါ</string>
 </resources>

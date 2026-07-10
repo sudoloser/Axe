@@ -217,4 +217,14 @@
     <string name="set_imgur_client_id">Set Imgur Client ID</string>
     <string name="set_imgur_client_id_desc">If images aren\'t showing using Imgur, you can try setting your own Client ID</string>
     <string name="show_song_as_title">Show Song as Title</string>
+    <string name="clear_cache">پاک کردن حافظه نهان</string>
+    <string name="clear_cache_desc">پاک کردن حافظه نهان تصاویر و برنامه</string>
+    <string name="share_logs">اشتراک‌گذاری لاگ‌ها</string>
+    <string name="cache_cleared">حافظه نهان پاک شد</string>
+    <string name="general">عمومی</string>
+    <string name="advanced">پیشرفته</string>
+    <string name="back">بازگشت</string>
+    <string name="submit_bug_report">ارسال گزارش اشکال</string>
+    <string name="submitting">در حال ارسال…</string>
+    <string name="report_a_bug">گزارش یک اشکال</string>
 </resources>

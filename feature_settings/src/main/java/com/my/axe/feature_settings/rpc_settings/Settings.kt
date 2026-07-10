@@ -25,15 +25,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Cached
+import androidx.compose.material.icons.filled.Bolt
 import androidx.compose.material.icons.filled.Code
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.DeleteForever
 import androidx.compose.material.icons.filled.DoNotDisturbOn
 import androidx.compose.material.icons.filled.HighQuality
 import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
-import androidx.compose.material.icons.filled.Pin
 import androidx.compose.material.icons.filled.SmartButton
 import androidx.compose.material.icons.filled.Storage
 import androidx.compose.material.icons.filled.Tune
@@ -42,6 +42,8 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -50,7 +52,6 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -62,22 +63,21 @@ import com.my.axe.resources.R
 import com.my.axe.ui.components.BackButton
 import com.my.axe.ui.components.RpcField
 import com.my.axe.ui.components.SettingItem
-import com.my.axe.ui.components.Subtitle
 import com.my.axe.ui.components.dialog.SingleChoiceItem
 import com.my.axe.ui.components.preference.PreferenceSwitch
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import androidx.compose.material.icons.filled.Bolt
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RpcSettings(onBackPressed: () -> Boolean) {
+fun Settings(onBackPressed: () -> Boolean) {
     val context = LocalContext.current
     var isLowResIconsEnabled by remember { mutableStateOf(Prefs[Prefs.RPC_USE_LOW_RES_ICON, false]) }
     var useRemoteGateway by remember { mutableStateOf(Prefs[Prefs.USE_REMOTE_GATEWAY, false]) }
     var showRemoteGatewayDialog by remember { mutableStateOf(false) }
     var remoteGatewayConfirmationText by remember { mutableStateOf("") }
-    
+
     var useImgur by remember { mutableStateOf(Prefs[Prefs.USE_IMGUR, false]) }
     var configsDir by remember { mutableStateOf(Prefs[Prefs.CONFIGS_DIRECTORY, ""]) }
     var showDirConfigDialog by remember { mutableStateOf(false) }
@@ -101,12 +101,13 @@ fun RpcSettings(onBackPressed: () -> Boolean) {
     var showApplicationIdDialog by remember {
         mutableStateOf(false)
     }
-    var showImgurClientIdDialog by remember {
-        mutableStateOf(false)
-    }
+    var showImgurClientIdDialog by remember { mutableStateOf(false) }
     var allowExternalApps by remember { mutableStateOf(Prefs[Prefs.ALLOW_EXTERNAL_APPS, true]) }
     var customApplicationId by remember { mutableStateOf(Prefs[Prefs.CUSTOM_ACTIVITY_APPLICATION_ID, ""]) }
     var imgurClientId by remember { mutableStateOf(Prefs[Prefs.IMGUR_CLIENT_ID, Constants.IMGUR_CLIENT_ID]) }
+
+    var selectedTab by remember { mutableIntStateOf(0) }
+    val tabs = listOf(stringResource(id = R.string.general), stringResource(id = R.string.advanced))
 
     Scaffold(modifier = Modifier.fillMaxSize(), topBar = {
         TopAppBar(
@@ -114,148 +115,61 @@ fun RpcSettings(onBackPressed: () -> Boolean) {
             navigationIcon = { BackButton { onBackPressed() } }
         )
     }) { paddingValues ->
-        LazyColumn(modifier = Modifier.padding(paddingValues)) {
-            item {
-                Subtitle(text = stringResource(R.string.general_settings))
-            }
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-                item {
-                    SettingItem(
-                        title = stringResource(id = R.string.configs_directory),
-                        description = configsDir.ifEmpty { stringResource(id = R.string.custom_rpc_directory) },
-                        icon = Icons.Default.Storage,
-                    ) {
-                        showDirConfigDialog = true
-                    }
+        Column(modifier = Modifier.padding(paddingValues)) {
+            TabRow(selectedTabIndex = selectedTab) {
+                tabs.forEachIndexed { index, title ->
+                    Tab(
+                        selected = selectedTab == index,
+                        onClick = { selectedTab = index },
+                        text = { Text(text = title) }
+                    )
                 }
             }
-            item {
-                PreferenceSwitch(
-                    title = stringResource(id = R.string.use_custom_buttons),
-                    description = stringResource(id = R.string.use_custom_buttons_desc),
-                    icon = Icons.Default.Tune,
-                    isChecked = useButtonConfigs,
-                ) {
-                    useButtonConfigs = !useButtonConfigs
-                    Prefs[Prefs.USE_RPC_BUTTONS] = useButtonConfigs
-                }
-            }
-            item {
-                AnimatedVisibility(visible = useButtonConfigs) {
-                    SettingItem(
-                        title = stringResource(R.string.rpc_buttons),
-                        description = stringResource(id = R.string.rpc_settings_button_configs),
-                        icon = Icons.Default.SmartButton
-                    ) {
-                        showButtonsConfigDialog = true
-                    }
-                }
-            }
-            item {
-                SettingItem(
-                    title = stringResource(id = R.string.custom_activity_type),
-                    description = stringResource(id = R.string.custom_activity_type_desc),
-                    icon = Icons.Default.Code
-                ) {
-                    showActivityTypeDialog = true
-                }
+            when (selectedTab) {
+                0 -> GeneralSettings(
+                    context = context,
+                    configsDir = configsDir,
+                    useButtonConfigs = useButtonConfigs,
+                    onConfigsDirClick = { showDirConfigDialog = true },
+                    onButtonConfigsToggle = {
+                        useButtonConfigs = !useButtonConfigs
+                        Prefs[Prefs.USE_RPC_BUTTONS] = useButtonConfigs
+                    },
+                    onButtonsConfigClick = { showButtonsConfigDialog = true },
+                    onActivityTypeClick = { showActivityTypeDialog = true },
+                    onActivityStatusClick = { showActivityStatusDialog = true },
+                )
 
+                1 -> AdvancedSettings(
+                    context = context,
+                    useRemoteGateway = useRemoteGateway,
+                    useImgur = useImgur,
+                    isLowResIconsEnabled = isLowResIconsEnabled,
+                    onRemoteGatewayToggle = {
+                        if (!useRemoteGateway) {
+                            showRemoteGatewayDialog = true
+                        } else {
+                            useRemoteGateway = false
+                            Prefs[Prefs.USE_REMOTE_GATEWAY] = false
+                            Toast.makeText(context, "Remote Gateway disabled. Restart RPC to apply.", Toast.LENGTH_SHORT).show()
+                        }
+                    },
+                    onImgurToggle = {
+                        useImgur = !useImgur
+                        Prefs[Prefs.USE_IMGUR] = useImgur
+                    },
+                    onImgurClientIdClick = { showImgurClientIdDialog = true },
+                    onLowResIconsToggle = {
+                        isLowResIconsEnabled = !isLowResIconsEnabled
+                        Prefs[Prefs.RPC_USE_LOW_RES_ICON] = isLowResIconsEnabled
+                    },
+                    onDeleteSavedIconUrls = {
+                        Prefs.remove(Prefs.SAVED_IMAGES)
+                        Prefs.remove(Prefs.SAVED_ARTWORK)
+                        Toast.makeText(context, "Done", Toast.LENGTH_SHORT).show()
+                    },
+                )
             }
-            item {
-                SettingItem(
-                    title = stringResource(id = R.string.custom_activity_status),
-                    description = stringResource(id = R.string.custom_activity_status_desc),
-                    icon = Icons.Default.DoNotDisturbOn
-                ) {
-                    showActivityStatusDialog = true
-                }
-            }
-            item {
-                Subtitle(text = stringResource(id = R.string.advance_settings))
-            }
-            item {
-                PreferenceSwitch(
-                    title = stringResource(id = R.string.remote_gateway),
-                    description = stringResource(id = R.string.remote_gateway_desc),
-                    icon = Icons.Default.Bolt,
-                    isChecked = useRemoteGateway,
-                ) {
-                    if (!useRemoteGateway) {
-                        showRemoteGatewayDialog = true
-                    } else {
-                       useRemoteGateway = false
-                       Prefs[Prefs.USE_REMOTE_GATEWAY] = false
-                       Toast.makeText(context, "Remote Gateway disabled. Restart RPC to apply.", Toast.LENGTH_SHORT).show()
-                    }                }
-            }
-            item {
-                AnimatedVisibility(visible = useRemoteGateway) {
-                    Column {
-                        var customUrl by remember { mutableStateOf(Prefs[Prefs.REMOTE_GATEWAY_URL, "https://axe-server.onrender.com/"]) }
-                        var customSignature by remember { mutableStateOf(Prefs[Prefs.REMOTE_GATEWAY_SIGNATURE, ""]) }
-
-                        RpcField(
-                            value = customUrl,
-                            label = R.string.remote_gateway_url,
-                            onValueChange = {
-                                customUrl = it
-                                Prefs[Prefs.REMOTE_GATEWAY_URL] = it
-                            }
-                        )
-                        RpcField(
-                            value = customSignature,
-                            label = R.string.remote_gateway_signature,
-                            onValueChange = {
-                                customSignature = it
-                                Prefs[Prefs.REMOTE_GATEWAY_SIGNATURE] = it
-                            }
-                        )
-                    }
-                }
-            }
-            item {
-                PreferenceSwitch(
-                    title = stringResource(id = R.string.use_imgur),
-                    description = stringResource(id = R.string.use_imgur_desc),
-                    icon = Icons.Default.Image,
-                    isChecked = useImgur
-                ) {
-                    useImgur = !useImgur
-                    Prefs[Prefs.USE_IMGUR] = useImgur
-                }
-            }
-            item {
-                AnimatedVisibility(visible = useImgur) {
-                    SettingItem(
-                        title = stringResource(id = R.string.set_imgur_client_id),
-                        description = stringResource(id = R.string.set_imgur_client_id_desc),
-                        icon = Icons.Default.Code
-                    ) {
-                        showImgurClientIdDialog = true
-                    }
-                }
-            }
-            item {
-                PreferenceSwitch(
-                    title = stringResource(id = R.string.use_low_res_icon),
-                    description = stringResource(id = R.string.use_low_res_icon_desc),
-                    icon = Icons.Default.HighQuality,
-                    isChecked = isLowResIconsEnabled,
-                ) {
-                    isLowResIconsEnabled = !isLowResIconsEnabled
-                    Prefs[Prefs.RPC_USE_LOW_RES_ICON] = isLowResIconsEnabled
-                }
-            }
-            item {
-                SettingItem(
-                    title = stringResource(id = R.string.delete_saved_icon_urls),
-                    description = stringResource(id = R.string.delete_saved_icon_urls_desc),
-                    icon = Icons.Default.DeleteForever
-                ) {
-                    Prefs.remove(Prefs.SAVED_IMAGES)
-                    Prefs.remove(Prefs.SAVED_ARTWORK)
-                    Toast.makeText(context, "Done", Toast.LENGTH_SHORT).show()
-                }
             }
         }
         if (showDirConfigDialog) {
@@ -514,7 +428,7 @@ fun RpcSettings(onBackPressed: () -> Boolean) {
 
         if (showRemoteGatewayDialog) {
             AlertDialog(
-                onDismissRequest = { 
+                onDismissRequest = {
                     showRemoteGatewayDialog = false
                     remoteGatewayConfirmationText = ""
                 },
@@ -545,7 +459,7 @@ fun RpcSettings(onBackPressed: () -> Boolean) {
                     }
                 },
                 dismissButton = {
-                    TextButton(onClick = { 
+                    TextButton(onClick = {
                         showRemoteGatewayDialog = false
                         remoteGatewayConfirmationText = ""
                     }) {
@@ -553,6 +467,175 @@ fun RpcSettings(onBackPressed: () -> Boolean) {
                     }
                 }
             )
+        }
+    }
+}
+
+@Composable
+private fun GeneralSettings(
+    context: android.content.Context,
+    configsDir: String,
+    useButtonConfigs: Boolean,
+    onConfigsDirClick: () -> Unit,
+    onButtonConfigsToggle: () -> Unit,
+    onButtonsConfigClick: () -> Unit,
+    onActivityTypeClick: () -> Unit,
+    onActivityStatusClick: () -> Unit,
+) {
+    LazyColumn(modifier = Modifier.fillMaxSize()) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            item {
+                SettingItem(
+                    title = stringResource(id = R.string.configs_directory),
+                    description = configsDir.ifEmpty { stringResource(id = R.string.custom_rpc_directory) },
+                    icon = Icons.Default.Storage,
+                ) {
+                    onConfigsDirClick()
+                }
+            }
+        }
+        item {
+            PreferenceSwitch(
+                title = stringResource(id = R.string.use_custom_buttons),
+                description = stringResource(id = R.string.use_custom_buttons_desc),
+                icon = Icons.Default.Tune,
+                isChecked = useButtonConfigs,
+            ) {
+                onButtonConfigsToggle()
+            }
+        }
+        item {
+            AnimatedVisibility(visible = useButtonConfigs) {
+                SettingItem(
+                    title = stringResource(R.string.rpc_buttons),
+                    description = stringResource(id = R.string.rpc_settings_button_configs),
+                    icon = Icons.Default.SmartButton
+                ) {
+                    onButtonsConfigClick()
+                }
+            }
+        }
+        item {
+            SettingItem(
+                title = stringResource(id = R.string.custom_activity_type),
+                description = stringResource(id = R.string.custom_activity_type_desc),
+                icon = Icons.Default.Code
+            ) {
+                onActivityTypeClick()
+            }
+
+        }
+        item {
+            SettingItem(
+                title = stringResource(id = R.string.custom_activity_status),
+                description = stringResource(id = R.string.custom_activity_status_desc),
+                icon = Icons.Default.DoNotDisturbOn
+            ) {
+                onActivityStatusClick()
+            }
+        }
+    }
+}
+
+@Composable
+private fun AdvancedSettings(
+    context: android.content.Context,
+    useRemoteGateway: Boolean,
+    useImgur: Boolean,
+    isLowResIconsEnabled: Boolean,
+    onRemoteGatewayToggle: () -> Unit,
+    onImgurToggle: () -> Unit,
+    onImgurClientIdClick: () -> Unit,
+    onLowResIconsToggle: () -> Unit,
+    onDeleteSavedIconUrls: () -> Unit,
+) {
+    LazyColumn(modifier = Modifier.fillMaxSize()) {
+        item {
+            PreferenceSwitch(
+                title = stringResource(id = R.string.remote_gateway),
+                description = stringResource(id = R.string.remote_gateway_desc),
+                icon = Icons.Default.Bolt,
+                isChecked = useRemoteGateway,
+            ) {
+                onRemoteGatewayToggle()
+            }
+        }
+        item {
+            AnimatedVisibility(visible = useRemoteGateway) {
+                Column {
+                    var customUrl by remember { mutableStateOf(Prefs[Prefs.REMOTE_GATEWAY_URL, "https://axe-server.onrender.com/"]) }
+                    var customSignature by remember { mutableStateOf(Prefs[Prefs.REMOTE_GATEWAY_SIGNATURE, ""]) }
+
+                    RpcField(
+                        value = customUrl,
+                        label = R.string.remote_gateway_url,
+                        onValueChange = {
+                            customUrl = it
+                            Prefs[Prefs.REMOTE_GATEWAY_URL] = it
+                        }
+                    )
+                    RpcField(
+                        value = customSignature,
+                        label = R.string.remote_gateway_signature,
+                        onValueChange = {
+                            customSignature = it
+                            Prefs[Prefs.REMOTE_GATEWAY_SIGNATURE] = it
+                        }
+                    )
+                }
+            }
+        }
+        item {
+            PreferenceSwitch(
+                title = stringResource(id = R.string.use_imgur),
+                description = stringResource(id = R.string.use_imgur_desc),
+                icon = Icons.Default.Image,
+                isChecked = useImgur
+            ) {
+                onImgurToggle()
+            }
+        }
+        item {
+            AnimatedVisibility(visible = useImgur) {
+                SettingItem(
+                    title = stringResource(id = R.string.set_imgur_client_id),
+                    description = stringResource(id = R.string.set_imgur_client_id_desc),
+                    icon = Icons.Default.Code
+                ) {
+                    onImgurClientIdClick()
+                }
+            }
+        }
+        item {
+            PreferenceSwitch(
+                title = stringResource(id = R.string.use_low_res_icon),
+                description = stringResource(id = R.string.use_low_res_icon_desc),
+                icon = Icons.Default.HighQuality,
+                isChecked = isLowResIconsEnabled,
+            ) {
+                onLowResIconsToggle()
+            }
+        }
+        item {
+            SettingItem(
+                title = stringResource(id = R.string.delete_saved_icon_urls),
+                description = stringResource(id = R.string.delete_saved_icon_urls_desc),
+                icon = Icons.Default.DeleteForever
+            ) {
+                onDeleteSavedIconUrls()
+            }
+        }
+        item {
+            SettingItem(
+                title = stringResource(id = R.string.clear_cache),
+                description = stringResource(id = R.string.clear_cache_desc),
+                icon = Icons.Default.Delete,
+            ) {
+                coil.Coil.imageLoader(context).memoryCache?.clear()
+                coil.Coil.imageLoader(context).diskCache?.clear()
+                context.cacheDir.deleteRecursively()
+                Toast.makeText(context, R.string.cache_cleared, Toast.LENGTH_SHORT).show()
+            }
         }
     }
 }

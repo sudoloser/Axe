@@ -216,4 +216,14 @@
     <string name="set_imgur_client_id">Set Imgur Client ID</string>
     <string name="set_imgur_client_id_desc">If images aren\'t showing using Imgur, you can try setting your own Client ID</string>
     <string name="show_song_as_title">Show Song as Title</string>
+    <string name="clear_cache">清除缓存</string>
+    <string name="clear_cache_desc">清除图片和应用缓存</string>
+    <string name="share_logs">分享日志</string>
+    <string name="cache_cleared">缓存已清除</string>
+    <string name="general">一般</string>
+    <string name="advanced">高级</string>
+    <string name="back">返回</string>
+    <string name="submit_bug_report">提交错误报告</string>
+    <string name="submitting">正在提交…</string>
+    <string name="report_a_bug">报告错误</string>
 </resources>

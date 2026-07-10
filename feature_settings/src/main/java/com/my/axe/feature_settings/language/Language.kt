@@ -38,7 +38,10 @@ fun Language(
                     BackButton {
                         onBackPressed()
                     }
-                }
+                },
+                colors = TopAppBarDefaults.largeTopAppBarColors(
+                    scrolledContainerColor = MaterialTheme.colorScheme.surface,
+                )
             )
         }
     ) {

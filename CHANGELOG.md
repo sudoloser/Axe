@@ -1,3 +1,14 @@
+# 7/10/2026 [v1.3.1]
+### Added
+- "Improved" tabbed settings layout
+- Share Logs: Share all logs from the logs screen dropdown menu
+- Clear Cache: Clear image and app cache from advanced settings
+- Default progress bars: Timestamps now enabled by default on Media RPC
+### Translations
+- More translation for all languages
+### Credits
+- [UnpackedX](https://codeberg.org/UnpackedX/Kizzey)
+> Original ideas for copy logs, clear cache, and default progress bars
 # 7/10/2026 [v1.3.0]
 ### Added
 - Bug Report Form: In-app bottom sheet to submit bug reports with screenshots via Discord webhook

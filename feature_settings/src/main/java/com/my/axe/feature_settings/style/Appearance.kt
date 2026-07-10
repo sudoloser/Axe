@@ -89,7 +89,9 @@ fun Appearance(
             BackButton {
                 onBackPressed()
             }
-        })
+        }, colors = TopAppBarDefaults.largeTopAppBarColors(
+            scrolledContainerColor = MaterialTheme.colorScheme.surface,
+        ))
     }) {
         Column(
             Modifier.padding(it),

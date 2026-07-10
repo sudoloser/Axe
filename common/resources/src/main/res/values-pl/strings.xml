@@ -217,4 +217,14 @@
     <string name="set_imgur_client_id">Ustaw Imgur Client ID</string>
     <string name="set_imgur_client_id_desc">Jeśli obrazy nie będą wyświetlane poprzez Imgur, możesz spróbować ustawić swój własny Client ID</string>
     <string name="show_song_as_title">Pokaż piosenkę jako tytuł</string>
+    <string name="clear_cache">Wyczyść pamięć podręczną</string>
+    <string name="clear_cache_desc">Wyczyść pamięć podręczną obrazów i aplikacji</string>
+    <string name="share_logs">Udostępnij logi</string>
+    <string name="cache_cleared">Pamięć podręczna wyczyszczona</string>
+    <string name="general">Ogólne</string>
+    <string name="advanced">Zaawansowane</string>
+    <string name="back">Wstecz</string>
+    <string name="submit_bug_report">Wyślij zgłoszenie błędu</string>
+    <string name="submitting">Wysyłanie…</string>
+    <string name="report_a_bug">Zgłoś błąd</string>
 </resources>
