@@ -369,7 +369,8 @@ fun HomeScreenPreview() {
         navigateToStyleAndAppearance = { },
         navigateToLanguages = { },
         navigateToAbout = { },
-        navigateToRpcSettings = { }) {
+        navigateToRpcSettings = { },
+        navigateToLogsScreen = { }) {
 
     }
 }

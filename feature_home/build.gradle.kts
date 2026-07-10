@@ -20,4 +20,6 @@ dependencies {
     implementation (projects.common.navigation)
     implementation (libs.coil)
     implementation (libs.activity.compose)
+    implementation (libs.ktor.core)
+    implementation (libs.kotlinx.serialization.json)
 }
