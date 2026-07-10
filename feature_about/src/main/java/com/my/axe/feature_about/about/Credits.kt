@@ -100,6 +100,10 @@ fun Credits(state: CreditScreenState, onBackPressed: () -> Unit) {
             .nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             LargeTopAppBar(
+                colors = TopAppBarDefaults.largeTopAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    scrolledContainerColor = MaterialTheme.colorScheme.surface,
+                ),
                 title = {
                     Text(
                         text = stringResource(id = R.string.credits),

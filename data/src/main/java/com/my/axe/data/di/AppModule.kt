@@ -15,10 +15,12 @@ package com.my.axe.data.di
 import com.my.axe.data.BuildConfig
 import com.my.axe.data.remote.ApiService
 import com.my.axe.data.remote.Base
+import com.my.axe.data.remote.CdnService
 import com.my.axe.data.remote.Discord
 import com.my.axe.data.remote.Github
 import com.my.axe.data.remote.Imgur
 import com.my.axe.data.remote.ImgurApiService
+import com.my.axe.data.remote.WebhookService
 import com.my.axe.data.repository.AxeRepositoryImpl
 import com.my.axe.domain.repository.AxeRepository
 import dagger.Module
@@ -90,6 +92,20 @@ object AppModule {
                 }
             }
         }
+    }
+
+    @Provides
+    @Singleton
+    fun provideCdnService(): CdnService {
+        return CdnService()
+    }
+
+    @Provides
+    @Singleton
+    fun provideWebhookService(
+        client: HttpClient
+    ): WebhookService {
+        return WebhookService(client)
     }
 
     @Provides

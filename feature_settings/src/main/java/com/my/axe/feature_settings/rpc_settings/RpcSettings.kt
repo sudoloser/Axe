@@ -67,40 +67,12 @@ import com.my.axe.ui.components.dialog.SingleChoiceItem
 import com.my.axe.ui.components.preference.PreferenceSwitch
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-
 import androidx.compose.material.icons.filled.Bolt
-import rikka.shizuku.Shizuku
-import com.blankj.utilcode.util.AppUtils as AppUtilsCode
-
-import android.content.pm.PackageManager
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RpcSettings(onBackPressed: () -> Boolean) {
     val context = LocalContext.current
-    var useShizuku by remember { mutableStateOf(Prefs[Prefs.USE_SHIZUKU, false]) }
-    var shizukuAvailable by remember { mutableStateOf(false) }
-    var shizukuPermissionGranted by remember { mutableStateOf(false) }
-
-    val permissionListener = remember {
-        Shizuku.OnRequestPermissionResultListener { _, grantResult ->
-            shizukuPermissionGranted = grantResult == PackageManager.PERMISSION_GRANTED
-        }
-    }
-
-    DisposableEffect(Unit) {
-        Shizuku.addRequestPermissionResultListener(permissionListener)
-        onDispose {
-            Shizuku.removeRequestPermissionResultListener(permissionListener)
-        }
-    }
-
-    LaunchedEffect(Unit) {
-        shizukuAvailable = Shizuku.pingBinder()
-        if (shizukuAvailable) {
-            shizukuPermissionGranted = Shizuku.checkSelfPermission() == PackageManager.PERMISSION_GRANTED
-        }
-    }
     var isLowResIconsEnabled by remember { mutableStateOf(Prefs[Prefs.RPC_USE_LOW_RES_ICON, false]) }
     var useRemoteGateway by remember { mutableStateOf(Prefs[Prefs.USE_REMOTE_GATEWAY, false]) }
     var showRemoteGatewayDialog by remember { mutableStateOf(false) }
@@ -238,44 +210,6 @@ fun RpcSettings(onBackPressed: () -> Boolean) {
                                 Prefs[Prefs.REMOTE_GATEWAY_SIGNATURE] = it
                             }
                         )
-                    }
-                }
-            }
-            item {
-                PreferenceSwitch(
-                    title = stringResource(id = R.string.shizuku_detection),
-                    description = when {
-                        !shizukuAvailable -> stringResource(id = R.string.shizuku_not_running)
-                        !shizukuPermissionGranted -> "Shizuku: Permission required"
-                        else -> stringResource(id = R.string.shizuku_connected)
-                    },
-                    icon = Icons.Default.Bolt,
-                    isChecked = useShizuku && shizukuAvailable && shizukuPermissionGranted,
-                    enabled = shizukuAvailable
-                ) {
-                    if (shizukuAvailable) {
-                        if (Shizuku.checkSelfPermission() == PackageManager.PERMISSION_GRANTED) {
-                            useShizuku = !useShizuku
-                            Prefs[Prefs.USE_SHIZUKU] = useShizuku
-                            shizukuPermissionGranted = true
-                        } else {
-                            Shizuku.requestPermission(101)
-                        }
-                    }
-                }
-            }
-            if (!shizukuAvailable) {
-                item {
-                    SettingItem(
-                        title = stringResource(id = R.string.shizuku_open),
-                        description = stringResource(id = R.string.shizuku_not_running),
-                        icon = Icons.Default.Bolt
-                    ) {
-                        try {
-                            AppUtilsCode.launchApp("moe.shizuku.privileged.api")
-                        } catch (e: Exception) {
-                            Toast.makeText(context, "Shizuku not installed", Toast.LENGTH_SHORT).show()
-                        }
                     }
                 }
             }

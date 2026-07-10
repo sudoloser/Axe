@@ -18,6 +18,7 @@ interface Logger {
     fun e(tag: String, event: String)
     fun d(tag: String, event: String)
     fun w(tag: String, event: String)
+    fun getFormattedLogs(maxLines: Int = 50): String
 }
 
 object NoOpLogger: Logger {
@@ -26,4 +27,5 @@ object NoOpLogger: Logger {
     override fun e(tag: String, event: String) {}
     override fun d(tag: String, event: String) {}
     override fun w(tag: String, event: String) {}
+    override fun getFormattedLogs(maxLines: Int): String = ""
 }

@@ -41,6 +41,7 @@ import com.my.axe.feature_console_rpc.GamesViewModel
 import com.my.axe.feature_custom_rpc.CustomRPC
 import com.my.axe.feature_custom_rpc.CustomScreenViewModel
 import com.my.axe.feature_home.Home
+import com.my.axe.feature_home.BugReportViewModel
 import com.my.axe.feature_home.HomeScreenViewModel
 import com.my.axe.feature_home.feature.homeFeaturesProvider
 import com.my.axe.feature_logs.LogScreen
@@ -115,6 +116,7 @@ internal fun ComponentActivity.axe(
                 val user = Prefs.getUser()
                 val ctx = LocalContext.current
                 val viewModel by viewModels<HomeScreenViewModel>()
+                val bugReportViewModel by viewModels<BugReportViewModel>()
                 val state = viewModel.aboutScreenState.collectAsState().value
                 val showBadge = release
                     ?.toVersion()
@@ -156,7 +158,8 @@ internal fun ComponentActivity.axe(
                     },
                     navigateToLogsScreen = {
                         navController.navigate(Routes.LOGS_SCREEN)
-                    }
+                    },
+                    bugReportViewModel = bugReportViewModel,
                 )
             }
             animatedComposable(Routes.APPS_DETECTION) {

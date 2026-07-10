@@ -50,12 +50,14 @@ fun SettingsDrawer(
     navigateToAbout: () -> Unit,
     navigateToRpcSettings: () -> Unit,
     navigateToLogsScreen: () -> Unit,
+    onReportBug: () -> Unit = {},
 ) {
     val uriHandler = LocalUriHandler.current
     Surface(
         modifier = Modifier
             .fillMaxHeight()
-            .width(260.dp)
+            .width(260.dp),
+        color = MaterialTheme.colorScheme.surface,
     ) {
         Column(
             modifier = Modifier.padding(15.dp)
@@ -149,6 +151,14 @@ fun SettingsDrawer(
                         icon = Icons.Outlined.Info
                     ) {
                         navigateToAbout()
+                    }
+                }
+                item {
+                    SettingsItemCard(
+                        title = "Report a Bug",
+                        icon = Icons.Outlined.BugReport,
+                    ) {
+                        onReportBug()
                     }
                 }
                 item {

@@ -13,6 +13,7 @@
 package com.my.axe.feature_home
 
 import android.content.ComponentName
+import android.os.Build
 import android.widget.Toast
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -98,6 +99,7 @@ fun Home(
     navigateToAbout: () -> Unit,
     navigateToRpcSettings: () -> Unit,
     navigateToLogsScreen: () -> Unit,
+    bugReportViewModel: BugReportViewModel? = null,
 ) {
     val ctx = LocalContext.current
 
@@ -111,6 +113,9 @@ fun Home(
         mutableStateOf(false)
     }
     var showChangelogSheet by remember {
+        mutableStateOf(false)
+    }
+    var showBugReportSheet by remember {
         mutableStateOf(false)
     }
     val drawerState = rememberDrawerState(DrawerValue.Closed)
@@ -135,7 +140,10 @@ fun Home(
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
-            ModalDrawerSheet(modifier = Modifier.width(260.dp)) {
+            ModalDrawerSheet(
+                modifier = Modifier.width(260.dp),
+                drawerContainerColor = MaterialTheme.colorScheme.surface,
+            ) {
                 if (componentName != null) {
                     SettingsDrawer(
                         user = user,
@@ -146,7 +154,8 @@ fun Home(
                         navigateToLanguages = navigateToLanguages,
                         navigateToAbout = navigateToAbout,
                         navigateToRpcSettings = navigateToRpcSettings,
-                        navigateToLogsScreen = navigateToLogsScreen
+                        navigateToLogsScreen = navigateToLogsScreen,
+                        onReportBug = { showBugReportSheet = true },
                     )
                 }
             }
@@ -318,6 +327,16 @@ fun Home(
                 visible = showChangelogSheet,
                 onDismiss = { showChangelogSheet = false }
             )
+            if (bugReportViewModel != null) {
+                BugReportSheet(
+                    visible = showBugReportSheet,
+                    viewModel = bugReportViewModel,
+                    deviceModel = Build.MODEL,
+                    androidVersion = Build.VERSION.RELEASE,
+                    appVersion = BuildConfig.VERSION_NAME,
+                    onDismiss = { showBugReportSheet = false },
+                )
+            }
         }
     }
 }
@@ -353,9 +372,10 @@ fun HomeScreenPreview() {
         navigateToStyleAndAppearance = { },
         navigateToLanguages = { },
         navigateToAbout = { },
-        navigateToRpcSettings = { }) {
-
-    }
+        navigateToRpcSettings = { },
+        navigateToLogsScreen = {},
+        bugReportViewModel = null,
+    )
 }
 
 val fakeFeatures = listOf(

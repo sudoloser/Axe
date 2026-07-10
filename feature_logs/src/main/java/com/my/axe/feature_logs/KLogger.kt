@@ -17,9 +17,14 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import com.my.axe.domain.interfaces.Logger
 import com.my.axe.domain.model.logs.LogEvent
 import com.my.axe.domain.model.logs.LogLevel
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class KLogger: Logger {
     private val logs = mutableStateListOf<LogEvent>()
+    private val timeFormat = SimpleDateFormat("HH:mm:ss", Locale.US)
+
     fun getLogs(): SnapshotStateList<LogEvent> {
         return logs
     }
@@ -42,6 +47,16 @@ class KLogger: Logger {
 
     override fun w(tag: String, event: String) {
         addToLog(LogLevel.WARN, tag, event)
+    }
+
+    override fun getFormattedLogs(maxLines: Int): String {
+        synchronized(logs) {
+            val recent = logs.takeLast(maxLines)
+            return recent.joinToString("\n") { log ->
+                val time = timeFormat.format(Date(log.createdAt))
+                "[$time][${log.level.name}] ${log.tag}: ${log.text}"
+            }
+        }
     }
 
     private fun addToLog(level: LogLevel, tag: String, event: String) {

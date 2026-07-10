@@ -62,8 +62,9 @@ fun AppsItem(
                     .padding(16.dp, 20.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
+                val appIcon = remember(pkg) { AppUtils.getAppIcon(pkg) }
                 AsyncImage(
-                    model = AppUtils.getAppIcon(pkg),
+                    model = appIcon,
                     contentDescription = null,
                     contentScale = ContentScale.Fit,
                     placeholder = painterResource(id = R.drawable.ic_apps),

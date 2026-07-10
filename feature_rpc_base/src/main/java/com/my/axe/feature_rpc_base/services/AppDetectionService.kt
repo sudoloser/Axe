@@ -34,7 +34,6 @@ import com.my.axe.data.utils.toRpcImage
 import com.my.axe.domain.model.rpc.RpcButtons
 import com.my.axe.domain.model.rpc.RpcConfig
 import com.my.axe.feature_rpc_base.Constants
-import com.my.axe.feature_rpc_base.detection.ShizukuDetectionStrategy
 import com.my.axe.feature_rpc_base.detection.UsageStatsDetectionStrategy
 import com.my.axe.feature_rpc_base.setLargeIcon
 import com.my.axe.preference.Prefs
@@ -146,18 +145,7 @@ class AppDetectionService : Service() {
     }
 
     private fun getForegroundPackage(): String? {
-        val useShizuku = Prefs[Prefs.USE_SHIZUKU, false]
-        var packageName: String? = null
-
-        if (useShizuku) {
-            packageName = ShizukuDetectionStrategy().getForegroundApp()
-        }
-
-        if (packageName == null) {
-            packageName = UsageStatsDetectionStrategy(this).getForegroundApp()
-        }
-
-        return packageName
+        return UsageStatsDetectionStrategy(this).getForegroundApp()
     }
 
     private fun getEnabledPackages(): List<String> {
