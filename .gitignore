@@ -43,3 +43,5 @@ GEMINI.md
 
 .gemini/
 gha-creds-*.json
+logs.txt
+todo.md
