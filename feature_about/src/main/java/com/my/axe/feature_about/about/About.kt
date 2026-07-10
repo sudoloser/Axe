@@ -59,7 +59,10 @@ fun About(
                     )
                 },
                 navigationIcon = { BackButton{ onBackPressed() } },
-                scrolledContainerColor = MaterialTheme.colorScheme.surface
+                colors = TopAppBarDefaults.largeTopAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    scrolledContainerColor = MaterialTheme.colorScheme.surface,
+                )
             )
         }
     ) {

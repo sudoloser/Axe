@@ -59,7 +59,9 @@ fun DarkThemePreferences(onBackPressed: () -> Unit) {
                         onBackPressed()
                     }
                 }, scrollBehavior = scrollBehavior,
-                scrolledContainerColor = MaterialTheme.colorScheme.surface
+                colors = TopAppBarDefaults.largeTopAppBarColors(
+                    scrolledContainerColor = MaterialTheme.colorScheme.surface,
+                )
             )
         }, content = {
             LazyColumn(modifier = Modifier.padding(it)) {

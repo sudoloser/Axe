@@ -39,7 +39,9 @@ fun Language(
                         onBackPressed()
                     }
                 },
-                scrolledContainerColor = MaterialTheme.colorScheme.surface
+                colors = TopAppBarDefaults.largeTopAppBarColors(
+                    scrolledContainerColor = MaterialTheme.colorScheme.surface,
+                )
             )
         }
     ) {
