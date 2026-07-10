@@ -15,8 +15,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.ui.res.painterResource
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.DropdownMenu
@@ -295,9 +294,10 @@ fun ChangelogSheet(
                             )
                             Spacer(Modifier.width(2.dp))
                             Icon(
-                                imageVector = Icons.Default.ArrowDropDown,
+                                painter = painterResource(R.drawable.ic_dropdown_arrow),
                                 contentDescription = "Select version",
                                 modifier = Modifier.size(18.dp),
+                                tint = MaterialTheme.colorScheme.onSurface,
                             )
                         }
                         DropdownMenu(
