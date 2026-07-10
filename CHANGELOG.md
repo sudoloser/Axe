@@ -9,6 +9,7 @@
 ### Credits
 - [UnpackedX](https://codeberg.org/UnpackedX/Kizzey)
 > Original ideas for copy logs, clear cache, and default progress bars
+
 # 7/10/2026 [v1.3.0]
 ### Added
 - Bug Report Form: In-app bottom sheet to submit bug reports with screenshots via Discord webhook

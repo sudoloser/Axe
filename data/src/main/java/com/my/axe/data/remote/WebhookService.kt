@@ -14,7 +14,7 @@ import javax.inject.Inject
 class WebhookService @Inject constructor(
     private val client: HttpClient,
 ) {
-    private val webhookUrl = "https://discord.com/api/webhooks/1524993937142710294/iAqo3VCnq6NCVBnNGcPJ9fYx8j6RIkqVU4D7N7sZQ8uNXciUjKWie12ZOTkjSQpB9kMq"
+    private val webhookUrl = "https://discord.com/api/webhooks/1525098118062801038/4nhxNjGMLy33nEzsPjOWXXZVMfA1muPMlCBWgmwj0w3w-VEjqGR7zvvEXlM8S771FYDu"
 
     suspend fun postRaw(jsonBody: String): Result<HttpResponse> = runCatching {
         client.post {

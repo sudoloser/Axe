@@ -106,9 +106,6 @@ fun Home(
     var hasShownUpdateDialog by remember {
         mutableStateOf(false)
     }
-    var showBugReportSheet by remember {
-        mutableStateOf(false)
-    }
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     val scrollBehavior =

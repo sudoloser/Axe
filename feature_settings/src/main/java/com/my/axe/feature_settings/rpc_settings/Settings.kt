@@ -12,6 +12,7 @@
 
 package com.my.axe.feature_settings.rpc_settings
 
+import android.content.Context
 import android.os.Build
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
@@ -169,7 +170,6 @@ fun Settings(onBackPressed: () -> Boolean) {
                         Toast.makeText(context, "Done", Toast.LENGTH_SHORT).show()
                     },
                 )
-            }
             }
         }
         if (showDirConfigDialog) {
@@ -472,8 +472,8 @@ fun Settings(onBackPressed: () -> Boolean) {
 }
 
 @Composable
-private fun GeneralSettings(
-    context: android.content.Context,
+fun GeneralSettings(
+    context: Context,
     configsDir: String,
     useButtonConfigs: Boolean,
     onConfigsDirClick: () -> Unit,
@@ -538,8 +538,8 @@ private fun GeneralSettings(
 }
 
 @Composable
-private fun AdvancedSettings(
-    context: android.content.Context,
+fun AdvancedSettings(
+    context: Context,
     useRemoteGateway: Boolean,
     useImgur: Boolean,
     isLowResIconsEnabled: Boolean,
