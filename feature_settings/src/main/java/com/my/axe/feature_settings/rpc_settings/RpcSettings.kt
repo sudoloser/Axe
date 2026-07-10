@@ -67,6 +67,7 @@ import com.my.axe.ui.components.dialog.SingleChoiceItem
 import com.my.axe.ui.components.preference.PreferenceSwitch
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import androidx.compose.material.icons.filled.Bolt
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
