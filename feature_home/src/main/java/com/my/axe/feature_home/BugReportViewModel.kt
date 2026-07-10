@@ -4,10 +4,12 @@ import android.content.Context
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.my.axe.data.remote.Author
 import com.my.axe.data.remote.CdnService
 import com.my.axe.data.remote.CdnUploadResponse
 import com.my.axe.data.remote.Embed
 import com.my.axe.data.remote.Field
+import com.my.axe.data.remote.Footer
 import com.my.axe.data.remote.Image
 import com.my.axe.data.remote.WebhookPayload
 import com.my.axe.data.remote.WebhookService
@@ -21,6 +23,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import java.time.Instant
 import javax.inject.Inject
 
 data class BugReportState(
@@ -88,8 +91,9 @@ class BugReportViewModel @Inject constructor(
                 response.fold(
                     onSuccess = { body ->
                         val parsed = json.decodeFromString<CdnUploadResponse>(body)
-                        if (parsed.success && parsed.url != null) {
-                            imageUrls.add("https://cdn.qzz.io${parsed.url}")
+                        val link = parsed.data?.link
+                        if (parsed.success && link != null) {
+                            imageUrls.add(link)
                         } else {
                             _state.value = _state.value.copy(
                                 isSubmitting = false,
@@ -114,21 +118,55 @@ class BugReportViewModel @Inject constructor(
 
             _state.value = _state.value.copy(uploadStatus = "Submitting report...")
 
+            // A stable URL shared across all embeds so Discord groups them
+            // into an inline image gallery on the same message card.
+            val galleryAnchor = imageUrls.firstOrNull() ?: "https://github.com/sudoloser/axe"
+
             val fields = buildList {
-                add(Field("Device", deviceModel, true))
-                add(Field("Android", androidVersion, true))
-                if (appVersion.isNotBlank()) add(Field("App Version", appVersion, true))
+                add(Field("📱 Device", deviceModel, inline = true))
+                add(Field("🤖 Android", androidVersion, inline = true))
+                if (appVersion.isNotBlank()) add(Field("📦 App Version", appVersion, inline = true))
+                if (imageUrls.isEmpty()) add(Field("🖼 Screenshots", "None attached", inline = false))
             }
 
-            val embed = Embed(
-                title = title,
-                description = description.ifBlank { "No description provided" },
-                color = 0x5865F2,
+            val timestamp = Instant.now().toString()
+
+            // Primary embed — contains all the report details + first image
+            val primaryEmbed = Embed(
+                author = Author(
+                    name = "🐛  Bug Report",
+                    iconUrl = "https://cdn.discordapp.com/emojis/1135593021519458336.webp",
+                ),
+                title = title.ifBlank { "Untitled Report" },
+                description = buildString {
+                    appendLine(description.ifBlank { "*No description provided.*" })
+                    if (imageUrls.size > 1) {
+                        appendLine()
+                        appendLine("*${imageUrls.size} screenshots attached ↓*")
+                    }
+                },
+                color = 0xEB459E, // Discord pink — stands out in the feed
+                url = galleryAnchor,
                 fields = fields,
                 image = imageUrls.firstOrNull()?.let { Image(it) },
+                footer = Footer(
+                    text = "Axe Bug Report  •  Submitted via in-app reporter",
+                    iconUrl = "https://raw.githubusercontent.com/sudoloser/axe/main/axe.png",
+                ),
+                timestamp = timestamp,
             )
 
-            val payload = WebhookPayload(embeds = listOf(embed))
+            // Extra image embeds — share `url = galleryAnchor` so Discord
+            // clusters them visually with the primary embed as a gallery.
+            val extraImageEmbeds = imageUrls.drop(1).map { imgUrl ->
+                Embed(
+                    url = galleryAnchor,
+                    color = 0xEB459E,
+                    image = Image(imgUrl),
+                )
+            }
+
+            val payload = WebhookPayload(embeds = listOf(primaryEmbed) + extraImageEmbeds)
             val payloadJson = json.encodeToString(payload)
 
             val webhookResult = withContext(Dispatchers.IO) {
