@@ -1,30 +1,36 @@
 package com.my.axe.data.remote
 
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.RequestBody.Companion.toRequestBody
-import java.util.concurrent.TimeUnit
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.okhttp.OkHttp
+import io.ktor.client.request.headers
+import io.ktor.client.request.post
+import io.ktor.client.request.setBody
+import io.ktor.client.request.url
+import io.ktor.client.statement.bodyAsText
+import io.ktor.http.HttpHeaders
 import javax.inject.Inject
 
 class CdnService @Inject constructor() {
     private val baseUrl = "https://cdn.qzz.io"
-    private val client = OkHttpClient.Builder()
-        .connectTimeout(30, TimeUnit.SECONDS)
-        .readTimeout(30, TimeUnit.SECONDS)
-        .writeTimeout(30, TimeUnit.SECONDS)
-        .build()
+    private val client = HttpClient(OkHttp) {
+        engine {
+            config {
+                connectTimeout(30, java.util.concurrent.TimeUnit.SECONDS)
+                readTimeout(30, java.util.concurrent.TimeUnit.SECONDS)
+                writeTimeout(30, java.util.concurrent.TimeUnit.SECONDS)
+            }
+        }
+    }
 
     suspend fun uploadPublic(filename: String, data: ByteArray): Result<String> = runCatching {
-        val body = data.toRequestBody("application/octet-stream".toMediaType())
-        val request = Request.Builder()
-            .url("$baseUrl/api/v1/upload/public")
-            .header("X-Filename", filename)
-            .post(body)
-            .build()
-        val response = client.newCall(request).execute()
-        val responseBody = response.body?.string() ?: ""
-        if (!response.isSuccessful) throw RuntimeException("HTTP ${response.code}: $responseBody")
-        responseBody
+        client.post {
+            url("$baseUrl/api/v1/upload/public")
+            headers {
+                append("X-Filename", filename)
+                append(HttpHeaders.ContentType, "application/octet-stream")
+                append(HttpHeaders.UserAgent, "Axe/1.2.2")
+            }
+            setBody(data)
+        }.bodyAsText()
     }
 }

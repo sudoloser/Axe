@@ -23,12 +23,12 @@ dependencies {
     implementation (libs.bundles.network.ktor)
     implementation (libs.ktor.content.negotiation)
     implementation (libs.ktor.logging)
+    implementation (libs.ktor.client.okhttp)
     implementation (projects.common.preference)
     implementation (projects.common.resources)
     implementation (projects.gateway)
     implementation (libs.mmkv)
     implementation (libs.blankj.utilcodex)
-    implementation (libs.okhttp)
     testImplementation(libs.junit)
 }
 
