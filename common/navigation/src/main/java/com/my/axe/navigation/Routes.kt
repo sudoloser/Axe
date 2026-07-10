@@ -33,9 +33,9 @@ class Routes {
         const val OVERLAY_SETTINGS = "overlay_settings"
 
         /* Settings Screens */
+        const val SETTINGS = "settings"
         const val LANGUAGES = "languages"
         const val STYLE_AND_APPEARANCE = "style_and_appearance"
-        const val RPC_SETTINGS = "rpc_settings"
 
         /* Display Screen */
         const val DARK_THEME ="dark_theme_screen"

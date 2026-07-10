@@ -3,9 +3,6 @@ package com.my.axe.feature_settings
 import android.app.StatusBarManager
 import android.content.ComponentName
 import android.os.Build
-import android.widget.Toast
-import coil.Coil
-import coil.imageLoader
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeOut
@@ -41,7 +38,7 @@ import com.my.axe.resources.R
 import com.my.axe.ui.components.Subtitle
 import com.my.axe.ui.components.chips
 
-@OptIn(ExperimentalMaterial3Api::class, coil.annotation.ExperimentalCoilApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsDrawer(
     user: User?,
@@ -162,18 +159,6 @@ fun SettingsDrawer(
                         icon = Icons.Outlined.BugReport,
                     ) {
                         onReportBug()
-                    }
-                }
-                item {
-                    val context = LocalContext.current
-                    SettingsItemCard(
-                        title = stringResource(id = R.string.clear_cache),
-                        icon = Icons.Outlined.Delete,
-                    ) {
-                        Coil.imageLoader(context).memoryCache?.clear()
-                        Coil.imageLoader(context).diskCache?.clear()
-                        context.cacheDir.deleteRecursively()
-                        Toast.makeText(context, R.string.cache_cleared, Toast.LENGTH_SHORT).show()
                     }
                 }
                 item {

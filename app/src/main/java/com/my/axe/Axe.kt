@@ -54,7 +54,7 @@ import com.my.axe.feature_profile.ui.user.UserViewModel
 import com.my.axe.feature_rpc_base.AppUtils
 import com.my.axe.feature_rpc_base.services.AxeTileService
 import com.my.axe.feature_settings.language.Language
-import com.my.axe.feature_settings.rpc_settings.RpcSettings
+import com.my.axe.feature_settings.rpc_settings.Settings
 import com.my.axe.feature_settings.style.Appearance
 import com.my.axe.feature_settings.style.DarkThemePreferences
 import com.my.axe.feature_startup.StartUp
@@ -149,7 +149,7 @@ internal fun ComponentActivity.axe(
                         navController.navigate(Routes.ABOUT)
                     },
                     navigateToRpcSettings = {
-                        navController.navigate(Routes.RPC_SETTINGS)
+                        navController.navigate(Routes.SETTINGS)
                     },
                     navigateToLogsScreen = {
                         navController.navigate(Routes.LOGS_SCREEN)
@@ -258,8 +258,8 @@ internal fun ComponentActivity.axe(
                     }
                 )
             }
-            animatedComposable(Routes.RPC_SETTINGS) {
-                RpcSettings(
+            animatedComposable(Routes.SETTINGS) {
+                Settings(
                     onBackPressed = {
                         navController.popBackStack()
                     }
