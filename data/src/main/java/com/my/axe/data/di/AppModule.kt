@@ -67,7 +67,6 @@ object AppModule {
     fun provideJson() = Json {
         ignoreUnknownKeys = true
         encodeDefaults = true
-        ignoreContentType = true
     }
 
     @Provides
@@ -77,7 +76,7 @@ object AppModule {
     ): HttpClient {
         return HttpClient(OkHttp) {
             install(ContentNegotiation) {
-                json(json)
+                json(json, ignoreContentType = true)
             }
             install(HttpTimeout) {
                 connectTimeoutMillis = 30_000
