@@ -31,7 +31,7 @@ android {
             isMinifyEnabled = true
         }
         register("beta") {
-            initWith(release)
+            initWith(getByName("release"))
             applicationIdSuffix = ".beta"
             versionNameSuffix = "-pre"
             buildConfigField("boolean", "IS_BETA", "true")
