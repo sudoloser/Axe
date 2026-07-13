@@ -32,6 +32,8 @@ import io.ktor.client.statement.HttpResponse
 import java.io.File
 import javax.inject.Inject
 
+import com.my.axe.data.utils.safeBody
+
 class AxeRepositoryImpl @Inject constructor(
     private val api: ApiService,
     private val imgurApi: ImgurApiService,
@@ -55,16 +57,16 @@ class AxeRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getGames(): List<Game> {
-        return api.getGames().getOrNull()?.body<List<GamesResponse>>()?.map { it.toGame() }
+        return api.getGames().getOrNull()?.safeBody<List<GamesResponse>>()?.map { it.toGame() }
             ?: emptyList()
     }
 
     override suspend fun getUser(userid: String): User {
-        return api.getUser(userid).getOrNull()?.body() ?: User()
+        return api.getUser(userid).getOrNull()?.safeBody<User>() ?: User()
     }
 
     override suspend fun getContributors(): List<Contributor> {
-        return api.getContributors().getOrNull()?.body() ?: emptyList()
+        return api.getContributors().getOrNull()?.safeBody<List<Contributor>>() ?: emptyList()
     }
 
     override suspend fun checkForUpdate(): Release {
@@ -78,8 +80,9 @@ class AxeRepositoryImpl @Inject constructor(
 
 suspend fun HttpResponse.releaseBody(): Release {
     return if (this.status.value == 200) {
-        Prefs.saveLatestRelease(this.body())
-        this.body()
+        val release = this.safeBody<Release>()
+        Prefs.saveLatestRelease(release)
+        release
     } else {
         Prefs.getSavedLatestRelease() ?: Release()
     }
@@ -87,7 +90,7 @@ suspend fun HttpResponse.releaseBody(): Release {
 
 suspend fun HttpResponse.betaReleaseBody(): Release {
     return if (this.status.value == 200) {
-        val releases = this.body<List<Release>>()
+        val releases = this.safeBody<List<Release>>()
         val latest = releases.filter { it.prerelease == true }
             .maxByOrNull { it.toVersion() }
         if (latest != null) {
