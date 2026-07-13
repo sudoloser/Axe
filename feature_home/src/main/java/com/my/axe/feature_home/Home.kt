@@ -84,9 +84,7 @@ fun Home(
     user: User?,
     componentName: ComponentName? = null,
     navigateToProfile: () -> Unit,
-    navigateToLanguages: () -> Unit,
     navigateToSettings: () -> Unit,
-    navigateToLogsScreen: () -> Unit,
     bugReportViewModel: BugReportViewModel? = null,
 ) {
     var timestamp by remember { mutableLongStateOf(System.currentTimeMillis()) }
@@ -136,9 +134,7 @@ fun Home(
                         showAxeQuickieRequestItem = !AxeTileService.tileAdded.value,
                         componentName = componentName,
                         navigateToProfile = navigateToProfile,
-                        navigateToLanguages = navigateToLanguages,
                         navigateToSettings = navigateToSettings,
-                        navigateToLogsScreen = navigateToLogsScreen,
                         onReportBug = { showBugReportSheet = true },
                     )
                 }
@@ -295,9 +291,7 @@ fun HomeScreenPreview() {
         features = fakeFeatures,
         user = fakeUser,
         navigateToProfile = { },
-        navigateToLanguages = { },
         navigateToSettings = { },
-        navigateToLogsScreen = {},
         bugReportViewModel = null,
     )
 }

@@ -67,6 +67,7 @@ object AppModule {
     fun provideJson() = Json {
         ignoreUnknownKeys = true
         encodeDefaults = true
+        ignoreContentType = true
     }
 
     @Provides

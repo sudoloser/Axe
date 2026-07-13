@@ -46,9 +46,7 @@ fun Sidebar(
     showAxeQuickieRequestItem: Boolean,
     componentName: ComponentName,
     navigateToProfile: () -> Unit,
-    navigateToLanguages: () -> Unit,
     navigateToSettings: () -> Unit,
-    navigateToLogsScreen: () -> Unit,
     onReportBug: () -> Unit = {},
 ) {
     val uriHandler = LocalUriHandler.current
@@ -82,22 +80,6 @@ fun Sidebar(
                 verticalArrangement = Arrangement.spacedBy(5.dp),
                 modifier = Modifier.weight(8f)
             ) {
-                item {
-                    SettingsItemCard(
-                        title = stringResource(R.string.language),
-                        icon = Icons.Outlined.Language,
-                    ) {
-                        navigateToLanguages()
-                    }
-                }
-                item {
-                    SettingsItemCard(
-                        title = stringResource(id = R.string.logs),
-                        icon = Icons.Outlined.BugReport
-                    ) {
-                        navigateToLogsScreen()
-                    }
-                }
                 item {
                     SettingsItemCard(
                         title = stringResource(id = R.string.settings),
@@ -285,6 +267,8 @@ fun SettingsScreen(
     navigateToAppearance: () -> Unit,
     navigateToAbout: () -> Unit,
     navigateToDeveloperSettings: () -> Unit = {},
+    navigateToLanguages: () -> Unit = {},
+    navigateToLogsScreen: () -> Unit = {},
     isBeta: Boolean = false,
 ) {
     Scaffold(
@@ -309,6 +293,22 @@ fun SettingsScreen(
                         icon = Icons.Outlined.Update,
                         selected = true,
                     )
+                }
+            }
+            item {
+                SettingsItemCard(
+                    title = stringResource(id = R.string.language),
+                    icon = Icons.Outlined.Language
+                ) {
+                    navigateToLanguages()
+                }
+            }
+            item {
+                SettingsItemCard(
+                    title = stringResource(id = R.string.logs),
+                    icon = Icons.Outlined.BugReport
+                ) {
+                    navigateToLogsScreen()
                 }
             }
             item {
@@ -360,9 +360,7 @@ fun SidebarPreview() {
             componentName = ComponentName("", ""),
             user = null,
             navigateToProfile = {},
-            navigateToLanguages = {},
-            navigateToSettings = {},
-            navigateToLogsScreen = {}
+            navigateToSettings = {}
         )
     }
 }

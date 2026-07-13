@@ -143,14 +143,8 @@ internal fun ComponentActivity.axe(
                     navigateToProfile = {
                         navController.navigate(Routes.PROFILE)
                     },
-                    navigateToLanguages = {
-                        navController.navigate(Routes.LANGUAGES)
-                    },
                     navigateToSettings = {
                         navController.navigate(Routes.SETTINGS)
-                    },
-                    navigateToLogsScreen = {
-                        navController.navigate(Routes.LOGS_SCREEN)
                     },
                     bugReportViewModel = bugReportViewModel,
                 )
@@ -260,6 +254,12 @@ internal fun ComponentActivity.axe(
                 SettingsScreen(
                     onBackPressed = {
                         navController.popBackStack()
+                    },
+                    navigateToLanguages = {
+                        navController.navigate(Routes.LANGUAGES)
+                    },
+                    navigateToLogsScreen = {
+                        navController.navigate(Routes.LOGS_SCREEN)
                     },
                     navigateToRpcSettings = {
                         navController.navigate(Routes.RPC_SETTINGS)
