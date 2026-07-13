@@ -29,7 +29,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import io.ktor.client.HttpClient
-import io.ktor.client.engine.cio.CIO
+import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.logging.LogLevel
@@ -74,7 +74,7 @@ object AppModule {
         json: Json,
         kLogger: com.my.axe.domain.interfaces.Logger
     ): HttpClient {
-        return HttpClient(CIO) {
+        return HttpClient(OkHttp) {
             install(ContentNegotiation) {
                 json(json)
             }
