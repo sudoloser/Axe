@@ -85,6 +85,8 @@ fun Home(
     componentName: ComponentName? = null,
     navigateToProfile: () -> Unit,
     navigateToSettings: () -> Unit,
+    navigateToLanguages: () -> Unit = {},
+    navigateToLogsScreen: () -> Unit = {},
     bugReportViewModel: BugReportViewModel? = null,
 ) {
     var timestamp by remember { mutableLongStateOf(System.currentTimeMillis()) }
@@ -135,6 +137,8 @@ fun Home(
                         componentName = componentName,
                         navigateToProfile = navigateToProfile,
                         navigateToSettings = navigateToSettings,
+                        navigateToLanguages = navigateToLanguages,
+                        navigateToLogsScreen = navigateToLogsScreen,
                         onReportBug = { showBugReportSheet = true },
                     )
                 }

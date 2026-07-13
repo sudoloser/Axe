@@ -76,7 +76,7 @@ object AppModule {
     ): HttpClient {
         return HttpClient(OkHttp) {
             install(ContentNegotiation) {
-                json(json, ignoreContentType = true)
+                json(json)
             }
             install(HttpTimeout) {
                 connectTimeoutMillis = 30_000

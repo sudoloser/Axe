@@ -146,6 +146,12 @@ internal fun ComponentActivity.axe(
                     navigateToSettings = {
                         navController.navigate(Routes.SETTINGS)
                     },
+                    navigateToLanguages = {
+                        navController.navigate(Routes.LANGUAGES)
+                    },
+                    navigateToLogsScreen = {
+                        navController.navigate(Routes.LOGS_SCREEN)
+                    },
                     bugReportViewModel = bugReportViewModel,
                 )
             }

@@ -39,6 +39,9 @@ import com.my.axe.ui.components.BackButton
 import com.my.axe.ui.components.Subtitle
 import com.my.axe.ui.components.chips
 
+import androidx.compose.material.icons.automirrored.outlined.KeyboardArrowRight
+import androidx.compose.foundation.clickable
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Sidebar(
@@ -47,6 +50,8 @@ fun Sidebar(
     componentName: ComponentName,
     navigateToProfile: () -> Unit,
     navigateToSettings: () -> Unit,
+    navigateToLanguages: () -> Unit = {},
+    navigateToLogsScreen: () -> Unit = {},
     onReportBug: () -> Unit = {},
 ) {
     val uriHandler = LocalUriHandler.current
@@ -86,6 +91,22 @@ fun Sidebar(
                         icon = Icons.Outlined.Settings
                     ) {
                         navigateToSettings()
+                    }
+                }
+                item {
+                    SettingsItemCard(
+                        title = stringResource(id = R.string.language),
+                        icon = Icons.Outlined.Language
+                    ) {
+                        navigateToLanguages()
+                    }
+                }
+                item {
+                    SettingsItemCard(
+                        title = stringResource(id = R.string.logs),
+                        icon = Icons.Outlined.BugReport
+                    ) {
+                        navigateToLogsScreen()
                     }
                 }
                 item {
@@ -193,7 +214,7 @@ fun SettingsItemCard(
                 modifier = Modifier
                     .padding(end = 5.dp)
                     .size(28.dp)
-            )
+                )
         },
         selected = selected,
         onClick = { onClick() }
@@ -259,6 +280,103 @@ fun ProfileCardSmall(
     }
 }
 
+@Composable
+fun SettingsGroup(
+    title: String,
+    content: @Composable ColumnScope.() -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 8.dp)
+    ) {
+        Text(
+            text = title,
+            style = MaterialTheme.typography.titleSmall.copy(
+                fontWeight = FontWeight.Bold,
+                letterSpacing = 0.5.sp
+            ),
+            color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.padding(start = 8.dp, bottom = 8.dp)
+        )
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(18.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.2f)
+            ),
+            border = androidx.compose.foundation.BorderStroke(
+                width = 1.dp,
+                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f)
+            )
+        ) {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                content = content
+            )
+        }
+    }
+}
+
+@Composable
+fun SettingsRow(
+    title: String,
+    summary: String,
+    icon: ImageVector,
+    iconContainerColor: Color,
+    iconTint: Color = Color.White,
+    onClick: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick)
+            .padding(horizontal = 16.dp, vertical = 14.dp),
+        verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
+    ) {
+        Box(
+            modifier = Modifier
+                .size(38.dp)
+                .background(iconContainerColor, RoundedCornerShape(10.dp)),
+            contentAlignment = androidx.compose.ui.Alignment.Center
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                tint = iconTint,
+                modifier = Modifier.size(20.dp)
+            )
+        }
+        Spacer(modifier = Modifier.width(16.dp))
+        Column(
+            modifier = Modifier.weight(1f)
+        ) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.titleMedium.copy(
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 16.sp
+                ),
+                color = MaterialTheme.colorScheme.onSurface
+            )
+            Spacer(modifier = Modifier.height(2.dp))
+            Text(
+                text = summary,
+                style = MaterialTheme.typography.bodyMedium.copy(
+                    fontSize = 13.sp
+                ),
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+        Icon(
+            imageVector = Icons.AutoMirrored.Outlined.KeyboardArrowRight,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
+            modifier = Modifier.size(20.dp)
+        )
+    }
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
@@ -284,63 +402,63 @@ fun SettingsScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues),
-            verticalArrangement = Arrangement.spacedBy(5.dp)
+            contentPadding = PaddingValues(vertical = 12.dp)
         ) {
             if (isBeta) {
                 item {
-                    SettingsItemCard(
-                        title = stringResource(id = R.string.latest_pre_release),
-                        icon = Icons.Outlined.Update,
-                        selected = true,
+                    SettingsGroup(title = "System Update") {
+                        SettingsRow(
+                            title = stringResource(id = R.string.latest_pre_release),
+                            summary = "Update to the latest preview or beta features",
+                            icon = Icons.Outlined.Update,
+                            iconContainerColor = Color(0xFFE91E63),
+                            onClick = {}
+                        )
+                    }
+                }
+            }
+
+            item {
+                SettingsGroup(title = "Personalization") {
+                    SettingsRow(
+                        title = stringResource(id = R.string.appearence),
+                        summary = "Themes, dark mode preferences, and colors",
+                        icon = Icons.Outlined.Palette,
+                        iconContainerColor = Color(0xFF9C27B0),
+                        onClick = navigateToAppearance
                     )
                 }
             }
+
             item {
-                SettingsItemCard(
-                    title = stringResource(id = R.string.language),
-                    icon = Icons.Outlined.Language
-                ) {
-                    navigateToLanguages()
+                SettingsGroup(title = "Integrations") {
+                    SettingsRow(
+                        title = stringResource(id = R.string.rpc_settings),
+                        summary = "Discord integration, status, and button configs",
+                        icon = Icons.Outlined.Settings,
+                        iconContainerColor = Color(0xFF2196F3),
+                        onClick = navigateToRpcSettings
+                    )
                 }
             }
+
             item {
-                SettingsItemCard(
-                    title = stringResource(id = R.string.logs),
-                    icon = Icons.Outlined.BugReport
-                ) {
-                    navigateToLogsScreen()
-                }
-            }
-            item {
-                SettingsItemCard(
-                    title = stringResource(id = R.string.rpc_settings),
-                    icon = Icons.Outlined.Settings
-                ) {
-                    navigateToRpcSettings()
-                }
-            }
-            item {
-                SettingsItemCard(
-                    title = stringResource(id = R.string.appearence),
-                    icon = Icons.Outlined.Palette
-                ) {
-                    navigateToAppearance()
-                }
-            }
-            item {
-                SettingsItemCard(
-                    title = stringResource(id = R.string.about),
-                    icon = Icons.Outlined.Info
-                ) {
-                    navigateToAbout()
-                }
-            }
-            item {
-                SettingsItemCard(
-                    title = stringResource(id = R.string.developer_settings),
-                    icon = Icons.Outlined.Code
-                ) {
-                    navigateToDeveloperSettings()
+                SettingsGroup(title = "App Info & Support") {
+                    SettingsRow(
+                        title = stringResource(id = R.string.about),
+                        summary = "Credits, version info, and developer profile",
+                        icon = Icons.Outlined.Info,
+                        iconContainerColor = Color(0xFF4CAF50),
+                        onClick = navigateToAbout
+                    )
+                    HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
+                    SettingsRow(
+                        title = stringResource(id = R.string.developer_settings),
+                        summary = "Advanced debugging and log preferences",
+                        icon = Icons.Outlined.Code,
+                        iconContainerColor = Color(0xFFFF9800),
+                        onClick = navigateToDeveloperSettings
+                    )
                 }
             }
         }
@@ -360,7 +478,9 @@ fun SidebarPreview() {
             componentName = ComponentName("", ""),
             user = null,
             navigateToProfile = {},
-            navigateToSettings = {}
+            navigateToSettings = {},
+            navigateToLanguages = {},
+            navigateToLogsScreen = {}
         )
     }
 }
