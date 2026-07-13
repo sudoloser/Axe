@@ -23,6 +23,7 @@ import com.my.axe.data.utils.toImageURL
 import com.my.axe.domain.model.Contributor
 import com.my.axe.domain.model.Game
 import com.my.axe.domain.model.release.Release
+import com.my.axe.domain.model.toVersion
 import com.my.axe.domain.model.user.User
 import com.my.axe.domain.repository.AxeRepository
 import com.my.axe.preference.Prefs
@@ -69,12 +70,32 @@ class AxeRepositoryImpl @Inject constructor(
     override suspend fun checkForUpdate(): Release {
         return api.checkForUpdate().getOrNull()?.releaseBody() ?: Release()
     }
+
+    override suspend fun checkForBetaUpdate(): Release {
+        return api.checkForPreReleaseUpdate().getOrNull()?.betaReleaseBody() ?: Release()
+    }
 }
 
 suspend fun HttpResponse.releaseBody(): Release {
     return if (this.status.value == 200) {
         Prefs.saveLatestRelease(this.body())
         this.body()
+    } else {
+        Prefs.getSavedLatestRelease() ?: Release()
+    }
+}
+
+suspend fun HttpResponse.betaReleaseBody(): Release {
+    return if (this.status.value == 200) {
+        val releases = this.body<List<Release>>()
+        val latest = releases.filter { it.prerelease == true }
+            .maxByOrNull { it.toVersion() }
+        if (latest != null) {
+            Prefs.saveLatestRelease(latest)
+            latest
+        } else {
+            Prefs.getSavedLatestRelease() ?: Release()
+        }
     } else {
         Prefs.getSavedLatestRelease() ?: Release()
     }

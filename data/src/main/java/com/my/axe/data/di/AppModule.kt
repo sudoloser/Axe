@@ -23,6 +23,7 @@ import com.my.axe.data.remote.ImgurApiService
 import com.my.axe.data.remote.WebhookService
 import com.my.axe.data.repository.AxeRepositoryImpl
 import com.my.axe.domain.repository.AxeRepository
+import com.my.axe.preference.Prefs
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -45,7 +46,7 @@ object AppModule {
     @Provides
     @Singleton
     @Base
-    fun provideBaseUrl() = BuildConfig.BASE_URL
+    fun provideBaseUrl() = Prefs[Prefs.CUSTOM_API_BASE_URL, ""].ifEmpty { BuildConfig.BASE_URL }
 
     @Provides
     @Singleton

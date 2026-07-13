@@ -35,20 +35,19 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.my.axe.domain.model.user.User
 import com.my.axe.resources.R
+import com.my.axe.ui.components.BackButton
 import com.my.axe.ui.components.Subtitle
 import com.my.axe.ui.components.chips
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsDrawer(
+fun Sidebar(
     user: User?,
     showAxeQuickieRequestItem: Boolean,
     componentName: ComponentName,
     navigateToProfile: () -> Unit,
-    navigateToStyleAndAppearance: () -> Unit,
     navigateToLanguages: () -> Unit,
-    navigateToAbout: () -> Unit,
-    navigateToRpcSettings: () -> Unit,
+    navigateToSettings: () -> Unit,
     navigateToLogsScreen: () -> Unit,
     onReportBug: () -> Unit = {},
 ) {
@@ -85,14 +84,6 @@ fun SettingsDrawer(
             ) {
                 item {
                     SettingsItemCard(
-                        title = stringResource(id = R.string.display),
-                        icon = Icons.Outlined.Palette
-                    ) {
-                        navigateToStyleAndAppearance()
-                    }
-                }
-                item {
-                    SettingsItemCard(
                         title = stringResource(R.string.language),
                         icon = Icons.Outlined.Language,
                     ) {
@@ -112,7 +103,7 @@ fun SettingsDrawer(
                         title = stringResource(id = R.string.settings),
                         icon = Icons.Outlined.Settings
                     ) {
-                        navigateToRpcSettings()
+                        navigateToSettings()
                     }
                 }
                 item {
@@ -145,14 +136,6 @@ fun SettingsDrawer(
                     }
                 }
                 */
-                item {
-                    SettingsItemCard(
-                        title = stringResource(id = R.string.about),
-                        icon = Icons.Outlined.Info
-                    ) {
-                        navigateToAbout()
-                    }
-                }
                 item {
                     SettingsItemCard(
                         title = stringResource(id = R.string.report_a_bug),
@@ -294,23 +277,91 @@ fun ProfileCardSmall(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SettingsScreen(
+    onBackPressed: () -> Boolean,
+    navigateToRpcSettings: () -> Unit,
+    navigateToAppearance: () -> Unit,
+    navigateToAbout: () -> Unit,
+    navigateToDeveloperSettings: () -> Unit = {},
+    isBeta: Boolean = false,
+) {
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        topBar = {
+            TopAppBar(
+                title = { Text(stringResource(id = R.string.settings)) },
+                navigationIcon = { BackButton { onBackPressed() } }
+            )
+        }
+    ) { paddingValues ->
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues),
+            verticalArrangement = Arrangement.spacedBy(5.dp)
+        ) {
+            if (isBeta) {
+                item {
+                    SettingsItemCard(
+                        title = stringResource(id = R.string.latest_pre_release),
+                        icon = Icons.Outlined.Update,
+                        selected = true,
+                    )
+                }
+            }
+            item {
+                SettingsItemCard(
+                    title = stringResource(id = R.string.rpc_settings),
+                    icon = Icons.Outlined.Settings
+                ) {
+                    navigateToRpcSettings()
+                }
+            }
+            item {
+                SettingsItemCard(
+                    title = stringResource(id = R.string.appearence),
+                    icon = Icons.Outlined.Palette
+                ) {
+                    navigateToAppearance()
+                }
+            }
+            item {
+                SettingsItemCard(
+                    title = stringResource(id = R.string.about),
+                    icon = Icons.Outlined.Info
+                ) {
+                    navigateToAbout()
+                }
+            }
+            item {
+                SettingsItemCard(
+                    title = stringResource(id = R.string.developer_settings),
+                    icon = Icons.Outlined.Code
+                ) {
+                    navigateToDeveloperSettings()
+                }
+            }
+        }
+    }
+}
+
 @Preview
 @Composable
-fun SettingsDrawerPreview() {
+fun SidebarPreview() {
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.LightGray)
     ) {
-        SettingsDrawer(
+        Sidebar(
             showAxeQuickieRequestItem = false,
             componentName = ComponentName("", ""),
             user = null,
             navigateToProfile = {},
-            navigateToStyleAndAppearance = {},
             navigateToLanguages = {},
-            navigateToAbout = {},
-            navigateToRpcSettings = {},
+            navigateToSettings = {},
             navigateToLogsScreen = {}
         )
     }

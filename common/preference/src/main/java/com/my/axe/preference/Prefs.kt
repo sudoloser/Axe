@@ -193,6 +193,8 @@ object Prefs {
 
     const val LATEST_RELEASE = "latest_release"
 
+    const val CUSTOM_API_BASE_URL = "custom_api_base_url"
+
     // Last Deleted Time of Saved Images
     const val LAST_DELETED = "last_deleted"
 

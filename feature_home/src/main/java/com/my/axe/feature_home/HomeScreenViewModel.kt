@@ -16,6 +16,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.my.axe.domain.model.Resource
 import com.my.axe.domain.model.release.Release
+import com.my.axe.domain.use_case.check_for_update.CheckForBetaUpdateUseCase
 import com.my.axe.domain.use_case.check_for_update.CheckForUpdateUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,7 +27,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeScreenViewModel @Inject constructor(
-    private val checkForUpdateUseCase: CheckForUpdateUseCase
+    private val checkForUpdateUseCase: CheckForUpdateUseCase,
+    private val checkForBetaUpdateUseCase: CheckForBetaUpdateUseCase,
 ): ViewModel() {
     private val _aboutScreenState: MutableStateFlow<HomeScreenState> = MutableStateFlow(
         HomeScreenState.Loading
@@ -44,6 +46,26 @@ class HomeScreenViewModel @Inject constructor(
                     _aboutScreenState.value =
                         HomeScreenState.Error(result.message ?: "An unexpected error occurred")
                 }
+                is Resource.Loading -> {
+                    _aboutScreenState.value = HomeScreenState.Loading
+                }
+            }
+        }.launchIn(viewModelScope)
+    }
+
+    fun getLatestBetaUpdate() {
+        checkForBetaUpdateUseCase().onEach { result ->
+            when (result) {
+                is Resource.Success -> {
+                    _aboutScreenState.value =
+                        HomeScreenState.LoadingCompleted(result.data ?: Release())
+                }
+
+                is Resource.Error -> {
+                    _aboutScreenState.value =
+                        HomeScreenState.Error(result.message ?: "An unexpected error occurred")
+                }
+
                 is Resource.Loading -> {
                     _aboutScreenState.value = HomeScreenState.Loading
                 }

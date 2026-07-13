@@ -69,7 +69,7 @@ import com.my.axe.feature_home.feature.Features
 import com.my.axe.feature_home.feature.HomeFeature
 import com.my.axe.feature_home.feature.ToolTipContent
 import com.my.axe.feature_rpc_base.services.AxeTileService
-import com.my.axe.feature_settings.SettingsDrawer
+import com.my.axe.feature_settings.Sidebar
 import com.my.axe.resources.R
 import com.my.axe.ui.components.ChipSection
 import com.my.axe.ui.components.ChangelogSheet
@@ -84,10 +84,8 @@ fun Home(
     user: User?,
     componentName: ComponentName? = null,
     navigateToProfile: () -> Unit,
-    navigateToStyleAndAppearance: () -> Unit,
     navigateToLanguages: () -> Unit,
-    navigateToAbout: () -> Unit,
-    navigateToRpcSettings: () -> Unit,
+    navigateToSettings: () -> Unit,
     navigateToLogsScreen: () -> Unit,
     bugReportViewModel: BugReportViewModel? = null,
 ) {
@@ -133,15 +131,13 @@ fun Home(
                 drawerContainerColor = MaterialTheme.colorScheme.surface,
             ) {
                 if (componentName != null) {
-                    SettingsDrawer(
+                    Sidebar(
                         user = user,
                         showAxeQuickieRequestItem = !AxeTileService.tileAdded.value,
                         componentName = componentName,
                         navigateToProfile = navigateToProfile,
-                        navigateToStyleAndAppearance = navigateToStyleAndAppearance,
                         navigateToLanguages = navigateToLanguages,
-                        navigateToAbout = navigateToAbout,
-                        navigateToRpcSettings = navigateToRpcSettings,
+                        navigateToSettings = navigateToSettings,
                         navigateToLogsScreen = navigateToLogsScreen,
                         onReportBug = { showBugReportSheet = true },
                     )
@@ -299,10 +295,8 @@ fun HomeScreenPreview() {
         features = fakeFeatures,
         user = fakeUser,
         navigateToProfile = { },
-        navigateToStyleAndAppearance = { },
         navigateToLanguages = { },
-        navigateToAbout = { },
-        navigateToRpcSettings = { },
+        navigateToSettings = { },
         navigateToLogsScreen = {},
         bugReportViewModel = null,
     )

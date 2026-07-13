@@ -1,3 +1,21 @@
+# TBD [v1.4.0-pre]
+### Added
+- Beta build type: Side-by-side installable beta APK (`com.my.axe.beta`) with `-pre` version suffix
+- Pre-release update checking: Beta builds auto-check GitHub for newer pre-releases
+- Beta CI workflow: Automated build, sign, and release on `v*.*.*-pre` tag push
+- "You're on the latest pre-release of Axe" status row in Settings on beta builds
+### Added
+- Developer settings page: Simulate crash, change API base URL, version info
+- Custom API base URL preference: Override the backend URL stored in app memory
+- API base URL reset: One-tap restore to default from Developer settings
+### Changed
+- Settings redesign: New settings menu with RPC Settings, Appearance, and About buttons
+- Sidebar: Renamed from SettingsDrawer; removed Display and About items (now in Settings menu)
+- Version comparison: Now compares major.minor.patch instead of just major.minor
+- API base URL: Now reads from user preference with BuildConfig fallback
+### Fixed
+- Update checker not detecting new releases due to `v` prefix not being stripped in `Release.toVersion()`
+
 # 7/10/2026 [v1.3.1]
 ### Added
 - "Improved" tabbed settings layout

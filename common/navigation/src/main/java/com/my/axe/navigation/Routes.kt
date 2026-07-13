@@ -34,6 +34,7 @@ class Routes {
 
         /* Settings Screens */
         const val SETTINGS = "settings"
+        const val RPC_SETTINGS = "rpc_settings"
         const val LANGUAGES = "languages"
         const val STYLE_AND_APPEARANCE = "style_and_appearance"
 
@@ -46,5 +47,8 @@ class Routes {
         /* About Screen */
         const val ABOUT = "about"
         const val CREDITS = "credits"
+
+        /* Developer Screen */
+        const val DEVELOPER_SETTINGS = "developer_settings"
     }
 }
