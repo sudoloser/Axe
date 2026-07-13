@@ -4,7 +4,7 @@ package com.my.axe.domain.model
 
 import com.my.axe.domain.model.release.Release
 
-class Version(numbers: List<String>) {
+class Version(numbers: List<String>) : Comparable<Version> {
 
     private var major: Int = 0
     private var minor: Int = 0
