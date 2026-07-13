@@ -76,7 +76,7 @@ object AppModule {
     ): HttpClient {
         return HttpClient(OkHttp) {
             install(ContentNegotiation) {
-                json(json)
+                json(json, contentType = io.ktor.http.ContentType.Any)
             }
             install(HttpTimeout) {
                 connectTimeoutMillis = 30_000
