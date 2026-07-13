@@ -88,7 +88,7 @@ fun DeveloperSettings(
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = "${stringResource(id = R.string.default)}: $defaultApiUrl",
+                    text = "${stringResource(id = R.string.default_label)}: $defaultApiUrl",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(horizontal = 16.dp),

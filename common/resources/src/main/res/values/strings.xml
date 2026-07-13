@@ -268,5 +268,5 @@
     <string name="api_base_url_desc">Custom backend URL for the app API</string>
     <string name="reset_to_default">Reset to default</string>
     <string name="restart_to_apply">Restart app to apply changes</string>
-    <string name="default">Default</string>
+    <string name="default_label">Default</string>
 </resources>
