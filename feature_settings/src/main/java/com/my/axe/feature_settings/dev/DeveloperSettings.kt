@@ -52,6 +52,7 @@ fun DeveloperSettings(
     var customApiUrl by remember {
         mutableStateOf(Prefs[Prefs.CUSTOM_API_BASE_URL, ""])
     }
+    val restartToApply = stringResource(id = R.string.restart_to_apply)
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -109,7 +110,7 @@ fun DeveloperSettings(
                 TextButton(
                     onClick = {
                         Prefs[Prefs.CUSTOM_API_BASE_URL] = customApiUrl
-                        Toast.makeText(context, stringResource(id = R.string.restart_to_apply), Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, restartToApply, Toast.LENGTH_SHORT).show()
                     },
                     modifier = Modifier.padding(horizontal = 12.dp),
                 ) {
@@ -119,7 +120,7 @@ fun DeveloperSettings(
                     onClick = {
                         customApiUrl = ""
                         Prefs.remove(Prefs.CUSTOM_API_BASE_URL)
-                        Toast.makeText(context, stringResource(id = R.string.restart_to_apply), Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, restartToApply, Toast.LENGTH_SHORT).show()
                     },
                     modifier = Modifier.padding(horizontal = 12.dp),
                 ) {
@@ -132,6 +133,7 @@ fun DeveloperSettings(
                     title = stringResource(id = R.string.version),
                     description = BuildConfig.VERSION_NAME,
                     icon = Icons.Outlined.Info,
+                    onClick = {},
                 )
             }
         }
