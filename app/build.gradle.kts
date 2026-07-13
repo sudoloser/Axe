@@ -30,7 +30,7 @@ android {
             isShrinkResources = true
             isMinifyEnabled = true
         }
-        beta {
+        register("beta") {
             initWith(release)
             applicationIdSuffix = ".beta"
             versionNameSuffix = "-pre"
