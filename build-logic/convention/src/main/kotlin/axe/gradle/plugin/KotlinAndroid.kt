@@ -59,6 +59,9 @@ internal fun Project.configureKotlinAndroid(
                     "${rootProject.rootDir.absolutePath}/app/proguard-rules.pro"
                 )
             }
+            register("beta") {
+                initWith(getByName("release"))
+            }
         }
     }
     tasks.withType<KotlinCompile>().configureEach {
