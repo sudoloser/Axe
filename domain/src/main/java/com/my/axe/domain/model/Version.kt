@@ -21,7 +21,7 @@ class Version(numbers: List<String>) : Comparable<Version> {
 
     override fun toString() = "$major.$minor.$patch"
 
-    operator fun compareTo(other: Version): Int = when {
+    override operator fun compareTo(other: Version): Int = when {
         major > other.major -> 1
         major < other.major -> -1
         minor > other.minor -> 1
