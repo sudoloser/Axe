@@ -1,4 +1,4 @@
-# TBD [v1.4.0-pre]
+# 7/14/2026 [v1.4.0]
 ### Added
 - Beta build type: Side-by-side installable beta APK (`com.my.axe.beta`) with `-pre` version suffix
 - Pre-release update checking: Beta builds auto-check GitHub for newer pre-releases
