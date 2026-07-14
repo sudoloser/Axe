@@ -80,7 +80,7 @@ class AxeRepositoryImpl @Inject constructor(
 
 suspend fun HttpResponse.releaseBody(): Release {
     return if (this.status.value == 200) {
-        val release = this.safeBody<Release>()
+        val release = this.safeBody<Release>() ?: return Prefs.getSavedLatestRelease() ?: Release()
         Prefs.saveLatestRelease(release)
         release
     } else {
@@ -90,7 +90,7 @@ suspend fun HttpResponse.releaseBody(): Release {
 
 suspend fun HttpResponse.betaReleaseBody(): Release {
     return if (this.status.value == 200) {
-        val releases = this.safeBody<List<Release>>()
+        val releases = this.safeBody<List<Release>>() ?: emptyList()
         val latest = releases.filter { it.prerelease == true }
             .maxByOrNull { it.toVersion() }
         if (latest != null) {

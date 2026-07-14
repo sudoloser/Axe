@@ -46,15 +46,20 @@ val jsonHelper = Json {
     encodeDefaults = true
 }
 
-suspend inline fun <reified T> HttpResponse.safeBody(): T {
-    val text = this.body<String>()
-    return jsonHelper.decodeFromString(text)
+suspend inline fun <reified T> HttpResponse.safeBody(): T? {
+    return try {
+        val text = this.body<String>()
+        if (text.isBlank()) null
+        else jsonHelper.decodeFromString(text)
+    } catch (e: Exception) {
+        null
+    }
 }
 
 suspend fun HttpResponse.toImageURL(): String? {
     return try {
         if (this.status == HttpStatusCode.OK)
-            this.safeBody<ImgurResponse>().data.link
+            this.safeBody<ImgurResponse>()?.data?.link
         else
             null
     } catch (e: Exception) {
@@ -65,7 +70,7 @@ suspend fun HttpResponse.toImageURL(): String? {
 suspend fun HttpResponse.toExternalAsset(): String? {
     return try {
         if (this.status == HttpStatusCode.OK)
-            "mp:" + this.safeBody<Array<ExternalAsset>>().first().externalAssetPath
+            "mp:" + this.safeBody<Array<ExternalAsset>>()?.first()?.externalAssetPath
         else
             null
     } catch (e: Exception) {
@@ -76,7 +81,7 @@ suspend fun HttpResponse.toExternalAsset(): String? {
 suspend fun HttpResponse.toAttachmentAsset(): String? {
     return try {
         if (this.status == HttpStatusCode.OK)
-            this.safeBody<ApiResponse>().id
+            this.safeBody<ApiResponse>()?.id
         else
             null
     } catch (e: Exception) {
