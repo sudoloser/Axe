@@ -264,6 +264,8 @@ object Prefs {
     const val OVERLAY_SCALE = "overlay_scale"
     const val OVERLAY_SYSTEM_WIDE = "overlay_system_wide"
     const val OVERLAY_WHITELIST = "overlay_whitelist"
+    const val OVERLAY_X = "overlay_x"
+    const val OVERLAY_Y = "overlay_y"
 
     fun saveAppActivityType(packageName: String, activityType: Int) {
         val json = get(EXPERIMENTAL_RPC_APP_ACTIVITY_TYPES, "{}")
