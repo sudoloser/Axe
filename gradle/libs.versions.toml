@@ -2,8 +2,8 @@
 # project level
 gradle = "8.7.2"
 kotlin = "1.9.25"
-versionName = "1.4.0-pre"
-versionCode ="9"
+versionName = "1.4.0"
+versionCode ="10"
 
 # app level
 accompanist = "0.31.0-alpha"

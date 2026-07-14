@@ -69,6 +69,7 @@ import com.my.axe.ui.components.preference.PreferenceSwitch
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Settings(onBackPressed: () -> Boolean) {
