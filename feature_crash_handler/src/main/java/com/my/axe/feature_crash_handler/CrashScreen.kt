@@ -55,7 +55,7 @@ data class CrashReportData(
     val device: String,
     val androidVersion: String,
     val appVersionName: String,
-    val appVersionCode: Long,
+    val appVersionCode: Int,
 ) {
     val appVersion: String get() = "$appVersionName ($appVersionCode)"
     val deviceInfo: String get() = "$manufacturer $device"
@@ -108,6 +108,7 @@ fun CrashScreen(report: CrashReportData) {
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 ExtendedFloatingActionButton(
                     onClick = {
+                        if (isSending) return@ExtendedFloatingActionButton
                         scope.launch {
                             isSending = true
                             uploadCrashLogs(report)
@@ -119,8 +120,7 @@ fun CrashScreen(report: CrashReportData) {
                                 }
                             isSending = false
                         }
-                    },
-                    enabled = !isSending
+                    }
                 ) {
                     Icon(
                         imageVector = if (isSending) Icons.Filled.Close else Icons.Default.Send,
@@ -262,29 +262,10 @@ fun PreviewCrashScreen() = CrashScreen(report = CrashReportData(
     stackTrace = """
     java.lang.SecurityException: Missing permission to control media.
     	at android.os.Parcel.createExceptionOrNull(Parcel.java:3011)
-    	at android.os.Parcel.createException(Parcel.java:2995)
-    	at android.os.Parcel.readException(Parcel.java:2978)
-    	at android.os.Parcel.readException(Parcel.java:2920)
-    	at android.media.session.ISessionManager$Stub$Proxy.getSessions(ISessionManager.java:672)
-    	at android.media.session.MediaSessionManager.getActiveSessionsForUser(MediaSessionManager.java:272)
-    	at android.media.session.MediaSessionManager.getActiveSessions(MediaSessionManager.java:194)
     	at com.my.axe.data.get_current_data.media.GetCurrentPlayingMedia.invoke(GetCurrentlyPlayingMedia.kt:38)
-    	at com.my.axe.services.MediaRpcService$onCreate$1.invokeSuspend(MediaRpcService.kt:61)
-    	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:33)
-    	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:106)
-    	at kotlinx.coroutines.internal.LimitedDispatcher.run(LimitedDispatcher.kt:42)
-    	at kotlinx.coroutines.scheduling.TaskImpl.run(Tasks.kt:95)
-    	at kotlinx.coroutines.scheduling.CoroutineScheduler.runSafely(CoroutineScheduler.kt:570)
-    	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.executeTask(CoroutineScheduler.kt:750)
-    	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:677)
-    	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:664)
     	Suppressed: kotlinx.coroutines.DiagnosticCoroutineContextException: [StandaloneCoroutine{Cancelling}@2fd5814, Dispatchers.IO]
-    Caused by: android.os.RemoteException: Remote stack trace:
+    	Caused by: android.os.RemoteException: Remote stack trace:
     	at com.android.server.media.MediaSessionService.enforceMediaPermissions(MediaSessionService.java:616)
-    	at com.android.server.media.MediaSessionService.-$$Nest$menforceMediaPermissions(Unknown Source:0)
-    	at com.android.server.media.MediaSessionService$SessionManagerImpl.verifySessionsRequest(MediaSessionService.java:2163)
-    	at com.android.server.media.MediaSessionService$SessionManagerImpl.getSessions(MediaSessionService.java:1269)
-    	at android.media.session.ISessionManager$Stub.onTransact(ISessionManager.java:317)
     """.trimIndent(),
     manufacturer = "******",
     device = "*****",
