@@ -10,6 +10,7 @@
 - API base URL reset: One-tap restore to default from Developer settings
 ### Changed
 - Settings redesign: New settings menu with RPC Settings, Appearance, and About buttons
+- Beta banner: Changed from clickable SettingsRow to non-interactive Material 3 rounded Card
 - Sidebar: Renamed from SettingsDrawer; removed Display and About items (now in Settings menu)
 - Version comparison: Now compares major.minor.patch instead of just major.minor
 - API base URL: Now reads from user preference with BuildConfig fallback
