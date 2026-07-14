@@ -82,6 +82,9 @@ class OverlayService : Service(), LifecycleOwner, ViewModelStoreOwner, SavedStat
         savedStateRegistryController.performRestore(null)
         lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE)
         windowManager = getSystemService(WINDOW_SERVICE) as WindowManager
+        val metrics = resources.displayMetrics
+        val iconSizePx = (80 * metrics.density).toInt()
+        val bottomMarginPx = (100 * metrics.density).toInt()
         indicatorParams = WindowManager.LayoutParams(
             WindowManager.LayoutParams.WRAP_CONTENT,
             WindowManager.LayoutParams.WRAP_CONTENT,
@@ -92,8 +95,9 @@ class OverlayService : Service(), LifecycleOwner, ViewModelStoreOwner, SavedStat
             WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
             PixelFormat.TRANSLUCENT
         ).apply {
-            gravity = Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL
-            y = -80.dpToPx()
+            gravity = Gravity.TOP or Gravity.START
+            x = (metrics.widthPixels / 2) - (iconSizePx / 2)
+            y = metrics.heightPixels - iconSizePx - bottomMarginPx
         }
     }
 
