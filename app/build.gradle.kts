@@ -30,8 +30,7 @@ android {
             isShrinkResources = true
             isMinifyEnabled = true
         }
-        register("beta") {
-            initWith(getByName("release"))
+        getByName("beta") {
             applicationIdSuffix = ".beta"
             versionNameSuffix = "-pre"
             buildConfigField("boolean", "IS_BETA", "true")
