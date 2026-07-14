@@ -26,24 +26,23 @@ class CrashHandler : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val report = CrashActivity.getStackTraceFromIntent(intent)
+        val rawTrace = CrashActivity.getStackTraceFromIntent(intent)
+        val report = CrashReportData(
+            stackTrace = rawTrace ?: "",
+            manufacturer = DeviceUtils.getManufacturer(),
+            device = DeviceUtils.getModel(),
+            androidVersion = DeviceUtils.getSDKVersionName(),
+            appVersionName = AppUtils.getAppVersionName(),
+            appVersionCode = AppUtils.getAppVersionCode(),
+        )
         setContent {
             axeTheme(
                 darkTheme = LocalDarkTheme.current.isDarkTheme(),
                 isHighContrastModeEnabled = LocalDarkTheme.current.isHighContrastModeEnabled,
                 isDynamicColorEnabled = LocalDynamicColorSwitch.current,
             ){
-                CrashScreen(trace = report.buildCrashLog())
+                CrashScreen(report = report)
             }
         }
-    }
-    private fun String?.buildCrashLog(): String {
-        return """axe crash report
-Manufacturer: ${DeviceUtils.getManufacturer()}
-Device: ${DeviceUtils.getModel()}
-Android version: ${DeviceUtils.getSDKVersionName()}
-App version: ${AppUtils.getAppVersionName()} (${AppUtils.getAppVersionCode()})
-Stacktrace: 
-$this"""
     }
 }

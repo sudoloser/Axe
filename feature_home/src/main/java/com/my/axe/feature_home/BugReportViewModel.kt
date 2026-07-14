@@ -11,6 +11,7 @@ import com.my.axe.data.remote.Embed
 import com.my.axe.data.remote.Field
 import com.my.axe.data.remote.Footer
 import com.my.axe.data.remote.Image
+import com.my.axe.data.remote.PastebinService
 import com.my.axe.data.remote.WebhookPayload
 import com.my.axe.data.remote.WebhookService
 import com.my.axe.domain.interfaces.Logger
@@ -38,6 +39,7 @@ data class BugReportState(
 @HiltViewModel
 class BugReportViewModel @Inject constructor(
     private val cdnService: CdnService,
+    private val pastebinService: PastebinService,
     private val webhookService: WebhookService,
     private val logger: Logger,
     @ApplicationContext private val context: Context,
@@ -120,23 +122,28 @@ class BugReportViewModel @Inject constructor(
 
             _state.value = _state.value.copy(uploadStatus = "Submitting report...")
 
-            // A stable URL shared across all embeds so Discord groups them
-            // into an inline image gallery on the same message card.
             val galleryAnchor = imageUrls.firstOrNull() ?: "https://github.com/sudoloser/axe"
 
             val rawLogs = logger.getFormattedLogs(maxLines = 30)
-            val logFieldValue = if (rawLogs.isNotBlank()) {
-                "```\n$rawLogs\n```".take(1024)
+            val pastebinResult = if (rawLogs.isNotBlank()) {
+                _state.value = _state.value.copy(uploadStatus = "Uploading logs to Pastebin...")
+                withContext(Dispatchers.IO) {
+                    pastebinService.upload(rawLogs, title = "Axe Bug Report Logs")
+                }
             } else {
-                "No logs available"
+                null
             }
+            val logsFieldValue = pastebinResult?.fold(
+                onSuccess = { url -> "[View full logs on Pastebin]($url)" },
+                onFailure = { "```\n${rawLogs.take(1024)}\n```" },
+            ) ?: "No logs available"
 
             val fields = buildList {
                 add(Field("📱 Device", deviceModel, inline = true))
                 add(Field("🤖 Android", androidVersion, inline = true))
                 if (appVersion.isNotBlank()) add(Field("📦 App Version", appVersion, inline = true))
                 if (imageUrls.isEmpty()) add(Field("🖼 Screenshots", "None attached", inline = false))
-                add(Field("📋 Latest Logs", logFieldValue, inline = false))
+                add(Field("📋 Latest Logs", logsFieldValue, inline = false))
             }
 
             val timestamp = Instant.now().toString()
