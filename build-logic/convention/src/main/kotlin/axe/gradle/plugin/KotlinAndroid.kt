@@ -39,6 +39,9 @@ internal fun Project.configureKotlinAndroid(
         }
 
         buildTypes {
+            register("beta") {
+                initWith(getByName("release"))
+            }
             getByName("release") {
                 /*
                 Starting with agp 8.4.0 setting isMinifyEnabled for libraries will minify the lib much sooner in the build process,
@@ -59,6 +62,7 @@ internal fun Project.configureKotlinAndroid(
                     "${rootProject.rootDir.absolutePath}/app/proguard-rules.pro"
                 )
             }
+
         }
     }
     tasks.withType<KotlinCompile>().configureEach {

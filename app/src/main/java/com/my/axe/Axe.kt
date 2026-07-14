@@ -53,8 +53,10 @@ import com.my.axe.feature_profile.ui.user.UserScreen
 import com.my.axe.feature_profile.ui.user.UserViewModel
 import com.my.axe.feature_rpc_base.AppUtils
 import com.my.axe.feature_rpc_base.services.AxeTileService
+import com.my.axe.feature_settings.SettingsScreen
+import com.my.axe.feature_settings.dev.DeveloperSettings
 import com.my.axe.feature_settings.language.Language
-import com.my.axe.feature_settings.rpc_settings.Settings
+import com.my.axe.feature_settings.rpc_settings.Settings as RpcSettings
 import com.my.axe.feature_settings.style.Appearance
 import com.my.axe.feature_settings.style.DarkThemePreferences
 import com.my.axe.feature_startup.StartUp
@@ -119,7 +121,9 @@ internal fun ComponentActivity.axe(
                 val state = viewModel.aboutScreenState.collectAsState().value
                 val release = Prefs.getSavedLatestRelease()
                 LaunchedEffect(Unit) {
-                    if (release != null && release.toVersion() > BuildConfig.VERSION_NAME.toVersion()) {
+                    if (BuildConfig.IS_BETA) {
+                        viewModel.getLatestBetaUpdate()
+                    } else if (release != null && release.toVersion() > BuildConfig.VERSION_NAME.toVersion()) {
                         viewModel.setReleaseFromPrefs(release)
                     } else {
                         viewModel.getLatestUpdate()
@@ -139,17 +143,11 @@ internal fun ComponentActivity.axe(
                     navigateToProfile = {
                         navController.navigate(Routes.PROFILE)
                     },
-                    navigateToStyleAndAppearance = {
-                        navController.navigate(Routes.STYLE_AND_APPEARANCE)
+                    navigateToSettings = {
+                        navController.navigate(Routes.SETTINGS)
                     },
                     navigateToLanguages = {
                         navController.navigate(Routes.LANGUAGES)
-                    },
-                    navigateToAbout = {
-                        navController.navigate(Routes.ABOUT)
-                    },
-                    navigateToRpcSettings = {
-                        navController.navigate(Routes.SETTINGS)
                     },
                     navigateToLogsScreen = {
                         navController.navigate(Routes.LOGS_SCREEN)
@@ -259,7 +257,33 @@ internal fun ComponentActivity.axe(
                 )
             }
             animatedComposable(Routes.SETTINGS) {
-                Settings(
+                SettingsScreen(
+                    onBackPressed = {
+                        navController.popBackStack()
+                    },
+                    navigateToLanguages = {
+                        navController.navigate(Routes.LANGUAGES)
+                    },
+                    navigateToLogsScreen = {
+                        navController.navigate(Routes.LOGS_SCREEN)
+                    },
+                    navigateToRpcSettings = {
+                        navController.navigate(Routes.RPC_SETTINGS)
+                    },
+                    navigateToAppearance = {
+                        navController.navigate(Routes.STYLE_AND_APPEARANCE)
+                    },
+                    navigateToAbout = {
+                        navController.navigate(Routes.ABOUT)
+                    },
+                    navigateToDeveloperSettings = {
+                        navController.navigate(Routes.DEVELOPER_SETTINGS)
+                    },
+                    isBeta = BuildConfig.IS_BETA,
+                )
+            }
+            animatedComposable(Routes.RPC_SETTINGS) {
+                RpcSettings(
                     onBackPressed = {
                         navController.popBackStack()
                     }
@@ -319,6 +343,12 @@ internal fun ComponentActivity.axe(
             animatedComposable(Routes.OVERLAY_SETTINGS) {
                 OverlaySettings(
                     onBackPressed = { navController.popBackStack() }
+                )
+            }
+
+            animatedComposable(Routes.DEVELOPER_SETTINGS) {
+                DeveloperSettings(
+                    onBackPressed = { navController.popBackStack() },
                 )
             }
         }

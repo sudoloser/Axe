@@ -23,6 +23,7 @@ import com.my.axe.data.utils.toImageURL
 import com.my.axe.domain.model.Contributor
 import com.my.axe.domain.model.Game
 import com.my.axe.domain.model.release.Release
+import com.my.axe.domain.model.toVersion
 import com.my.axe.domain.model.user.User
 import com.my.axe.domain.repository.AxeRepository
 import com.my.axe.preference.Prefs
@@ -30,6 +31,8 @@ import io.ktor.client.call.body
 import io.ktor.client.statement.HttpResponse
 import java.io.File
 import javax.inject.Inject
+
+import com.my.axe.data.utils.safeBody
 
 class AxeRepositoryImpl @Inject constructor(
     private val api: ApiService,
@@ -54,27 +57,48 @@ class AxeRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getGames(): List<Game> {
-        return api.getGames().getOrNull()?.body<List<GamesResponse>>()?.map { it.toGame() }
+        return api.getGames().getOrNull()?.safeBody<List<GamesResponse>>()?.map { it.toGame() }
             ?: emptyList()
     }
 
     override suspend fun getUser(userid: String): User {
-        return api.getUser(userid).getOrNull()?.body() ?: User()
+        return api.getUser(userid).getOrNull()?.safeBody<User>() ?: User()
     }
 
     override suspend fun getContributors(): List<Contributor> {
-        return api.getContributors().getOrNull()?.body() ?: emptyList()
+        return api.getContributors().getOrNull()?.safeBody<List<Contributor>>() ?: emptyList()
     }
 
     override suspend fun checkForUpdate(): Release {
         return api.checkForUpdate().getOrNull()?.releaseBody() ?: Release()
     }
+
+    override suspend fun checkForBetaUpdate(): Release {
+        return api.checkForPreReleaseUpdate().getOrNull()?.betaReleaseBody() ?: Release()
+    }
 }
 
 suspend fun HttpResponse.releaseBody(): Release {
     return if (this.status.value == 200) {
-        Prefs.saveLatestRelease(this.body())
-        this.body()
+        val release = this.safeBody<Release>() ?: return Prefs.getSavedLatestRelease() ?: Release()
+        Prefs.saveLatestRelease(release)
+        release
+    } else {
+        Prefs.getSavedLatestRelease() ?: Release()
+    }
+}
+
+suspend fun HttpResponse.betaReleaseBody(): Release {
+    return if (this.status.value == 200) {
+        val releases = this.safeBody<List<Release>>() ?: emptyList()
+        val latest = releases.filter { it.prerelease == true }
+            .maxByOrNull { it.toVersion() }
+        if (latest != null) {
+            Prefs.saveLatestRelease(latest)
+            latest
+        } else {
+            Prefs.getSavedLatestRelease() ?: Release()
+        }
     } else {
         Prefs.getSavedLatestRelease() ?: Release()
     }

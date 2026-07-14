@@ -18,6 +18,7 @@ android {
             useSupportLibrary = true
         }
         buildConfigField("String", "AXE_APP_SIGNATURE", "\"${System.getenv("AXE_APP_SIGNATURE") ?: "DEVELOPMENT_SIGNATURE"}\"")
+        buildConfigField("boolean", "IS_BETA", "false")
     }
 
     buildFeatures {
@@ -28,6 +29,11 @@ android {
         release {
             isShrinkResources = true
             isMinifyEnabled = true
+        }
+        getByName("beta") {
+            applicationIdSuffix = ".beta"
+            versionNameSuffix = "-pre"
+            buildConfigField("boolean", "IS_BETA", "true")
         }
     }
 

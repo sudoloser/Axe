@@ -24,4 +24,5 @@ interface AxeRepository {
     suspend fun getUser(userid: String): User
     suspend fun getContributors(): List<Contributor>
     suspend fun checkForUpdate(): Release
+    suspend fun checkForBetaUpdate(): Release
 }

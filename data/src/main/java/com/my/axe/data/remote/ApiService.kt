@@ -73,4 +73,10 @@ class ApiService @Inject constructor(
             url("$githubBaseUrl/repos/sudoloser/axe/releases/latest")
         }
     }
+
+    suspend fun checkForPreReleaseUpdate() = runCatching {
+        client.get {
+            url("$githubBaseUrl/repos/sudoloser/axe/releases?per_page=10")
+        }
+    }
 }

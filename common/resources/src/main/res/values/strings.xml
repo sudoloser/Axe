@@ -258,4 +258,15 @@
     <string name="submit_bug_report">Submit Bug Report</string>
     <string name="submitting">Submitting…</string>
     <string name="report_a_bug">Report a Bug</string>
+    <string name="rpc_settings">RPC Settings</string>
+    <string name="appearence">Appearance</string>
+    <string name="latest_pre_release">You\'re on the latest pre-release of Axe</string>
+    <string name="developer_settings">Developer settings</string>
+    <string name="simulate_crash">Simulate crash</string>
+    <string name="simulate_crash_desc">Test the crash handler by triggering a simulated exception</string>
+    <string name="api_base_url">API base URL</string>
+    <string name="api_base_url_desc">Custom backend URL for the app API</string>
+    <string name="reset_to_default">Reset to default</string>
+    <string name="restart_to_apply">Restart app to apply changes</string>
+    <string name="default_label">Default</string>
 </resources>

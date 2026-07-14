@@ -69,7 +69,7 @@ import com.my.axe.feature_home.feature.Features
 import com.my.axe.feature_home.feature.HomeFeature
 import com.my.axe.feature_home.feature.ToolTipContent
 import com.my.axe.feature_rpc_base.services.AxeTileService
-import com.my.axe.feature_settings.SettingsDrawer
+import com.my.axe.feature_settings.Sidebar
 import com.my.axe.resources.R
 import com.my.axe.ui.components.ChipSection
 import com.my.axe.ui.components.ChangelogSheet
@@ -84,11 +84,9 @@ fun Home(
     user: User?,
     componentName: ComponentName? = null,
     navigateToProfile: () -> Unit,
-    navigateToStyleAndAppearance: () -> Unit,
-    navigateToLanguages: () -> Unit,
-    navigateToAbout: () -> Unit,
-    navigateToRpcSettings: () -> Unit,
-    navigateToLogsScreen: () -> Unit,
+    navigateToSettings: () -> Unit,
+    navigateToLanguages: () -> Unit = {},
+    navigateToLogsScreen: () -> Unit = {},
     bugReportViewModel: BugReportViewModel? = null,
 ) {
     var timestamp by remember { mutableLongStateOf(System.currentTimeMillis()) }
@@ -133,15 +131,13 @@ fun Home(
                 drawerContainerColor = MaterialTheme.colorScheme.surface,
             ) {
                 if (componentName != null) {
-                    SettingsDrawer(
+                    Sidebar(
                         user = user,
                         showAxeQuickieRequestItem = !AxeTileService.tileAdded.value,
                         componentName = componentName,
                         navigateToProfile = navigateToProfile,
-                        navigateToStyleAndAppearance = navigateToStyleAndAppearance,
+                        navigateToSettings = navigateToSettings,
                         navigateToLanguages = navigateToLanguages,
-                        navigateToAbout = navigateToAbout,
-                        navigateToRpcSettings = navigateToRpcSettings,
                         navigateToLogsScreen = navigateToLogsScreen,
                         onReportBug = { showBugReportSheet = true },
                     )
@@ -299,11 +295,7 @@ fun HomeScreenPreview() {
         features = fakeFeatures,
         user = fakeUser,
         navigateToProfile = { },
-        navigateToStyleAndAppearance = { },
-        navigateToLanguages = { },
-        navigateToAbout = { },
-        navigateToRpcSettings = { },
-        navigateToLogsScreen = {},
+        navigateToSettings = { },
         bugReportViewModel = null,
     )
 }

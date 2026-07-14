@@ -1,0 +1,95 @@
+name: Build and Release Beta APK
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to build from'
+        required: true
+        default: 'master'
+      version:
+        description: 'Version name (e.g. v1.0.1-pre)'
+        required: true
+        default: 'v1.0.1-pre'
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+-pre'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.branch || github.ref }}
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: gradle
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install Build Tools
+        run: sdkmanager "build-tools;29.0.3" "build-tools;34.0.0"
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Build Beta APK
+        run: ./gradlew assembleBeta
+        env:
+          AXE_APP_SIGNATURE: ${{ secrets.AXE_APP_SIGNATURE }}
+
+      - name: Sign APK
+        uses: r0adkll/sign-android-release@v1
+        id: sign_app
+        with:
+          releaseDirectory: app/build/outputs/apk/beta
+          signingKeyBase64: ${{ secrets.KEYSTORE }}
+          alias: ${{ secrets.KEYSTORE_ALIAS }}
+          keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
+          keyPassword: ${{ secrets.KEYSTORE_PASSWORD }}
+
+      - name: Rename Signed APK
+        run: |
+          mv ${{ steps.sign_app.outputs.signedReleaseFile }} app/build/outputs/apk/axe-beta.apk
+
+      - name: Extract Release Notes
+        id: extract_notes
+        run: |
+          sed -n '/^# /{p;n;:a;n;/^# /q;p;ba}' CHANGELOG.md > release_notes.md
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: beta-apk
+          path: app/build/outputs/apk/*.apk
+
+      - name: Get version
+        id: get_version
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "VERSION=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
+          else
+            echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create Release and Upload Assets
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.get_version.outputs.VERSION }}
+          name: Pre-release ${{ steps.get_version.outputs.VERSION }}
+          body_path: release_notes.md
+          files: app/build/outputs/apk/*.apk
+          draft: false
+          prerelease: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -23,12 +23,13 @@ import com.my.axe.data.remote.ImgurApiService
 import com.my.axe.data.remote.WebhookService
 import com.my.axe.data.repository.AxeRepositoryImpl
 import com.my.axe.domain.repository.AxeRepository
+import com.my.axe.preference.Prefs
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import io.ktor.client.HttpClient
-import io.ktor.client.engine.cio.CIO
+import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.logging.LogLevel
@@ -45,7 +46,7 @@ object AppModule {
     @Provides
     @Singleton
     @Base
-    fun provideBaseUrl() = BuildConfig.BASE_URL
+    fun provideBaseUrl() = Prefs[Prefs.CUSTOM_API_BASE_URL, ""].ifEmpty { BuildConfig.BASE_URL }
 
     @Provides
     @Singleton
@@ -73,9 +74,9 @@ object AppModule {
         json: Json,
         kLogger: com.my.axe.domain.interfaces.Logger
     ): HttpClient {
-        return HttpClient(CIO) {
+        return HttpClient(OkHttp) {
             install(ContentNegotiation) {
-                json(json)
+                json(json, contentType = io.ktor.http.ContentType.Any)
             }
             install(HttpTimeout) {
                 connectTimeoutMillis = 30_000

@@ -18,7 +18,7 @@ import com.my.axe.data.repository.AxeRepositoryImpl
 import com.my.axe.data.rpc.Constants
 import com.my.axe.domain.repository.AxeRepository
 import io.ktor.client.HttpClient
-import io.ktor.client.engine.cio.CIO
+import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
@@ -51,7 +51,7 @@ class AxeRepositoryTest {
         axeRepository = AxeRepositoryImpl(apiService,imgurService)
     }
 
-    private fun setupClient(): HttpClient = HttpClient(CIO) {
+    private fun setupClient(): HttpClient = HttpClient(OkHttp) {
         install(ContentNegotiation) {
             json(Json {
                 ignoreUnknownKeys = true
