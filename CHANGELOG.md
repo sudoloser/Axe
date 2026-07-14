@@ -2,10 +2,8 @@
 ### Added
 - Send logs button on crash screen: Uploads crash trace to Pastebin and sends a Discord embed with device details
 - Bug report logs now upload to Pastebin instead of being included inline in the embed
-- Button position persistence: Floating overlay button position is saved and restored across sessions
 ### Changed
 - Crash screen: Stacked "Send logs" and "Share" FABs; device details passed separately for embed building
-- Floating overlay: Menu now renders in a separate window instead of resizing the button view, removing the full-screen black backdrop; indicator uses absolute positioning at bottom center
 - Beta workflow tag glob updated to match v*-pre* tags (e.g. v1.4.1-pre-1)
 
 # 7/14/2026 [v1.4.0]
