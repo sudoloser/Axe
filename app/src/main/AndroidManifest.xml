@@ -27,10 +27,10 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
     <permission
-        android:name="com.my.axe.PERMISSION_RPC"
+        android:name="${applicationId}.PERMISSION_RPC"
         android:protectionLevel="normal" />
 
-    <uses-permission android:name="com.my.axe.PERMISSION_RPC" />
+    <uses-permission android:name="${applicationId}.PERMISSION_RPC" />
 
     <application
         android:name=".App"
@@ -46,7 +46,7 @@
         <receiver
             android:name="com.my.axe.feature_rpc_base.AxeRpcReceiver"
             android:exported="true"
-            android:permission="com.my.axe.PERMISSION_RPC">
+            android:permission="${applicationId}.PERMISSION_RPC">
             <intent-filter>
                 <action android:name="com.my.axe.UPDATE_PRESENCE" />
                 <action android:name="com.my.axe.CLEAR_PRESENCE" />
