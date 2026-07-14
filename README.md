@@ -48,14 +48,14 @@
 - [x] Remote server for a gateway proxy (More reliable than locally)
 
 ## System Requirements
-- OS: Android 8.1 through 14 *(note: Android 14 may have some bugs with experimental features.)*
+- OS: Android 8.1 through 16  *(note: Android 14-16 may have some bugs with experimental features.)*
 - RAM: 3GB minimum
 
 *(please keep in mind all systems are different and may have their own bugs. create an [issue](https://github.com/sudoloser/axe/issues/new/choose) if you find a bug.)*
 
 ## Download
 > **Warning**
-> If you're thinking about downloading an Axe/Kizzy clone or app from any third-party service (other than the ones listed in our repository), think again! We can't be held responsible for any issues that may arise with your account as a result. Stay safe and stick to our trusted download links for the genuine app.
+> If you're thinking about downloading an Axe clone or app from any third-party service (other than the ones listed in our repository), think again! We can't be held responsible for any issues that may arise with your account as a result. Stay safe and stick to our trusted download links for the genuine app.
 
 > **Warning**
 > This app uses the Discord Gateway connection. Use this at your own risk.
