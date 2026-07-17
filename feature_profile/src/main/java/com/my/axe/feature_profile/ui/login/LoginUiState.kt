@@ -16,4 +16,5 @@ sealed interface LoginUiState {
     object InitialState: LoginUiState
     object OnLoginClicked: LoginUiState
     object OnLoginCompleted: LoginUiState
+    data class OnLoginError(val message: String): LoginUiState
 }

@@ -24,6 +24,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -50,8 +51,10 @@ fun LoginScreen(
     var uiState: LoginUiState by remember { mutableStateOf(LoginUiState.InitialState) }
     var showTokenDialog by remember { mutableStateOf(false) }
     var tokenValue by remember { mutableStateOf("") }
-    
+
     val scope = rememberCoroutineScope()
+    val ctx = LocalContext.current
+    val snackbarHostState = remember { SnackbarHostState() }
     val modalBottomSheetState = rememberModalBottomSheetState(
         skipPartiallyExpanded = true
     )
@@ -69,15 +72,23 @@ fun LoginScreen(
                 Prefs[TOKEN] = it
                 scope.launch {
                     uiState = LoginUiState.OnLoginCompleted
-                    getUserInfo(it, onInfoSaved = {
+                    if (getUserInfo(it)) {
                         onCompleted()
-                    })
+                    } else {
+                        Prefs.remove(TOKEN)
+                        buttonEnabledState = true
+                        uiState = LoginUiState.InitialState
+                        snackbarHostState.showSnackbar(
+                            ctx.getString(R.string.login_failed_try_again)
+                        )
+                    }
                 }
             }
         )
     }
 
     Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         modifier = Modifier
             .fillMaxSize(),
         topBar = {
@@ -108,9 +119,16 @@ fun LoginScreen(
                             scope.launch {
                                 modalBottomSheetState.hide()
                                 uiState = LoginUiState.OnLoginCompleted
-                                getUserInfo(it, onInfoSaved = {
+                                if (getUserInfo(it)) {
                                     onCompleted()
-                                })
+                                } else {
+                                    Prefs.remove(TOKEN)
+                                    buttonEnabledState = true
+                                    uiState = LoginUiState.InitialState
+                                    snackbarHostState.showSnackbar(
+                                        ctx.getString(R.string.login_failed_try_again)
+                                    )
+                                }
                             }
                         }
                     }
@@ -119,6 +137,7 @@ fun LoginScreen(
                     buttonEnabledState = false
                     CircularProgressIndicator()
                 }
+
             }
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 DiscordLoginButton(

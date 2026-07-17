@@ -217,7 +217,14 @@ internal fun ComponentActivity.axe(
                 if (Prefs[Prefs.TOKEN, ""].isNotEmpty()) {
                     UserScreen(
                         state = state,
-                        onBackPressed = { navController.popBackStack() }
+                        onBackPressed = { navController.popBackStack() },
+                        onLogout = {
+                            discordWebSocket.close()
+                            Prefs.remove(Prefs.TOKEN)
+                            Prefs.remove(Prefs.USER_DATA)
+                            navController.popBackStack()
+                            navController.navigate(Routes.PROFILE)
+                        }
                     )
                 } else {
                     LoginScreen(
