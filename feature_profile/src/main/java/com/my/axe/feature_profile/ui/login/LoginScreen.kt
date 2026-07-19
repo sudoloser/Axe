@@ -138,6 +138,10 @@ fun LoginScreen(
                     CircularProgressIndicator()
                 }
 
+                is LoginUiState.OnLoginError -> {
+                    buttonEnabledState = true
+                    uiState = LoginUiState.InitialState
+                }
             }
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 DiscordLoginButton(
