@@ -67,11 +67,51 @@ fun UserScreen(
                         error = (state.error)
                     )
                     ProfileCard(state.user)
+                    Logout(
+                        modifier = Modifier
+                            .align(Alignment.BottomEnd)
+                            .padding(10.dp),
+                        shape = RoundedCornerShape(12.dp)
+                    ) {
+                        scope.launch {
+                            snackbarHostState.showSnackbar(
+                                message = ctx.getString(R.string.are_you_sure),
+                                actionLabel = ctx.getString(R.string.yes),
+                                duration = SnackbarDuration.Short,
+                                withDismissAction = true
+                            ).run {
+                                when (this) {
+                                    SnackbarResult.ActionPerformed -> onLogout()
+                                    SnackbarResult.Dismissed -> Unit
+                                }
+                            }
+                        }
+                    }
                 }
 
                 UserState.Loading -> {
                     AnimatedShimmer {
                         ShimmerProfileCard(brush = it)
+                    }
+                    Logout(
+                        modifier = Modifier
+                            .align(Alignment.BottomEnd)
+                            .padding(10.dp),
+                        shape = RoundedCornerShape(12.dp)
+                    ) {
+                        scope.launch {
+                            snackbarHostState.showSnackbar(
+                                message = ctx.getString(R.string.are_you_sure),
+                                actionLabel = ctx.getString(R.string.yes),
+                                duration = SnackbarDuration.Short,
+                                withDismissAction = true
+                            ).run {
+                                when (this) {
+                                    SnackbarResult.ActionPerformed -> onLogout()
+                                    SnackbarResult.Dismissed -> Unit
+                                }
+                            }
+                        }
                     }
                 }
 

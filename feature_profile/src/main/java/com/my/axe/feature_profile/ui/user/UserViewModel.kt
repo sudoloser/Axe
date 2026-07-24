@@ -22,8 +22,11 @@ import com.my.axe.domain.model.user.User
 import com.my.axe.domain.use_case.get_user.GetUserUseCase
 import com.my.axe.preference.Prefs
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeout
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -40,29 +43,48 @@ class UserViewModel @Inject constructor(
     init {
         getUser()
     }
-     private fun getUser(){
-        getUserUseCase(Prefs[Prefs.USER_ID,""]).onEach { result ->
-            when(result){
-                is Resource.Success -> {
-                    _state.value = UserState.LoadingCompleted(
-                        user = result.data?.copy(
-                            bio = Prefs[Prefs.USER_BIO],
-                            nitro = Prefs[Prefs.USER_NITRO]
-                        )
-                    )
-                    Prefs[Prefs.USER_DATA] = Json.encodeToString(result.data)
+
+    private fun getUser() {
+        viewModelScope.launch {
+            try {
+                withTimeout(15_000L) {
+                    getUserUseCase(Prefs[Prefs.USER_ID, ""]).collect { result ->
+                        when (result) {
+                            is Resource.Success -> {
+                                _state.value = UserState.LoadingCompleted(
+                                    user = result.data?.copy(
+                                        bio = Prefs[Prefs.USER_BIO],
+                                        nitro = Prefs[Prefs.USER_NITRO]
+                                    )
+                                )
+                                Prefs[Prefs.USER_DATA] = Json.encodeToString(result.data)
+                            }
+
+                            is Resource.Error -> {
+                                val user = runCatching {
+                                    Json.decodeFromString<User>(Prefs[Prefs.USER_DATA, "{}"])
+                                }.getOrNull()
+                                _state.value = UserState.Error(
+                                    error = result.message ?: "An unexpected error occurred",
+                                    user = user
+                                )
+                            }
+
+                            is Resource.Loading -> {
+                                _state.value = UserState.Loading
+                            }
+                        }
+                    }
                 }
-                is Resource.Error -> {
-                    val user = Json.decodeFromString<User>(Prefs[Prefs.USER_DATA,"{}"])
-                    _state.value = UserState.Error(
-                        error = result.message ?: "An unexpected error occurred",
-                        user = user
-                    )
-                }
-                is Resource.Loading -> {
-                    _state.value = UserState.Loading
-                }
+            } catch (e: TimeoutCancellationException) {
+                val user = runCatching {
+                    Json.decodeFromString<User>(Prefs[Prefs.USER_DATA, "{}"])
+                }.getOrNull()
+                _state.value = UserState.Error(
+                    error = "Request timed out. Please check your connection.",
+                    user = user
+                )
             }
-        }.launchIn(viewModelScope)
+        }
     }
 }
