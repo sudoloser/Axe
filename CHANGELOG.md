@@ -1,3 +1,14 @@
+# 7/14/2026 [v1.5.0]
+# ARCHIVE NOTICE - Axe is no longer actively maintained, and will not receive updates. 1.5.0 is the last stable release.
+> I highly recommend migrating to another fork, such as [Kizzey](https://kizzeyrpc.xyz/), or [Kizzy Enhanced](https://github.com/milliarderr/Kizzy-Enhanced/).
+### Added
+- Archive notice
+- Send logs button on crash screen: Uploads crash trace to Pastebin and sends a Discord embed with device details
+- Bug report logs now upload to Pastebin instead of being included inline in the embed
+### Changed
+- Crash screen: Stacked "Send logs" and "Share" FABs; device details passed separately for embed building
+- Beta workflow tag glob updated to match v*-pre* tags (e.g. v1.4.1-pre-1)
+
 # 7/14/2026 [v1.4.0]
 ### Added
 - Beta build type: Side-by-side installable beta APK (`com.my.axe.beta`) with `-pre` version suffix
