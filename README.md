@@ -1,3 +1,10 @@
+> [!IMPORTANT]
+> # ARCHIVE NOTICE - Axe is no longer actively maintained, and will not receive updates. 1.5.0 is the last stable release.
+> I highly recommend migrating to another fork, such as [Kizzey](https://kizzeyrpc.xyz/), or [Kizzy Enhanced](https://github.com/milliarderr/Kizzy-Enhanced/).
+>
+### Why?
+> Axe is terrible. Be honest. Bugs all over that i really just don't want to fix when theres better alternatives. Please consider migrating to another fork, as Axe is bound to break with future Discord API updates.
+
 <div align="center">
 <img src="https://img.shields.io/badge/Minimum%20SDK-27-%23?&style=flat-square&color=5b5ef7">
 <img src="https://img.shields.io/github/downloads/sudoloser/axe/total?&style=flat-square&color=5b5ef7">
