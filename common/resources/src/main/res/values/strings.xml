@@ -270,4 +270,11 @@
     <string name="restart_to_apply">Restart app to apply changes</string>
     <string name="default_label">Default</string>
     <string name="login_failed_try_again">Login failed. Please try again.</string>
+
+    <!-- Archive Notice -->
+    <string name="archive_notice_title">ARCHIVE NOTICE</string>
+    <string name="archive_notice_message">Axe is no longer actively maintained, and will not receive updates. 1.5.0 is the last stable release. We highly recommend migrating to another fork, such as Kizzey, or Kizzy Enhanced.</string>
+    <string name="archive_notice_why">Why?</string>
+    <string name="archive_notice_why_title">Why was Axe archived?</string>
+    <string name="archive_notice_why_message">When I forked Kizzy to build Axe, it was mainly to fix other users\' issues, and to customize the app to my liking. Now, I have no motivation to continue developing it. Please forgive me. You may migrate to other forks.</string>
 </resources>

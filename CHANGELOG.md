@@ -1,5 +1,8 @@
-# 7/14/2026 [v1.4.1-pre]
+# 7/14/2026 [v1.5.0]
+# ARCHIVE NOTICE - Axe is no longer actively maintained, and will not receive updates. 1.5.0 is the last stable release.
+> I highly recommend migrating to another fork, such as [Kizzey](https://kizzeyrpc.xyz/), or [Kizzy Enhanced](https://github.com/milliarderr/Kizzy-Enhanced/).
 ### Added
+- Archive notice
 - Send logs button on crash screen: Uploads crash trace to Pastebin and sends a Discord embed with device details
 - Bug report logs now upload to Pastebin instead of being included inline in the embed
 ### Changed

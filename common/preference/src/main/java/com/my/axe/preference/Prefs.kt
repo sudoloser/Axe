@@ -195,6 +195,9 @@ object Prefs {
 
     const val CUSTOM_API_BASE_URL = "custom_api_base_url"
 
+    // Archive Notice Dismissed
+    const val ARCHIVE_NOTICE_DISMISSED = "archive_notice_dismissed"
+
     // Last Deleted Time of Saved Images
     const val LAST_DELETED = "last_deleted"
 

@@ -213,6 +213,9 @@ fun Home(
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 item {
+                    ArchiveBanner()
+                }
+                item {
                     ChipSection()
                     Text(
                         text = stringResource(id = R.string.features),
